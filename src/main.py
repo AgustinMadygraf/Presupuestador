@@ -1,6 +1,8 @@
 import sqlite3
-from database import create_connection, add_project,  get_presupuesto_restante, setup_database
+import os
 from pdf_generator import create_pdf
+from database import create_connection, add_project,  get_presupuesto_restante, setup_database
+
 
 def main_menu():
     print("\nPresupuestador de Proyectos")
@@ -20,10 +22,18 @@ def handle_new_project(conn):
     add_project(conn, nombre, presupuesto_total)
 
 def handle_generate_pdf(conn):
-    proyecto_id = int(input("ID del proyecto para el PDF: "))
+    try:
+        proyecto_id = int(input("ID del proyecto para el PDF: "))
+    except ValueError:
+        print("Error: El ID del proyecto debe ser un número entero.")
+        return
+
     data = get_presupuesto_restante(conn, proyecto_id)
-    create_pdf(data, 'presupuesto.pdf')
-    print("PDF generado con éxito.")
+    if data is not None:
+        create_pdf(data, 'presupuesto.pdf')
+    else:
+        print("No se pudo generar el PDF. Verifique que el ID del proyecto sea correcto y que existan datos asociados.")
+
 
 def handle_add_kpi(conn):
     # Implementar lógica para añadir KPIs a un proyecto existente
@@ -37,16 +47,19 @@ def handle_variable_costs(conn):
     # Implementar lógica para añadir costos variables a un proyecto
     pass
 
-def handle_generate_pdf(conn):
-    proyecto_id = int(input("ID del proyecto para el PDF: "))
-    data = get_presupuesto_restante(conn, proyecto_id)
-    create_pdf(data, 'presupuesto.pdf')
-    print("PDF generado con éxito.")
-
 def main():
+    os.system('cls' if os.name == 'nt' else 'clear')
     conn = create_connection()
-    setup_database(conn)  # Asegúrate de que las tablas están creadas antes de proceder.
+    setup_database(conn)  
+    primera_vez = True
     while True:
+        if primera_vez:
+            print("¡Bienvenido al Presupuestador de Proyectos!")
+            primera_vez = False
+        else:
+            input("Presione Enter para continuar...")
+            os.system('cls' if os.name == 'nt' else 'clear')
+            
         choice = main_menu()
         if choice == '1':
             handle_new_project(conn)

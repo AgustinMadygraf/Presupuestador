@@ -73,12 +73,22 @@ def get_project(conn, project_id):
     return rows
 
 def get_presupuesto_restante(conn, project_id):
-    """ Calculate the remaining budget for a given project
-    """
+    """ Calculate the remaining budget for a given project """
     cur = conn.cursor()
+    
+    # Obtener el total gastado en el proyecto
     cur.execute("SELECT SUM(amount) FROM expenses WHERE project_id=?", (project_id,))
-    total_spent = cur.fetchone()[0]
-    total_spent = total_spent if total_spent else 0
+    result = cur.fetchone()
+    total_spent = result[0] if result and result[0] is not None else 0
+
+    # Obtener el presupuesto total del proyecto
     cur.execute("SELECT budget_total FROM projects WHERE id=?", (project_id,))
-    budget_total = cur.fetchone()[0]
+    result = cur.fetchone()
+    if result and result[0] is not None:
+        budget_total = result[0]
+    else:
+        # Aquí puedes manejar el caso en que el proyecto no existe o no tiene presupuesto asignado
+        print(f"No se encontró el proyecto con ID {project_id} o no tiene un presupuesto definido.")
+        return None  # O manejar de otra manera según la lógica de tu aplicación
+
     return budget_total - total_spent
