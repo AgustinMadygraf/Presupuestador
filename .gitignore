@@ -3,3 +3,4 @@ src/__pycache__/database.cpython-39.pyc
 src/__pycache__/pdf_generator.cpython-39.pyc
 src/logs/sistema.log
 src/logs/__pycache__/config_logger.cpython-39.pyc
+generated_pdfs/presupuesto.pdf

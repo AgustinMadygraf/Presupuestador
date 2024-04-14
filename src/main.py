@@ -33,10 +33,13 @@ def get_presupuesto_id():
         return None
 
 def prepare_output_directory():
-    output_dir = os.path.join('..', 'generated_pdfs')
+    # Detecta el directorio base del proyecto de manera dinámica
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    output_dir = os.path.join(base_dir, 'Presupuestador\generated_pdfs')
+    # Crea el directorio si no existe
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    return os.path.join(output_dir, 'presupuesto.pdf')
+    return output_dir
 
 def generate_pdf(data, file_path):
     create_pdf(data, file_path)
@@ -44,7 +47,6 @@ def generate_pdf(data, file_path):
 
 
 def handle_generate_pdf(conn):
-
     try:
         presupuesto_id = get_presupuesto_id()
         if presupuesto_id is None:
@@ -57,10 +59,10 @@ def handle_generate_pdf(conn):
                 logger.warning(f"No se encontraron datos para el proyecto con ID: {presupuesto_id}")
 
         file_path = prepare_output_directory()
-        logger.debug(f"Ruta del archivo configurada: {file_path}")
-
-        print(f"Generando PDF en {file_path}...")
-        generate_pdf(data, file_path)
+        file_name = os.path.join(file_path, 'presupuesto.pdf')
+        logger.debug(f"Ruta del archivo configurada: {file_name}")
+        print(f"Generando PDF en {file_name}...")
+        generate_pdf(data, file_name)
         logger.info("PDF generado exitosamente.")
     except Exception as e:
         logger.error(f"Error al generar el PDF: {e}", exc_info=True)
