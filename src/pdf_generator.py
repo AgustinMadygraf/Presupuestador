@@ -2,10 +2,6 @@ from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 def create_pdf(data, filename):
-    if not data:
-        print("No se proporcionaron datos para generar el PDF.")
-        return  # Salir de la función si no hay datos
-
     c = canvas.Canvas(filename, pagesize=letter)
     width, height = letter  # Asume tamaño de carta
 

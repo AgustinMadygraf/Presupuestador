@@ -30,10 +30,36 @@ def handle_generate_pdf(conn):
 
     data = get_presupuesto_restante(conn, proyecto_id)
     if data is not None:
+        # Asegurar que el directorio para guardar el PDF existe
+        output_dir = 'generated_pdfs'
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        
+        # Crear la ruta completa del archivo
+        file_path = os.path.join(output_dir, 'presupuesto.pdf')
+        create_pdf(data, file_path)
+        print(f"PDF generado con éxito y guardado en {file_path}.")
+    else:
+        print("No se pudo generar el PDF. Verifique que el ID del proyecto sea correcto y que existan datos asociados.")
+
+
+    data = get_presupuesto_restante(conn, proyecto_id)
+    if not data:
+        print("No se proporcionaron datos para generar el PDF.")
+        print("Se proporcionará un PDF vacío.")
+        data = {
+            'nombre_proyecto': 'Proyecto sin nombre',
+            'presupuesto_total': 0,
+            'presupuesto_gastado': 0
+        }
+
+
+    if data is not None:
         create_pdf(data, 'presupuesto.pdf')
         print("PDF generado con éxito.")
     else:
         print("No se pudo generar el PDF. Verifique que el ID del proyecto sea correcto y que existan datos asociados.")
+
 
 
 def handle_add_kpi(conn):

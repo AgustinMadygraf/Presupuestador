@@ -89,6 +89,6 @@ def get_presupuesto_restante(conn, project_id):
     else:
         # Aquí puedes manejar el caso en que el proyecto no existe o no tiene presupuesto asignado
         print(f"No se encontró el proyecto con ID {project_id} o no tiene un presupuesto definido.")
-        return None  # O manejar de otra manera según la lógica de tu aplicación
+        return None  
 
     return budget_total - total_spent
