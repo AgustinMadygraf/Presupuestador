@@ -21,46 +21,39 @@ def handle_new_project(conn):
     presupuesto_total = float(input("Presupuesto total: "))
     add_project(conn, nombre, presupuesto_total)
 
-def handle_generate_pdf(conn):
+def get_project_id():
     try:
-        proyecto_id = int(input("ID del proyecto para el PDF: "))
+        return int(input("ID del proyecto para el PDF: "))
     except ValueError:
         print("Error: El ID del proyecto debe ser un número entero.")
-        return
+        return None
 
-    data = get_presupuesto_restante(conn, proyecto_id)
-    if data is not None:
-        # Asegurar que el directorio para guardar el PDF existe
-        output_dir = 'generated_pdfs'
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        
-        # Crear la ruta completa del archivo
-        file_path = os.path.join(output_dir, 'presupuesto.pdf')
+def prepare_output_directory():
+    output_dir = os.path.join('..', 'generated_pdfs')
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    return os.path.join(output_dir, 'presupuesto.pdf')
+
+def generate_pdf(data, file_path):
+    if data:
         create_pdf(data, file_path)
         print(f"PDF generado con éxito y guardado en {file_path}.")
     else:
-        print("No se pudo generar el PDF. Verifique que el ID del proyecto sea correcto y que existan datos asociados.")
-
-
-    data = get_presupuesto_restante(conn, proyecto_id)
-    if not data:
-        print("No se proporcionaron datos para generar el PDF.")
+        print("No se proporcionaron datos válidos para generar el PDF.")
         print("Se proporcionará un PDF vacío.")
-        data = {
-            'nombre_proyecto': 'Proyecto sin nombre',
-            'presupuesto_total': 0,
-            'presupuesto_gastado': 0
-        }
 
-
-    if data is not None:
-        create_pdf(data, 'presupuesto.pdf')
-        print("PDF generado con éxito.")
-    else:
-        print("No se pudo generar el PDF. Verifique que el ID del proyecto sea correcto y que existan datos asociados.")
-
-
+def handle_generate_pdf(conn):
+    proyecto_id = get_project_id()
+    if proyecto_id is None:
+        return
+    
+    data = get_presupuesto_restante(conn, proyecto_id)
+    if data is None:
+        print("No se pudo obtener datos del proyecto. Verifique que el ID del proyecto sea correcto.")
+        return
+    
+    file_path = prepare_output_directory()
+    generate_pdf(data, file_path)
 
 def handle_add_kpi(conn):
     # Implementar lógica para añadir KPIs a un proyecto existente
