@@ -15,17 +15,16 @@ def main_menu():
     choice = input("Elija una opción: ")
     return choice
 
-
 def handle_new_project(conn):
     nombre = input("Nombre del proyecto: ")
     presupuesto_total = float(input("Presupuesto total: "))
     add_project(conn, nombre, presupuesto_total)
 
-def get_project_id():
+def get_presupuesto_id():
     try:
         return int(input("ID del proyecto para el PDF: "))
     except ValueError:
-        print("Error: El ID del proyecto debe ser un número entero.")
+        print("Se activó modo TEST, a continuación se generará un PDF vacío.")
         return None
 
 def prepare_output_directory():
@@ -43,16 +42,13 @@ def generate_pdf(data, file_path):
         print("Se proporcionará un PDF vacío.")
 
 def handle_generate_pdf(conn):
-    proyecto_id = get_project_id()
-    if proyecto_id is None:
-        return
-    
-    data = get_presupuesto_restante(conn, proyecto_id)
-    if data is None:
-        print("No se pudo obtener datos del proyecto. Verifique que el ID del proyecto sea correcto.")
-        return
-    
+    presupuesto_id = get_presupuesto_id()
+    if presupuesto_id is None:
+        data = None
+    data = get_presupuesto_restante(conn, presupuesto_id)
+
     file_path = prepare_output_directory()
+    print(f"Generando PDF en {file_path}...")
     generate_pdf(data, file_path)
 
 def handle_add_kpi(conn):

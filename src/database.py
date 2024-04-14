@@ -35,10 +35,10 @@ def setup_database(conn):
     sql_create_expenses_table = """
     CREATE TABLE IF NOT EXISTS expenses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        project_id INTEGER NOT NULL,
+        presupuesto_id INTEGER NOT NULL,
         description TEXT NOT NULL,
         amount REAL NOT NULL,
-        FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE
+        FOREIGN KEY (presupuesto_id) REFERENCES projects (id) ON DELETE CASCADE
     );
     """
     create_table(conn, sql_create_projects_table)
@@ -54,41 +54,37 @@ def add_project(conn, name, budget_total):
     conn.commit()
     return cur.lastrowid
 
-def add_expense(conn, project_id, description, amount):
+def add_expense(conn, presupuesto_id, description, amount):
     """ Add a new expense to the expenses table
     """
-    sql = ''' INSERT INTO expenses(project_id, description, amount)
+    sql = ''' INSERT INTO expenses(presupuesto_id, description, amount)
               VALUES(?,?,?) '''
     cur = conn.cursor()
-    cur.execute(sql, (project_id, description, amount))
+    cur.execute(sql, (presupuesto_id, description, amount))
     conn.commit()
     return cur.lastrowid
 
-def get_project(conn, project_id):
+def get_project(conn, presupuesto_id):
     """ Query project by id
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM projects WHERE id=?", (project_id,))
+    cur.execute("SELECT * FROM projects WHERE id=?", (presupuesto_id,))
     rows = cur.fetchall()
     return rows
 
-def get_presupuesto_restante(conn, project_id):
+def get_presupuesto_restante(conn, presupuesto_id):
     """ Calculate the remaining budget for a given project """
-    cur = conn.cursor()
-    
-    # Obtener el total gastado en el proyecto
-    cur.execute("SELECT SUM(amount) FROM expenses WHERE project_id=?", (project_id,))
-    result = cur.fetchone()
-    total_spent = result[0] if result and result[0] is not None else 0
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT SUM(amount) FROM expenses WHERE presupuesto_id=?", (presupuesto_id,))
+        result = cur.fetchone()
+        if result[0] is None:  # Verificación mejorada para casos donde no hay gastos registrados.
+            return 0
+        else:
+            return result[0]
+    except sqlite3.OperationalError as e:
+        print(f"Se produjo un error al intentar calcular el presupuesto restante: {e}")
+        if "no such column" in str(e):
+            print("Verifique que la columna 'presupuesto_id' existe en la tabla 'expenses'.")
+        return None
 
-    # Obtener el presupuesto total del proyecto
-    cur.execute("SELECT budget_total FROM projects WHERE id=?", (project_id,))
-    result = cur.fetchone()
-    if result and result[0] is not None:
-        budget_total = result[0]
-    else:
-        # Aquí puedes manejar el caso en que el proyecto no existe o no tiene presupuesto asignado
-        print(f"No se encontró el proyecto con ID {project_id} o no tiene un presupuesto definido.")
-        return None  
-
-    return budget_total - total_spent
