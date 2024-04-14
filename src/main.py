@@ -31,6 +31,7 @@ def handle_generate_pdf(conn):
     data = get_presupuesto_restante(conn, proyecto_id)
     if data is not None:
         create_pdf(data, 'presupuesto.pdf')
+        print("PDF generado con éxito.")
     else:
         print("No se pudo generar el PDF. Verifique que el ID del proyecto sea correcto y que existan datos asociados.")
 
@@ -59,7 +60,7 @@ def main():
         else:
             input("Presione Enter para continuar...")
             os.system('cls' if os.name == 'nt' else 'clear')
-            
+
         choice = main_menu()
         if choice == '1':
             handle_new_project(conn)
