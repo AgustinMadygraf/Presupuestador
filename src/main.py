@@ -1,5 +1,5 @@
 import sqlite3
-from database import create_connection, add_project,  get_presupuesto_restante
+from database import create_connection, add_project,  get_presupuesto_restante, setup_database
 from pdf_generator import create_pdf
 
 def main_menu():
@@ -13,10 +13,17 @@ def main_menu():
     choice = input("Elija una opción: ")
     return choice
 
+
 def handle_new_project(conn):
     nombre = input("Nombre del proyecto: ")
     presupuesto_total = float(input("Presupuesto total: "))
     add_project(conn, nombre, presupuesto_total)
+
+def handle_generate_pdf(conn):
+    proyecto_id = int(input("ID del proyecto para el PDF: "))
+    data = get_presupuesto_restante(conn, proyecto_id)
+    create_pdf(data, 'presupuesto.pdf')
+    print("PDF generado con éxito.")
 
 def handle_add_kpi(conn):
     # Implementar lógica para añadir KPIs a un proyecto existente
@@ -38,6 +45,7 @@ def handle_generate_pdf(conn):
 
 def main():
     conn = create_connection()
+    setup_database(conn)  # Asegúrate de que las tablas están creadas antes de proceder.
     while True:
         choice = main_menu()
         if choice == '1':

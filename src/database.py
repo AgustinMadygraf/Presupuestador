@@ -24,8 +24,7 @@ def create_table(conn, create_table_sql):
         print(e)
 
 def setup_database(conn):
-    """ Create tables if they do not exist already
-    """
+    """Create tables if they do not exist already in the database."""
     sql_create_projects_table = """
     CREATE TABLE IF NOT EXISTS projects (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,7 +41,6 @@ def setup_database(conn):
         FOREIGN KEY (project_id) REFERENCES projects (id) ON DELETE CASCADE
     );
     """
-    # Create tables
     create_table(conn, sql_create_projects_table)
     create_table(conn, sql_create_expenses_table)
 
