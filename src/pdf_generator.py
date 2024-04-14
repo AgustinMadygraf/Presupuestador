@@ -1,3 +1,4 @@
+#src/pdf_generator.py
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
@@ -5,14 +6,15 @@ def create_pdf(data, filename):
     c = canvas.Canvas(filename, pagesize=letter)
     width, height = letter  # Asume tamaño de carta
 
-    # Asegurarse de que las claves existen en el diccionario
-    if all(key in data for key in ['nombre_proyecto', 'presupuesto_total', 'presupuesto_gastado']):
-        c.drawString(100, 750, "Reporte de Presupuesto")
-        c.drawString(100, 735, f"Proyecto: {data['nombre_proyecto']}")
-        c.drawString(100, 720, f"Presupuesto Total: ${data['presupuesto_total']}")
-        c.drawString(100, 705, f"Presupuesto Gastado: ${data['presupuesto_gastado']}")
+    # Valores por defecto para cuando los datos no están completos
+    nombre_proyecto = data.get('nombre_proyecto', 'N/A') if data else 'N/A'
+    presupuesto_total = data.get('presupuesto_total', 'N/A') if data else 'N/A'
+    presupuesto_gastado = data.get('presupuesto_gastado', 'N/A') if data else 'N/A'
 
-        # Finaliza el PDF
-        c.save()
-    else:
-        print("Datos incompletos para generar el PDF.")
+    c.drawString(100, 750, "Reporte de Presupuesto")
+    c.drawString(100, 735, f"Proyecto: {nombre_proyecto}")
+    c.drawString(100, 720, f"Presupuesto Total: ${presupuesto_total}")
+    c.drawString(100, 705, f"Presupuesto Gastado: ${presupuesto_gastado}")
+
+    # Finaliza el PDF
+    c.save()

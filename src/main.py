@@ -6,6 +6,9 @@ from database import create_connection, add_project,  get_presupuesto_restante, 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from logs.config_logger import configurar_logging
 
+logger = configurar_logging()  # Asumimos que esta función está disponible globalmente
+
+
 def main_menu():
     print("\nPresupuestador de Proyectos")
     print("1. Confeccionar un nuevo presupuesto")
@@ -36,22 +39,33 @@ def prepare_output_directory():
     return os.path.join(output_dir, 'presupuesto.pdf')
 
 def generate_pdf(data, file_path):
-    if data:
-        create_pdf(data, file_path)
-        print(f"PDF generado con éxito y guardado en {file_path}.")
-    else:
-        print("No se proporcionaron datos válidos para generar el PDF.")
-        print("Se proporcionará un PDF vacío.")
+    create_pdf(data, file_path)
+    print(f"PDF generado con éxito y guardado en {file_path}.")
+
 
 def handle_generate_pdf(conn):
-    presupuesto_id = get_presupuesto_id()
-    if presupuesto_id is None:
-        data = None
-    data = get_presupuesto_restante(conn, presupuesto_id)
 
-    file_path = prepare_output_directory()
-    print(f"Generando PDF en {file_path}...")
-    generate_pdf(data, file_path)
+    try:
+        presupuesto_id = get_presupuesto_id()
+        if presupuesto_id is None:
+            logger.info("Modo TEST activado: Generando PDF vacío.")
+            data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
+        else:
+            data = get_presupuesto_restante(conn, presupuesto_id)
+            if data is None:
+                data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
+                logger.warning(f"No se encontraron datos para el proyecto con ID: {presupuesto_id}")
+
+        file_path = prepare_output_directory()
+        logger.debug(f"Ruta del archivo configurada: {file_path}")
+
+        print(f"Generando PDF en {file_path}...")
+        generate_pdf(data, file_path)
+        logger.info("PDF generado exitosamente.")
+    except Exception as e:
+        logger.error(f"Error al generar el PDF: {e}", exc_info=True)
+        print(f"Se produjo un error al generar el PDF: {e}")
+
 
 def handle_add_kpi(conn):
     # Implementar lógica para añadir KPIs a un proyecto existente
@@ -68,7 +82,6 @@ def handle_variable_costs(conn):
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
-    logger = configurar_logging()
     conn = create_connection()
     setup_database(conn)  
     primera_vez = True
