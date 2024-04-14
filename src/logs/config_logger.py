@@ -1,87 +1,29 @@
-#SCR/logs/config_logger.py
-import logging
-from logging.handlers import RotatingFileHandler
+#src/logs/config_logger.py
 
+import logging.config
+import os
+import json
 
-class DebugAndAboveFilter(logging.Filter):
-    """
-    Filtro de registro personalizado para excluir mensajes de nivel INFO.
+def configurar_logging(default_path='src/logs/logging.json', default_level=logging.INFO, env_key='LOG_CFG'):
+    """Configura el logging basado en un archivo JSON."""
+    path = default_path
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = json.load(f)
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)
+    
+    return logging.getLogger(__name__)
 
-    Este filtro se puede aplicar a un manejador de registros (handler) para excluir
-    los registros de nivel INFO. Es útil cuando se desea registrar mensajes de nivel
-    DEBUG y superiores, pero omitir los de nivel INFO.
-
-    Métodos:
-        filter(record): Determina si el registro dado debe ser registrado o no.
-    """
+class InfoErrorFilter(logging.Filter):
     def filter(self, record):
-        # Excluir los registros de nivel INFO del archivo de log
-        return record.levelno != logging.INFO
+        # Permitir solo registros de nivel INFO y ERROR
+        return record.levelno in (logging.INFO, logging.ERROR)
 
-def create_handler(handler_class, level, format, **kwargs):
-    """
-    Crea y configura un manejador de registros (handler) para el sistema de logging.
-
-    Esta función es una fábrica que crea y configura un manejador de registros.
-    Configura el nivel de registro, el formato y cualquier otro parámetro relevante
-    para el manejador.
-
-    Args:
-        handler_class (logging.Handler): La clase del manejador de registros a crear.
-        level (int): El nivel de registro para el manejador.
-        format (str): El formato de los mensajes de registro.
-        **kwargs: Argumentos adicionales específicos del manejador.
-
-    Returns:
-        logging.Handler: Un manejador de registros configurado.
-    """
-    handler = handler_class(**kwargs)
-    handler.setLevel(level)
-    handler.setFormatter(logging.Formatter(format))
-    return handler
-
-def configurar_logging():
-    """
-    Configura el sistema de logging global de la aplicación.
-
-    Esta función configura el sistema de logging con dos manejadores: uno para
-    escribir en un archivo con rotación y otro para la salida de consola.
-    Se establece un formato específico para los mensajes y se filtran los mensajes
-    de nivel INFO del archivo de registro.
-
-    Returns:
-        logging.Logger: El objeto logger configurado para la aplicación.
-    """
-    logger = logging.getLogger()
-    if logger.hasHandlers():
-        return logger
-
-    log_format = '%(asctime)s - %(levelname)s - %(module)s - %(filename)s:%(lineno)d: %(message)s'
-    log_file = 'SCR/logs/sistema.log'
-    max_bytes = 10485760  # 10MB
-    backup_count = 5
-
-    file_handler = create_handler(
-        RotatingFileHandler, 
-        logging.DEBUG, 
-        log_format, 
-        filename=log_file, 
-        maxBytes=max_bytes, 
-        backupCount=backup_count
-    )
-    file_handler.addFilter(DebugAndAboveFilter())  # Aplicar el filtro
-
-    console_handler = create_handler(
-        logging.StreamHandler, 
-        logging.INFO, 
-        log_format
-    )
-
-    logger.setLevel(logging.DEBUG)  # Nivel más bajo para capturar todos los mensajes
-    logger.addHandler(file_handler)
-    logger.addHandler(console_handler)
-
-    return logger
 
 # Configurar el logger con un nivel específico
 configurar_logging()

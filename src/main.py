@@ -1,8 +1,10 @@
 import sqlite3
 import os
+import sys
 from pdf_generator import create_pdf
 from database import create_connection, add_project,  get_presupuesto_restante, setup_database
-
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from logs.config_logger import configurar_logging
 
 def main_menu():
     print("\nPresupuestador de Proyectos")
@@ -65,6 +67,8 @@ def handle_variable_costs(conn):
 
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
+    # Configurar el sistema de logging
+    logger = configurar_logging()
     conn = create_connection()
     setup_database(conn)  
     primera_vez = True
