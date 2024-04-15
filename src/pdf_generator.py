@@ -2,8 +2,50 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
+from reportlab.platypus import Table, TableStyle
+from reportlab.lib import colors
 import os
 import datetime
+
+custom_color = colors.Color(31/255, 73/255, 125/255)
+
+def create_pdf(data, filename):
+    # Definir valores predeterminados para el modo de prueba
+    default_data = {
+        'left_1': "Cooperativa de Trabajo MADYGRAF LTDA",
+        'left_2': "Ruta panamericana 36.700 - Garin - 1618",
+        'left_3': "C.U.I.T.: 33 71465177 9",
+        'left_4': "Teléfono: 11 4035-5771",
+        'left_5': "Presupuesto para:",
+        'left_6': "Cliente", # Cambiar por el nombre del cliente
+        'right_1_a': "Fecha",
+        'right_1_b': datetime.datetime.now().strftime("%d/%m/%Y"),
+        'right_2_a': "N° de presupuesto",
+        'right_2_b': "123",
+        'right_3_a': "Presupuesto válido hasta:",
+        'right_3_b': (datetime.datetime.now() + datetime.timedelta(days=30)).strftime("%d/%m/%Y")
+    }
+
+    # Actualizar el diccionario data con los valores predeterminados si alguno falta
+    if data is None:
+        data = default_data
+    else:
+        for key in default_data:
+            data.setdefault(key, default_data[key])
+
+    c = canvas.Canvas(filename, pagesize=A4)
+    width, height = A4
+
+    set_pdf_title(c, filename)
+    top_margin = 22 * mm
+    side_margin = 21 * mm
+    banner_height = 30 * mm
+    sub_banner_text_size = 8
+
+    draw_banner(c, width, height, side_margin, top_margin, banner_height)
+    draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
+    draw_table(c, data, width, height, 140*mm)  
+    c.save()
 
 def set_pdf_title(c, filename):
     title = os.path.splitext(os.path.basename(filename))[0]
@@ -46,42 +88,28 @@ def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_ba
         c.setFont(value_font, sub_banner_text_size)  # Cambia la fuente para el valor
         c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
 
+def draw_table(c, data, width, height, start_y):
+    # Datos de la tabla
+    table_data = [
+        ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
+        [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
+    ]
 
-def create_pdf(data, filename):
-    # Definir valores predeterminados para el modo de prueba
-    default_data = {
-        'left_1': "Cooperativa de Trabajo MADYGRAF LTDA",
-        'left_2': "Ruta panamericana 36.700 - Garin - 1618",
-        'left_3': "C.U.I.T.: 33 71465177 9",
-        'left_4': "Teléfono: 11 4035-5771",
-        'left_5': "Presupuesto para:",
-        'left_6': "Cliente", # Cambiar por el nombre del cliente
-        'right_1_a': "Fecha",
-        'right_1_b': datetime.datetime.now().strftime("%d/%m/%Y"),
-        'right_2_a': "N° de presupuesto",
-        'right_2_b': "123",
-        'right_3_a': "Presupuesto válido hasta:",
-        'right_3_b': (datetime.datetime.now() + datetime.timedelta(days=30)).strftime("%d/%m/%Y")
-    }
+    # Estilo de la tabla
+    table_style = TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.grey),  # Fondo gris para la cabecera
+        ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),  # Fuente en negrita para la cabecera
+        ('FONTNAME', (1,0), (-1,-1), 'Helvetica'),  # Fuente normal para los datos
+        ('GRID', (0,0), (-1,-1), 1, colors.black),  # Bordes de las celdas
+        ('BOX', (0,0), (-1,-1), 2, colors.black)  # Bordes externos de la tabla
+    ])
 
-    # Actualizar el diccionario data con los valores predeterminados si alguno falta
-    if data is None:
-        data = default_data
-    else:
-        for key in default_data:
-            data.setdefault(key, default_data[key])
+    # Crear la tabla
+    table = Table(table_data, colWidths=[width*0.2, width*0.3, width*0.3, width*0.2])
+    table.setStyle(table_style)
 
-    c = canvas.Canvas(filename, pagesize=A4)
-    width, height = A4
-
-    set_pdf_title(c, filename)
-    top_margin = 22 * mm
-    side_margin = 21 * mm
-    banner_height = 30 * mm
-    sub_banner_text_size = 8
-
-    draw_banner(c, width, height, side_margin, top_margin, banner_height)
-    draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
-
-    c.save()
-
+    # Dibujar la tabla
+    table.wrapOn(c, width, height)  # 'wrap' prepara la tabla para ser dibujada
+    table.drawOn(c, 15*mm, start_y)  # 'draw' coloca la tabla en el canvas
