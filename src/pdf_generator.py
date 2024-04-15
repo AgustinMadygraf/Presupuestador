@@ -26,22 +26,30 @@ def create_pdf(data, filename):
     sub_banner_text_left_2 = "Ruta panamerica 36.700 - Garin - 1618"
     sub_banner_text_left_3 = "C.U.I.T.: 33 71465177 9"
     sub_banner_text_left_4 = "Teléfono: 11 4035-5771"
+    sub_banner_text_left_5 = "Presupuesto para:"
+    sub_banner_text_left_6 = "Cliente" # deberá ser dinámico
     sub_banner_text_right_1_a = "Fecha"
     sub_banner_text_right_1_b = "26/12/2023" # deberá ser dinámico
     sub_banner_text_right_2_a = "N° de presupuesto"
     sub_banner_text_right_2_b = "0001" # deberá ser dinámico
-    sub_banner_text_size = 9
+    sub_banner_text_right_3_a = "Presupuesto válido hasta:" 
+    sub_banner_text_right_3_b = "31/12/2023" # deberá ser dinámico
+    
+    sub_banner_text_size = 8
     c.setFont("Helvetica-Bold", sub_banner_text_size)  
-    c.drawString(side_margin, height - top_margin - banner_height - 5 * mm, sub_banner_text_left_1)
-    c.drawString(width - side_margin - 40 * mm, height - top_margin - banner_height - 5 * mm, sub_banner_text_right_1_a)
-    c.drawString(width - side_margin - 55 * mm, height - top_margin - banner_height - 10 * mm, sub_banner_text_right_2_a)
+    c.drawString(side_margin,                   height - top_margin - banner_height - 4 * mm,   sub_banner_text_left_1)
+    c.drawString(width - side_margin - 40 * mm, height - top_margin - banner_height - 4 * mm,   sub_banner_text_right_1_a)
+    c.drawString(width - side_margin - 55 * mm, height - top_margin - banner_height - 8 * mm,  sub_banner_text_right_2_a)
+    c.drawString(side_margin,                   height - top_margin - banner_height - 24 * mm,  sub_banner_text_left_5)
+    c.drawString(width - side_margin - 60 * mm, height - top_margin - banner_height - 24 * mm,  sub_banner_text_right_3_a)
     c.setFont("Helvetica", sub_banner_text_size)  
-    c.drawRightString(width - side_margin, height - top_margin - banner_height - 5 * mm, sub_banner_text_right_1_b)
-    c.drawString(side_margin, height - top_margin - banner_height - 10 * mm, sub_banner_text_left_2)
-    c.drawString(side_margin, height - top_margin - banner_height - 15 * mm, sub_banner_text_left_3)
-    c.drawString(side_margin, height - top_margin - banner_height - 20 * mm, sub_banner_text_left_4)
-    c.drawRightString(width - side_margin, height - top_margin - banner_height - 10 * mm, sub_banner_text_right_2_b)
-
+    c.drawRightString(width - side_margin,      height - top_margin - banner_height - 4 * mm,   sub_banner_text_right_1_b)
+    c.drawString(side_margin,                   height - top_margin - banner_height - 8 * mm,  sub_banner_text_left_2)
+    c.drawString(side_margin,                   height - top_margin - banner_height - 12 * mm,  sub_banner_text_left_3)
+    c.drawString(side_margin,                   height - top_margin - banner_height - 16 * mm,  sub_banner_text_left_4)
+    c.drawRightString(width - side_margin,      height - top_margin - banner_height - 10 * mm,  sub_banner_text_right_2_b)
+    c.drawString(side_margin,                   height - top_margin - banner_height - 28 * mm,  sub_banner_text_left_6)
+    c.drawRightString(width - side_margin,      height - top_margin - banner_height - 24 * mm,  sub_banner_text_right_3_b)
 
 
     c.save()
