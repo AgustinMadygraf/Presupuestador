@@ -8,6 +8,10 @@ def create_pdf(data, filename):
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4  # Usar el tamaño de página A4
 
+    # Extrae el nombre base del archivo para usarlo como título del PDF
+    title = os.path.splitext(os.path.basename(filename))[0]
+    c.setTitle(title)
+
     # Definir los márgenes
     top_margin = 22 * mm  # Margen superior
     side_margin = 21 * mm  # Margen lateral   25 mucho   20 poco
