@@ -1,25 +1,35 @@
 #src/pdf_generator.py
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
-from reportlab.lib.units import inch, mm
+from reportlab.lib.units import mm
 import os
+
+def set_pdf_title(c, filename):
+    title = os.path.splitext(os.path.basename(filename))[0]
+    c.setTitle(title)
+
+def draw_banner(c, width, height, side_margin, top_margin, banner_height):
+    banner_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'banner.jpg')
+    c.drawImage(banner_path, side_margin, height - top_margin - banner_height, 
+                width - 2 * side_margin, banner_height, 
+                preserveAspectRatio=True, anchor='n')
 
 def create_pdf(data, filename):
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4  # Usar el tamaño de página A4
 
     # Extrae el nombre base del archivo para usarlo como título del PDF
-    title = os.path.splitext(os.path.basename(filename))[0]
-    c.setTitle(title)
+    set_pdf_title(c, filename)
 
-    # Definir los márgenes
-    top_margin = 22 * mm  # Margen superior
-    side_margin = 21 * mm  # Margen lateral   25 mucho   20 poco
-    banner_height = 30 * mm  # Altura del banner
+    # Definir los márgenes y dimensiones del banner
+    top_margin = 22 * mm
+    side_margin = 21 * mm
+    banner_height = 30 * mm
+    sub_banner_text_size = 8
+
 
     # Cargar y dibujar la imagen del banner con márgenes
-    banner_path = os.path.join(os.path.dirname(__file__), '..', 'resources', 'banner.jpg')
-    c.drawImage(banner_path, side_margin, height - top_margin - banner_height, width - 2 * side_margin, banner_height, preserveAspectRatio=True, anchor='n')
+    draw_banner(c, width, height, side_margin, top_margin, banner_height)
 
     # Texto debajo del banner
     sub_banner_text_left_1 = "Cooperativa de Trabajo MADYGRAF LTDA"
