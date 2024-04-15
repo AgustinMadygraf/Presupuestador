@@ -58,8 +58,8 @@ def create_pdf(data, filename):
     draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
     table_data = data.get('table1_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
     draw_table(c, width, height, height - top_margin - banner_height - 53*mm, side_margin,table_data)
-    table_data = data.get('table1_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
-    draw_table(c, width, height, height - top_margin - banner_height - 69*mm, side_margin,table_data)
+    table_data = data.get('table2_data', [ ["Cantidad", "Descripción", "Precio por unidad", "Importe"]])
+    draw_table(c, width, height, height - top_margin - banner_height - 90*mm, side_margin,table_data)
     c.save()
 
 
@@ -104,9 +104,7 @@ def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_ba
         c.setFont(value_font, sub_banner_text_size)  # Cambia la fuente para el valor
         c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
 
-def draw_table(c, width, height, start_y, side_margin,table_data):
-
-
+def draw_table(c, width, height, start_y, side_margin, table_data):
     # Ancho disponible para la tabla, ajustando los márgenes laterales
     table_width = width - 2 * side_margin
 
@@ -117,6 +115,7 @@ def draw_table(c, width, height, start_y, side_margin,table_data):
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),  # Fuente en negrita para la cabecera
         ('FONTNAME', (1,0), (-1,-1), 'Helvetica'),  # Fuente normal para los datos
+        ('FONTSIZE', (0,0), (-1,-1), 8),  # Tamaño de letra 9 para todas las celdas
         ('GRID', (0,0), (-1,-1), 1, custom_color),  # Bordes de las celdas del mismo color que la cabecera
         ('BOX', (0,0), (-1,-1), 2, custom_color)  # Bordes externos de la tabla
     ])
