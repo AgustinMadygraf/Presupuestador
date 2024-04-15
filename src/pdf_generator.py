@@ -26,7 +26,7 @@ def create_pdf(data, filename):
         'right_2_b': "Desconocido",
         'right_3_a': "Presupuesto válido hasta:",
         'right_3_b': (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y"),
-        'table_data': [
+        'table1_data': [
             ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
             [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
         ]
@@ -50,7 +50,8 @@ def create_pdf(data, filename):
 
     draw_banner(c, width, height, side_margin, top_margin, banner_height)
     draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
-    draw_table(c, data, width, height, height - top_margin - banner_height - 53*mm, side_margin)
+    table_data = data.get('table1_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
+    draw_table(c, width, height, height - top_margin - banner_height - 53*mm, side_margin,table_data)
     c.save()
 
 
@@ -95,13 +96,8 @@ def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_ba
         c.setFont(value_font, sub_banner_text_size)  # Cambia la fuente para el valor
         c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
 
-def draw_table(c, data, width, height, start_y, side_margin):
-    # Datos de la tabla
-    table_data = [
-        ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
-        [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
-    ]
-    table_data = data.get('table_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
+def draw_table(c, width, height, start_y, side_margin,table_data):
+
 
     # Ancho disponible para la tabla, ajustando los márgenes laterales
     table_width = width - 2 * side_margin
