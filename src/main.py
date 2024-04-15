@@ -69,6 +69,11 @@ def handle_generate_pdf(conn):
         print(f"Generando PDF en {full_file_path}...")
         generate_pdf(data, full_file_path)
         logger.info("PDF generado exitosamente.")
+        
+        # Abrir el PDF automáticamente después de crearlo
+        os.startfile(full_file_path)
+        print(f"Abriendo el archivo {full_file_path}...")
+        
     except Exception as e:
         logger.error(f"Error al generar el PDF: {e}", exc_info=True)
         print(f"Se produjo un error al generar el PDF: {e}")
