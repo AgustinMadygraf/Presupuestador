@@ -7,7 +7,9 @@ from reportlab.lib import colors
 import os
 import datetime
 
-custom_color = colors.Color(31/255, 73/255, 125/255)
+custom_color1 = colors.Color(31/255, 73/255, 125/255)
+custom_color2 = colors.Color(240/255, 240/255, 255/255)
+
 
 from datetime import datetime, timedelta
 
@@ -19,11 +21,11 @@ def create_pdf(data, filename):
         'left_3': "C.U.I.T.: 33 71465177 9",
         'left_4': "Teléfono: 11 4035-5771",
         'left_5': "Presupuesto para:",
-        'left_6': "Cliente Desconocido",
+        'left_6': "Cliente ",
         'right_1_a': "Fecha",
         'right_1_b': datetime.now().strftime("%d/%m/%Y"),
         'right_2_a': "N° de presupuesto",
-        'right_2_b': "Desconocido",
+        'right_2_b': "123",
         'right_3_a': "Presupuesto válido hasta:",
         'right_3_b': (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y"),
         'table1_data': [
@@ -34,7 +36,13 @@ def create_pdf(data, filename):
             ["Cantidad", "Descripción", "Precio por unidad", "Importe"],
             [100, "26x12x36 Bolsa Marron 100 grs - c/manijas"   , 140.40, 14040.00],
             [100, "22x10x30 Bolsa Marron 100 grs - c/manijas"   , 124.40, 12440.00],
-            [100, "22x10x30 Bolsa Marron 100 grs"               ,  88.38,  8838.00]
+            [100, "22x10x30 Bolsa Marron 100 grs"               ,  88.38,  8838.00],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
         ],
     }
 
@@ -59,7 +67,7 @@ def create_pdf(data, filename):
     table_data = data.get('table1_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
     draw_table(c, width, height, height - top_margin - banner_height - 53*mm, side_margin,table_data)
     table_data = data.get('table2_data', [ ["Cantidad", "Descripción", "Precio por unidad", "Importe"]])
-    draw_table(c, width, height, height - top_margin - banner_height - 90*mm, side_margin,table_data)
+    draw_table(c, width, height, height - top_margin - banner_height - 120*mm, side_margin,table_data)
     c.save()
 
 
@@ -110,14 +118,15 @@ def draw_table(c, width, height, start_y, side_margin, table_data):
 
     # Estilo de la tabla
     table_style = TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), custom_color),  # Fondo del color definido para la cabecera
+        ('BACKGROUND', (0,0), (-1,0), custom_color1),  # Fondo del color definido para la cabecera
         ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),  # Fuente en negrita para la cabecera
         ('FONTNAME', (1,0), (-1,-1), 'Helvetica'),  # Fuente normal para los datos
-        ('FONTSIZE', (0,0), (-1,-1), 8),  # Tamaño de letra 8 para todas las celdas
-        ('GRID', (0,0), (-1,-1), 1, custom_color),  # Bordes de las celdas del mismo color que la cabecera
-        ('BOX', (0,0), (-1,-1), 2, custom_color)  # Bordes externos de la tabla
+        ('FONTSIZE', (0,0), (-1,-1), 8),  # Tamaño de letra para todas las celdas
+        ('GRID', (0,0), (-1,-1), 1, custom_color1),  # Bordes de las celdas del mismo color que la cabecera
+        ('BOX', (0,0), (-1,-1), 2, custom_color1),  # Bordes externos de la tabla
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, custom_color2])  # Alternar fondo de las filas
     ])
 
     # Ajustar los porcentajes de ancho de las columnas
@@ -130,6 +139,7 @@ def draw_table(c, width, height, start_y, side_margin, table_data):
     # Dibujar la tabla en el canvas, usando los mismos márgenes laterales que el banner
     table.wrapOn(c, table_width, height)  
     table.drawOn(c, side_margin, start_y) 
+
 
 
 
