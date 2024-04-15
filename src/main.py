@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import sys
+from datetime import datetime
 from pdf_generator import create_pdf
 from database import create_connection, add_project,  get_presupuesto_restante, setup_database
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -45,24 +46,28 @@ def generate_pdf(data, file_path):
     create_pdf(data, file_path)
     print(f"PDF generado con éxito y guardado en {file_path}.")
 
-
 def handle_generate_pdf(conn):
     try:
         presupuesto_id = get_presupuesto_id()
+        file_path = prepare_output_directory()
+
+        # Verificar si es el modo test y generar el nombre del archivo en consecuencia.
         if presupuesto_id is None:
-            logger.info("Modo TEST activado: Generando PDF vacío.")
+            current_time = datetime.now().strftime("%Y%m%d_%H%M%S")  # Formato de fecha y hora
+            file_name = f"test_{current_time}.pdf"
             data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
+            logger.info("Modo TEST activado: Generando PDF vacío.")
         else:
             data = get_presupuesto_restante(conn, presupuesto_id)
             if data is None:
                 data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
                 logger.warning(f"No se encontraron datos para el proyecto con ID: {presupuesto_id}")
+            file_name = 'presupuesto.pdf'
 
-        file_path = prepare_output_directory()
-        file_name = os.path.join(file_path, 'presupuesto.pdf')
-        logger.debug(f"Ruta del archivo configurada: {file_name}")
-        print(f"Generando PDF en {file_name}...")
-        generate_pdf(data, file_name)
+        full_file_path = os.path.join(file_path, file_name)
+        logger.debug(f"Ruta del archivo configurada: {full_file_path}")
+        print(f"Generando PDF en {full_file_path}...")
+        generate_pdf(data, full_file_path)
         logger.info("PDF generado exitosamente.")
     except Exception as e:
         logger.error(f"Error al generar el PDF: {e}", exc_info=True)
