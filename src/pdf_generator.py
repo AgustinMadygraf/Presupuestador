@@ -44,7 +44,7 @@ def create_pdf(data, filename):
 
     draw_banner(c, width, height, side_margin, top_margin, banner_height)
     draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
-    draw_table(c, data, width, height, 140*mm)  
+    draw_table(c, data, width, height, 191*mm)  
     c.save()
 
 def set_pdf_title(c, filename):
@@ -97,13 +97,13 @@ def draw_table(c, data, width, height, start_y):
 
     # Estilo de la tabla
     table_style = TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.grey),  # Fondo gris para la cabecera
+        ('BACKGROUND', (0,0), (-1,0), custom_color),  # Fondo del color definido para la cabecera
         ('TEXTCOLOR', (0,0), (-1,0), colors.whitesmoke),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),  # Fuente en negrita para la cabecera
         ('FONTNAME', (1,0), (-1,-1), 'Helvetica'),  # Fuente normal para los datos
-        ('GRID', (0,0), (-1,-1), 1, colors.black),  # Bordes de las celdas
-        ('BOX', (0,0), (-1,-1), 2, colors.black)  # Bordes externos de la tabla
+        ('GRID', (0,0), (-1,-1), 1, custom_color),  # Bordes de las celdas
+        ('BOX', (0,0), (-1,-1), 2, custom_color)  # Bordes externos de la tabla
     ])
 
     # Crear la tabla
