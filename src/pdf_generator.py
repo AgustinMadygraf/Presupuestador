@@ -9,6 +9,8 @@ import datetime
 
 custom_color = colors.Color(31/255, 73/255, 125/255)
 
+from datetime import datetime, timedelta
+
 def create_pdf(data, filename):
     # Definir valores predeterminados para el modo de prueba
     default_data = {
@@ -17,13 +19,17 @@ def create_pdf(data, filename):
         'left_3': "C.U.I.T.: 33 71465177 9",
         'left_4': "Teléfono: 11 4035-5771",
         'left_5': "Presupuesto para:",
-        'left_6': "Cliente", # Cambiar por el nombre del cliente
+        'left_6': "Cliente Desconocido",
         'right_1_a': "Fecha",
-        'right_1_b': datetime.datetime.now().strftime("%d/%m/%Y"),
+        'right_1_b': datetime.now().strftime("%d/%m/%Y"),
         'right_2_a': "N° de presupuesto",
-        'right_2_b': "123",
+        'right_2_b': "Desconocido",
         'right_3_a': "Presupuesto válido hasta:",
-        'right_3_b': (datetime.datetime.now() + datetime.timedelta(days=30)).strftime("%d/%m/%Y")
+        'right_3_b': (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y"),
+        'table_data': [
+            ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
+            [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
+        ]
     }
 
     # Actualizar el diccionario data con los valores predeterminados si alguno falta
@@ -46,6 +52,7 @@ def create_pdf(data, filename):
     draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
     draw_table(c, data, width, height, height - top_margin - banner_height - 53*mm, side_margin)
     c.save()
+
 
 def set_pdf_title(c, filename):
     title = os.path.splitext(os.path.basename(filename))[0]
@@ -94,6 +101,7 @@ def draw_table(c, data, width, height, start_y, side_margin):
         ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
         [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
     ]
+    table_data = data.get('table_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
 
     # Ancho disponible para la tabla, ajustando los márgenes laterales
     table_width = width - 2 * side_margin
