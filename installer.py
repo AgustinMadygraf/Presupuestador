@@ -46,6 +46,15 @@ pipenv --venv
 if errorlevel 1 (
    echo Creando entorno virtual...
    pipenv install
+   echo Instalando dependencias necesarias...
+   pipenv install reportlab
+) else (
+   echo Verificando si 'reportlab' esta instalado...
+   pipenv run python -c "import reportlab"
+   if errorlevel 1 (
+      echo 'reportlab' no encontrado, instalando...
+      pipenv install reportlab
+   )
 )
 echo Ejecutando aplicacion...
 pipenv run python "{ruta_main_py}"
@@ -56,6 +65,7 @@ pause
     with open(ruta_archivo_bat, 'w') as archivo_bat:
         archivo_bat.write(contenido_bat.strip())
     logger.info("Archivo 'Presupuestador.bat' creado exitosamente.")
+
 
 def limpieza_pantalla():
     try:
