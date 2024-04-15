@@ -115,17 +115,21 @@ def draw_table(c, width, height, start_y, side_margin, table_data):
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
         ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),  # Fuente en negrita para la cabecera
         ('FONTNAME', (1,0), (-1,-1), 'Helvetica'),  # Fuente normal para los datos
-        ('FONTSIZE', (0,0), (-1,-1), 8),  # Tamaño de letra 9 para todas las celdas
+        ('FONTSIZE', (0,0), (-1,-1), 8),  # Tamaño de letra 8 para todas las celdas
         ('GRID', (0,0), (-1,-1), 1, custom_color),  # Bordes de las celdas del mismo color que la cabecera
         ('BOX', (0,0), (-1,-1), 2, custom_color)  # Bordes externos de la tabla
     ])
 
+    # Ajustar los porcentajes de ancho de las columnas
+    colWidths = [table_width * 0.16, table_width * 0.48, table_width * 0.18, table_width * 0.18]
+
     # Crear la tabla y configurar el estilo
-    table = Table(table_data, colWidths=[table_width*0.2, table_width*0.3, table_width*0.3, table_width*0.2])
+    table = Table(table_data, colWidths=colWidths)
     table.setStyle(table_style)
 
     # Dibujar la tabla en el canvas, usando los mismos márgenes laterales que el banner
-    table.wrapOn(c, table_width, height)  # 'wrap' prepara la tabla para ser dibujada
-    table.drawOn(c, side_margin, start_y)  # 'draw' coloca la tabla en el canvas
+    table.wrapOn(c, table_width, height)  
+    table.drawOn(c, side_margin, start_y) 
+
 
 
