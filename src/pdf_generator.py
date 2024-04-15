@@ -29,7 +29,13 @@ def create_pdf(data, filename):
         'table1_data': [
             ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
             [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
-        ]
+        ],
+        'table2_data': [
+            ["Cantidad", "Descripción", "Precio por unidad", "Importe"],
+            [100, "26x12x36 Bolsa Marron 100 grs - c/manijas"   , 140.40, 14040.00],
+            [100, "22x10x30 Bolsa Marron 100 grs - c/manijas"   , 124.40, 12440.00],
+            [100, "22x10x30 Bolsa Marron 100 grs"               ,  88.38,  8838.00]
+        ],
     }
 
     # Actualizar el diccionario data con los valores predeterminados si alguno falta
@@ -52,6 +58,8 @@ def create_pdf(data, filename):
     draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
     table_data = data.get('table1_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
     draw_table(c, width, height, height - top_margin - banner_height - 53*mm, side_margin,table_data)
+    table_data = data.get('table1_data', [["Vendedor", "Nombre", "Fecha de envío", "Condiciones"]])
+    draw_table(c, width, height, height - top_margin - banner_height - 69*mm, side_margin,table_data)
     c.save()
 
 
