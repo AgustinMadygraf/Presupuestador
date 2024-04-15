@@ -15,33 +15,38 @@ def draw_banner(c, width, height, side_margin, top_margin, banner_height):
                 width - 2 * side_margin, banner_height, 
                 preserveAspectRatio=True, anchor='n')
 
+from reportlab.lib.units import mm
+
 def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data):
-    # Dibujar la información de la izquierda
+    # Dibujar la información de la izquierda con control de estilo de fuente
     left_text_info = [
-        (data['left_1'], 4),
-        (data['left_2'], 8),
-        (data['left_3'], 12),
-        (data['left_4'], 16),
-        (data['left_5'], 24),
-        (data['left_6'], 28)
+        (data['left_1'], 4, "Helvetica-Bold"), 
+        (data['left_2'], 8, "Helvetica"),
+        (data['left_3'], 12, "Helvetica"),
+        (data['left_4'], 16, "Helvetica"),
+        (data['left_5'], 24, "Helvetica-Bold"),
+        (data['left_6'], 28, "Helvetica")
     ]
 
     # Dibujar la información de la derecha
     right_text_info = [
-        (data['right_1_a'], data['right_1_b'], 4),
-        (data['right_2_a'], data['right_2_b'], 8),
+        (data['right_1_a'], data['right_1_b'], 4),  
+        (data['right_2_a'], data['right_2_b'], 8),  
         (data['right_3_a'], data['right_3_b'], 24)
     ]
 
-    c.setFont("Helvetica-Bold", sub_banner_text_size)
-    for text, offset in left_text_info:
+    # Iterar sobre la información de la izquierda y aplicar el estilo de fuente adecuado
+    for text, offset, font_style in left_text_info:
+        c.setFont(font_style, sub_banner_text_size)  # Aplica el estilo de fuente aquí
         c.drawString(side_margin, height - top_margin - banner_height - offset * mm, text)
 
-    c.setFont("Helvetica", sub_banner_text_size)
+    # Dibujar la información de la derecha con un estilo uniforme
+    c.setFont("Helvetica-Bold", sub_banner_text_size)
     for label, value, offset in right_text_info:
         label_width = c.stringWidth(label, "Helvetica-Bold", sub_banner_text_size)
         c.drawString(width - side_margin - label_width - 15 * mm, height - top_margin - banner_height - offset * mm, label)
         c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
+
 
 def create_pdf(data, filename):
     # Definir valores predeterminados para el modo de prueba
