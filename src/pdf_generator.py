@@ -15,10 +15,6 @@ def draw_banner(c, width, height, side_margin, top_margin, banner_height):
                 width - 2 * side_margin, banner_height, 
                 preserveAspectRatio=True, anchor='n')
 
-from reportlab.lib.units import mm
-
-from reportlab.lib.units import mm
-
 def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data):
     # Dibujar la información de la izquierda con control de estilo de fuente
     left_text_info = [
@@ -30,11 +26,11 @@ def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_ba
         (data['left_6'], 28, "Helvetica")
     ]
 
-    # Dibujar la información de la derecha con control de estilo de fuente
+    # Dibujar la información de la derecha, especificando estilo de fuente separado para etiqueta y valor
     right_text_info = [
-        (data['right_1_a'], data['right_1_b'], 4, "Helvetica-Bold"),
-        (data['right_2_a'], data['right_2_b'], 8, "Helvetica"),
-        (data['right_3_a'], data['right_3_b'], 24, "Helvetica-Bold")
+        (data['right_1_a'], "Helvetica-Bold",   data['right_1_b'], "Helvetica", 4),
+        (data['right_2_a'], "Helvetica-Bold",   data['right_2_b'], "Helvetica", 8),
+        (data['right_3_a'], "Helvetica-Bold",   data['right_3_b'], "Helvetica", 24)
     ]
 
     # Iterar sobre la información de la izquierda y aplicar el estilo de fuente adecuado
@@ -42,12 +38,14 @@ def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_ba
         c.setFont(font_style, sub_banner_text_size)
         c.drawString(side_margin, height - top_margin - banner_height - offset * mm, text)
 
-    # Iterar sobre la información de la derecha y aplicar el estilo de fuente adecuado
-    for label, value, offset, font_style in right_text_info:
-        c.setFont(font_style, sub_banner_text_size)
-        label_width = c.stringWidth(label, font_style, sub_banner_text_size)
+    # Iterar sobre la información de la derecha y aplicar el estilo de fuente adecuado, separando estilos para etiqueta y valor
+    for label, label_font, value, value_font, offset in right_text_info:
+        c.setFont(label_font, sub_banner_text_size)
+        label_width = c.stringWidth(label, label_font, sub_banner_text_size)
         c.drawString(width - side_margin - label_width - 15 * mm, height - top_margin - banner_height - offset * mm, label)
+        c.setFont(value_font, sub_banner_text_size)  # Cambia la fuente para el valor
         c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
+
 
 def create_pdf(data, filename):
     # Definir valores predeterminados para el modo de prueba
