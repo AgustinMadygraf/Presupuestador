@@ -17,10 +17,12 @@ def draw_banner(c, width, height, side_margin, top_margin, banner_height):
 
 from reportlab.lib.units import mm
 
+from reportlab.lib.units import mm
+
 def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data):
     # Dibujar la información de la izquierda con control de estilo de fuente
     left_text_info = [
-        (data['left_1'], 4, "Helvetica-Bold"), 
+        (data['left_1'], 4, "Helvetica-Bold"),
         (data['left_2'], 8, "Helvetica"),
         (data['left_3'], 12, "Helvetica"),
         (data['left_4'], 16, "Helvetica"),
@@ -28,25 +30,24 @@ def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_ba
         (data['left_6'], 28, "Helvetica")
     ]
 
-    # Dibujar la información de la derecha
+    # Dibujar la información de la derecha con control de estilo de fuente
     right_text_info = [
-        (data['right_1_a'], data['right_1_b'], 4),  
-        (data['right_2_a'], data['right_2_b'], 8),  
-        (data['right_3_a'], data['right_3_b'], 24)
+        (data['right_1_a'], data['right_1_b'], 4, "Helvetica-Bold"),
+        (data['right_2_a'], data['right_2_b'], 8, "Helvetica"),
+        (data['right_3_a'], data['right_3_b'], 24, "Helvetica-Bold")
     ]
 
     # Iterar sobre la información de la izquierda y aplicar el estilo de fuente adecuado
     for text, offset, font_style in left_text_info:
-        c.setFont(font_style, sub_banner_text_size)  # Aplica el estilo de fuente aquí
+        c.setFont(font_style, sub_banner_text_size)
         c.drawString(side_margin, height - top_margin - banner_height - offset * mm, text)
 
-    # Dibujar la información de la derecha con un estilo uniforme
-    c.setFont("Helvetica-Bold", sub_banner_text_size)
-    for label, value, offset in right_text_info:
-        label_width = c.stringWidth(label, "Helvetica-Bold", sub_banner_text_size)
+    # Iterar sobre la información de la derecha y aplicar el estilo de fuente adecuado
+    for label, value, offset, font_style in right_text_info:
+        c.setFont(font_style, sub_banner_text_size)
+        label_width = c.stringWidth(label, font_style, sub_banner_text_size)
         c.drawString(width - side_margin - label_width - 15 * mm, height - top_margin - banner_height - offset * mm, label)
         c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
-
 
 def create_pdf(data, filename):
     # Definir valores predeterminados para el modo de prueba
@@ -56,11 +57,11 @@ def create_pdf(data, filename):
         'left_3': "C.U.I.T.: 33 71465177 9",
         'left_4': "Teléfono: 11 4035-5771",
         'left_5': "Presupuesto para:",
-        'left_6': "Cliente Desconocido",
+        'left_6': "Cliente", # Cambiar por el nombre del cliente
         'right_1_a': "Fecha",
         'right_1_b': datetime.datetime.now().strftime("%d/%m/%Y"),
         'right_2_a': "N° de presupuesto",
-        'right_2_b': "Desconocido",
+        'right_2_b': "123",
         'right_3_a': "Presupuesto válido hasta:",
         'right_3_b': (datetime.datetime.now() + datetime.timedelta(days=30)).strftime("%d/%m/%Y")
     }
