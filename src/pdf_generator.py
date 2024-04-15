@@ -9,8 +9,8 @@ def create_pdf(data, filename):
     width, height = A4  # Usar el tamaño de página A4
 
     # Definir los márgenes
-    top_margin = 10 * mm  # Margen superior
-    side_margin = 10 * mm  # Margen lateral
+    top_margin = 22 * mm  # Margen superior
+    side_margin = 21 * mm  # Margen lateral   25 mucho   20 poco
     banner_height = 30 * mm  # Altura del banner
 
     # Cargar y dibujar la imagen del banner con márgenes
