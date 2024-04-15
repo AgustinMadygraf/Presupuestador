@@ -3,6 +3,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 import os
+import datetime
 
 def set_pdf_title(c, filename):
     title = os.path.splitext(os.path.basename(filename))[0]
@@ -14,52 +15,69 @@ def draw_banner(c, width, height, side_margin, top_margin, banner_height):
                 width - 2 * side_margin, banner_height, 
                 preserveAspectRatio=True, anchor='n')
 
+def draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data):
+    # Dibujar la información de la izquierda
+    left_text_info = [
+        (data['left_1'], 4),
+        (data['left_2'], 8),
+        (data['left_3'], 12),
+        (data['left_4'], 16),
+        (data['left_5'], 24),
+        (data['left_6'], 28)
+    ]
+
+    # Dibujar la información de la derecha
+    right_text_info = [
+        (data['right_1_a'], data['right_1_b'], 4),
+        (data['right_2_a'], data['right_2_b'], 8),
+        (data['right_3_a'], data['right_3_b'], 24)
+    ]
+
+    c.setFont("Helvetica-Bold", sub_banner_text_size)
+    for text, offset in left_text_info:
+        c.drawString(side_margin, height - top_margin - banner_height - offset * mm, text)
+
+    c.setFont("Helvetica", sub_banner_text_size)
+    for label, value, offset in right_text_info:
+        label_width = c.stringWidth(label, "Helvetica-Bold", sub_banner_text_size)
+        c.drawString(width - side_margin - label_width - 15 * mm, height - top_margin - banner_height - offset * mm, label)
+        c.drawRightString(width - side_margin, height - top_margin - banner_height - offset * mm, value)
+
 def create_pdf(data, filename):
+    # Definir valores predeterminados para el modo de prueba
+    default_data = {
+        'left_1': "Cooperativa de Trabajo MADYGRAF LTDA",
+        'left_2': "Ruta panamericana 36.700 - Garin - 1618",
+        'left_3': "C.U.I.T.: 33 71465177 9",
+        'left_4': "Teléfono: 11 4035-5771",
+        'left_5': "Presupuesto para:",
+        'left_6': "Cliente Desconocido",
+        'right_1_a': "Fecha",
+        'right_1_b': datetime.datetime.now().strftime("%d/%m/%Y"),
+        'right_2_a': "N° de presupuesto",
+        'right_2_b': "Desconocido",
+        'right_3_a': "Presupuesto válido hasta:",
+        'right_3_b': (datetime.datetime.now() + datetime.timedelta(days=30)).strftime("%d/%m/%Y")
+    }
+
+    # Actualizar el diccionario data con los valores predeterminados si alguno falta
+    if data is None:
+        data = default_data
+    else:
+        for key in default_data:
+            data.setdefault(key, default_data[key])
+
     c = canvas.Canvas(filename, pagesize=A4)
-    width, height = A4  # Usar el tamaño de página A4
+    width, height = A4
 
-    # Extrae el nombre base del archivo para usarlo como título del PDF
     set_pdf_title(c, filename)
-
-    # Definir los márgenes y dimensiones del banner
     top_margin = 22 * mm
     side_margin = 21 * mm
     banner_height = 30 * mm
     sub_banner_text_size = 8
 
-
-    # Cargar y dibujar la imagen del banner con márgenes
     draw_banner(c, width, height, side_margin, top_margin, banner_height)
-
-    # Texto debajo del banner
-    sub_banner_text_left_1 = "Cooperativa de Trabajo MADYGRAF LTDA"
-    sub_banner_text_left_2 = "Ruta panamerica 36.700 - Garin - 1618"
-    sub_banner_text_left_3 = "C.U.I.T.: 33 71465177 9"
-    sub_banner_text_left_4 = "Teléfono: 11 4035-5771"
-    sub_banner_text_left_5 = "Presupuesto para:"
-    sub_banner_text_left_6 = "Cliente" # deberá ser dinámico
-    sub_banner_text_right_1_a = "Fecha"
-    sub_banner_text_right_1_b = "26/12/2023" # deberá ser dinámico
-    sub_banner_text_right_2_a = "N° de presupuesto"
-    sub_banner_text_right_2_b = "0001" # deberá ser dinámico
-    sub_banner_text_right_3_a = "Presupuesto válido hasta:" 
-    sub_banner_text_right_3_b = "31/12/2023" # deberá ser dinámico
-    
-    sub_banner_text_size = 8
-    c.setFont("Helvetica-Bold", sub_banner_text_size)  
-    c.drawString(side_margin,                   height - top_margin - banner_height - 4 * mm,   sub_banner_text_left_1)
-    c.drawString(width - side_margin - 40 * mm, height - top_margin - banner_height - 4 * mm,   sub_banner_text_right_1_a)
-    c.drawString(width - side_margin - 55 * mm, height - top_margin - banner_height - 8 * mm,  sub_banner_text_right_2_a)
-    c.drawString(side_margin,                   height - top_margin - banner_height - 24 * mm,  sub_banner_text_left_5)
-    c.drawString(width - side_margin - 60 * mm, height - top_margin - banner_height - 24 * mm,  sub_banner_text_right_3_a)
-    c.setFont("Helvetica", sub_banner_text_size)  
-    c.drawRightString(width - side_margin,      height - top_margin - banner_height - 4 * mm,   sub_banner_text_right_1_b)
-    c.drawString(side_margin,                   height - top_margin - banner_height - 8 * mm,  sub_banner_text_left_2)
-    c.drawString(side_margin,                   height - top_margin - banner_height - 12 * mm,  sub_banner_text_left_3)
-    c.drawString(side_margin,                   height - top_margin - banner_height - 16 * mm,  sub_banner_text_left_4)
-    c.drawRightString(width - side_margin,      height - top_margin - banner_height - 10 * mm,  sub_banner_text_right_2_b)
-    c.drawString(side_margin,                   height - top_margin - banner_height - 28 * mm,  sub_banner_text_left_6)
-    c.drawRightString(width - side_margin,      height - top_margin - banner_height - 24 * mm,  sub_banner_text_right_3_b)
-
+    draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
 
     c.save()
+
