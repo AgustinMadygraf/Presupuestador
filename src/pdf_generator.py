@@ -24,16 +24,16 @@ def create_pdf(data, filename):
     banner_height = 30 * mm
     sub_banner_text_size = 8
 
-    draw_banner(c,  width, height, side_margin,                                     top_margin,     banner_height,  data)
-    draw_header(c,  width, height, top_margin,                                      banner_height,  side_margin,    sub_banner_text_size, data)
-    draw_table(c,   width, height, height - top_margin - banner_height - 53*mm,     side_margin,    data['table1_data'])
-    draw_table(c,   width, height, height - top_margin - banner_height - 120*mm,    side_margin,    data['table2_data'])
-    draw_footer(c,  width, height, top_margin,                                      banner_height,  data['footer_text_info'])
+    draw_banner(c,  width,  height,     side_margin,                                     top_margin,     banner_height,  data)
+    draw_header(c,  width,  height,     top_margin,                                      banner_height,  side_margin,    sub_banner_text_size, data)
+    draw_table (c,  width,  height,     height - top_margin - banner_height - 53*mm,     side_margin,    data['table1_data'])
+    draw_table (c,  width,  height,     height - top_margin - banner_height - 120*mm,    side_margin,    data['table2_data'])
+    draw_footer(c,  height, top_margin, data['footer_text_info'])
     c.save()
 
-def draw_footer(c, width, height, top_margin, banner_height, footer_text_info):
+def draw_footer(c,  height, top_margin,  footer_text_info):
     # Definición de la posición inicial del pie de página
-    footer_start_y = height - top_margin - 250 * mm  # Ajusta según sea necesario
+    footer_start_y = height - top_margin - 155 * mm  # Ajusta según sea necesario
 
     # Iterar sobre cada fila de la información del pie de página
     for index, info in enumerate(footer_text_info):
