@@ -24,9 +24,9 @@ def handle_new_project(conn):
 
 def get_presupuesto_id():
     try:
-        return int(input("ID del proyecto para el PDF: "))
+        return int(input("ID del presupuesto para generar el PDF: "))
     except ValueError:
-        print("Se activó modo TEST, a continuación se generará un PDF vacío.")
+        logger.info("Modo TEST activado: Generando PDF vacío.")
         return None
 
 def prepare_output_directory():
@@ -38,10 +38,6 @@ def prepare_output_directory():
         os.makedirs(output_dir)
     return output_dir
 
-def generate_pdf(data, file_path):
-    create_pdf(data, file_path)
-    print(f"PDF generado con éxito y guardado en {file_path}.")
-
 def handle_generate_pdf(conn):
     try:
         presupuesto_id = get_presupuesto_id()
@@ -51,18 +47,14 @@ def handle_generate_pdf(conn):
         if presupuesto_id is None:
             current_time = datetime.now().strftime("%Y%m%d_%H%M%S")  # Formato de fecha y hora
             file_name = f"test_{current_time}.pdf"
-            data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
-            logger.info("Modo TEST activado: Generando PDF vacío.")
+            data = None
         else:
-            if data is None:
-                data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
-                logger.warning(f"No se encontraron datos para el proyecto con ID: {presupuesto_id}")
-            file_name = 'presupuesto.pdf'
-
+            file_name = 'presupuesto_{presupuesto_id}_{current_time}.pdf'
+            data = None # Provisorio. Obtener los datos del presupuesto desde la base de datos
         full_file_path = os.path.join(file_path, file_name)
         logger.debug(f"Ruta del archivo configurada: {full_file_path}")
         print(f"Generando PDF en {full_file_path}...")
-        generate_pdf(data, full_file_path)
+        create_pdf(data, full_file_path)
         logger.info("PDF generado exitosamente.")
         
         # Abrir el PDF automáticamente después de crearlo
