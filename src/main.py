@@ -13,12 +13,9 @@ logger = configurar_logging()  # Asumimos que esta función está disponible glo
 def main_menu():
     print("\nPresupuestador de Proyectos")
     print("1. Confeccionar un nuevo presupuesto")
-    print("2. Añadir KPIs a un proyecto")
-    print("3. Incorporar costos fijos")
-    print("4. Incorporar costos variables")
-    print("5. Generar archivo PDF del presupuesto")
-    print("6. Salir")
-    choice = input("Elija una opción: ")
+    print("2. Generar archivo PDF del presupuesto")
+    print("0. Salir")
+    choice = input("Elija una opción: ") or "2"
     return choice
 
 def handle_new_project(conn):
@@ -79,18 +76,6 @@ def handle_generate_pdf(conn):
         print(f"Se produjo un error al generar el PDF: {e}")
 
 
-def handle_add_kpi(conn):
-    # Implementar lógica para añadir KPIs a un proyecto existente
-    pass
-
-def handle_fixed_costs(conn):
-    # Implementar lógica para añadir costos fijos a un proyecto
-    pass
-
-def handle_variable_costs(conn):
-    # Implementar lógica para añadir costos variables a un proyecto
-    pass
-
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
@@ -109,14 +94,8 @@ def main():
         if choice == '1':
             handle_new_project(conn)
         elif choice == '2':
-            handle_add_kpi(conn)
-        elif choice == '3':
-            handle_fixed_costs(conn)
-        elif choice == '4':
-            handle_variable_costs(conn)
-        elif choice == '5':
             handle_generate_pdf(conn)
-        elif choice == '6':
+        elif choice == '0':
             print("Saliendo del programa...")
             break
         else:

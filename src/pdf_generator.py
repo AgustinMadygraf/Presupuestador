@@ -28,25 +28,41 @@ def create_pdf(data, filename):
     draw_header(c,  width,  height,     top_margin,                                      banner_height,  side_margin,    sub_banner_text_size, data)
     draw_table (c,  width,  height,     height - top_margin - banner_height - 53*mm,     side_margin,    data['table1_data'])
     draw_table (c,  width,  height,     height - top_margin - banner_height - 120*mm,    side_margin,    data['table2_data'])
-    draw_footer(c,  height, top_margin, data['footer_text_info'])
+    draw_footer(c,  width,  height,     top_margin,                                                      data['footer_text_info'])
     c.save()
 
-def draw_footer(c,  height, top_margin,  footer_text_info):
+def draw_footer(c, width, height, top_margin, footer_text_info):
     # Definición de la posición inicial del pie de página
     footer_start_y = height - top_margin - 155 * mm  # Ajusta según sea necesario
+    left_margin = 21 * mm
+    interlinea = 10 * mm
 
     # Iterar sobre cada fila de la información del pie de página
     for index, info in enumerate(footer_text_info):
-        # Asumiendo que cada fila tiene exactamente 4 elementos (Texto, "", Valor, Unidad)
-        if len(info) >= 2:  # Verifica que al menos haya dos elementos para dibujar el texto y la unidad
-            text, unit = info[0], info[3] if len(info) > 3 else ""
-            font_style = "Helvetica-Bold" if index == 2 else "Helvetica"  # Ejemplo: hacer 'Total' en negrita
-            offset = 4 * mm * index  # Ajustar el offset vertical para cada línea
+        # Extraer los elementos de la fila
+        line1_text  = info[0] if len(info) > 0 else ""
+        line2_text  = info[1] if len(info) > 1 else ""
+        right_label = info[2] if len(info) > 2 else ""
+        right_value = info[3] if len(info) > 3 else ""
 
-            # Configurar la fuente y dibujar el texto y la unidad
-            c.setFont(font_style, 8)
-            c.drawString(21 * mm, footer_start_y - offset, text)  # Dibujar el texto
-            c.drawString(180 * mm, footer_start_y - offset, unit)  # Dibujar la unidad
+        # Configurar la fuente y dibujar los textos
+        c.setFont("Helvetica", 8)
+        c.drawString(left_margin, footer_start_y - index * interlinea, line1_text) 
+        
+        # Texto secundario (line2_text) opcional se dibuja un poco más a la derecha
+        if line2_text:
+            c.drawString(left_margin + 30 * mm, footer_start_y - index * interlinea, line2_text) 
+
+        # Dibujar las etiquetas y valores en la parte derecha
+        right_text_x = width - 80 * mm
+        if right_label:
+            c.setFont("Helvetica-Bold", 8)
+            c.drawString(right_text_x, footer_start_y - index * interlinea, right_label)
+        if right_value:
+            c.setFont("Helvetica", 8)
+            c.drawString(right_text_x + 30 * mm, footer_start_y - index * interlinea, right_value)
+
+
 
 
 def set_pdf_title(c, filename):
