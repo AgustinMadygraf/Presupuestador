@@ -2,7 +2,7 @@
 import os
 from datetime import datetime
 from pdf_generator import create_pdf
-from database import create_connection
+from database import create_connection, create_tables
 from logs.config_logger import configurar_logging
 
 logger = configurar_logging()
@@ -15,9 +15,23 @@ def main_menu():
     choice = input("Elija una opción: ") or "2"
     return choice
 
-def handle_new_presupuesto(conn):
-    nombre = input("Nombre del proyecto: ")
-    presupuesto_total = float(input("Presupuesto total: "))
+def handle_new_presupuesto(conn):#acá debería ir la función que se encarga de crear un nuevo presupuesto, primero tengo que saber cuál es el ID_presupuesto mas grande para poder asignarle el siguiente
+    cursor = conn.cursor() #debo verificar si existe la tabla presupuestos dentro de la base de datos
+    cursor.execute("SHOW TABLES LIKE 'presupuestos';")
+    if cursor.fetchone() is None:
+        print("No se encontró la tabla 'presupuestos'. Creando las tablas...")
+        # Crear las tablas en la base de datos
+        create_tables(conn)
+        print("Tablas creadas exitosamente.")
+
+    cursor.execute("SELECT MAX(ID_presupuesto) FROM presupuestos;")
+    max_id = cursor.fetchone()[0]
+    if max_id is None:
+        max_id = 0
+    new_id = max_id + 1
+    print(f"Creando un nuevo presupuesto con ID {new_id}...")
+
+
 
 def get_presupuesto_id():
     try:
