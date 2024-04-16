@@ -1,14 +1,11 @@
-import sqlite3
+#src/main.py
 import os
-import sys
 from datetime import datetime
 from pdf_generator import create_pdf
 from database import create_connection
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from logs.config_logger import configurar_logging
 
-logger = configurar_logging()  # Asumimos que esta función está disponible globalmente
-
+logger = configurar_logging()
 
 def main_menu():
     print("\nPresupuestador de Proyectos")
@@ -18,7 +15,7 @@ def main_menu():
     choice = input("Elija una opción: ") or "2"
     return choice
 
-def handle_new_project(conn):
+def handle_new_presupuesto(conn):
     nombre = input("Nombre del proyecto: ")
     presupuesto_total = float(input("Presupuesto total: "))
 
@@ -38,18 +35,18 @@ def prepare_output_directory():
         os.makedirs(output_dir)
     return output_dir
 
-def handle_generate_pdf(conn):
+def handle_generate_pdf():
     try:
         presupuesto_id = get_presupuesto_id()
         file_path = prepare_output_directory()
 
-        # Verificar si es el modo test y generar el nombre del archivo en consecuencia.
+        # Verificar si es el modo test y generar el nombre del archivo en consecuencia.´
+        current_time = datetime.now().strftime("%Y%m%d_%H%M%S")
         if presupuesto_id is None:
-            current_time = datetime.now().strftime("%Y%m%d_%H%M%S")  # Formato de fecha y hora
             file_name = f"test_{current_time}.pdf"
             data = None
         else:
-            file_name = 'presupuesto_{presupuesto_id}_{current_time}.pdf'
+            file_name = (f"presupuesto_N{presupuesto_id}_{current_time}.pdf")
             data = None # Provisorio. Obtener los datos del presupuesto desde la base de datos
         full_file_path = os.path.join(file_path, file_name)
         logger.debug(f"Ruta del archivo configurada: {full_file_path}")
@@ -69,6 +66,7 @@ def handle_generate_pdf(conn):
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
+    logger.info("Iniciando la aplicación...")
     conn = create_connection()
     primera_vez = True
     while True:
@@ -81,9 +79,9 @@ def main():
 
         choice = main_menu()
         if choice == '1':
-            handle_new_project(conn)
+            handle_new_presupuesto(conn)
         elif choice == '2':
-            handle_generate_pdf(conn)
+            handle_generate_pdf()
         elif choice == '0':
             print("Saliendo del programa...")
             break
