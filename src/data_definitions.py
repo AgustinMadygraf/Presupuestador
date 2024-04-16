@@ -38,13 +38,11 @@ data_test = {
         []
     ],
     'footer_text_info': [
-        ("HORARIO DE RETIRO MERCADERÍA DE 08 A 15HS", 32 * mm, "Helvetica"),
-        ("Subtotal", "$35,318.00", 42 * mm, "Helvetica-Bold", "Helvetica"),
-        ("IVA 21%", "$7,416.78", 52 * mm, "Helvetica-Bold", "Helvetica"),
-        ("Total", "$42,734.78", 62 * mm, "Helvetica-Bold", "Helvetica"),
-        ("Gracias por su confianza", 72 * mm, "Helvetica"),
-        ("Comentarios o Instrucciones especiales:", 82 * mm, "Helvetica"),
-        ("Entrega:", "No incluye envío", 92 * mm, "Helvetica-Bold", "Helvetica"),
-        ("Condiciones:", "50% Anticipo, 50% contra entrega", 102 * mm, "Helvetica-Bold", "Helvetica")
+        ["HORARIO DE RETIRO MERCADERÍA DE 08 A 15HS",""                                 ,"Subtotal"                 ,"$35,318.00"],
+        [" "                                        ,""                                 ,"IVA 21%"                  ,"$7,416.78" ],
+        ["Gracias por su confianza"                 ,""                                 ,"Total"                    ,"$42,734.78"],
+        ["Comentarios o Instrucciones especiales:"  ,""                                 ,""                         ,""          ],
+        ["Entrega:"                                 ,"No incluye envío"                 ,""                         ,""          ],
+        ["Condiciones:"                             , "50% Anticipo, 50% contra entrega",""                         ,""          ],
     ]
 }

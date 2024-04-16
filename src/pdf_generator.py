@@ -24,13 +24,24 @@ def create_pdf(data, filename):
     banner_height = 30 * mm
     sub_banner_text_size = 8
 
-    draw_banner(c, width, height, side_margin, top_margin, banner_height, data)
-    draw_header(c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data)
-    draw_table(c, width, height, height - top_margin - banner_height - 53*mm, side_margin, data['table1_data'])
-    draw_table(c, width, height, height - top_margin - banner_height - 120*mm, side_margin, data['table2_data'])
+    draw_banner(c,  width, height, side_margin,                                     top_margin,     banner_height,  data)
+    draw_header(c,  width, height, top_margin,                                      banner_height,  side_margin,    sub_banner_text_size, data)
+    draw_table(c,   width, height, height - top_margin - banner_height - 53*mm,     side_margin,    data['table1_data'])
+    draw_table(c,   width, height, height - top_margin - banner_height - 120*mm,    side_margin,    data['table2_data'])
+    #draw_footer(c,  width, height, top_margin,                                      banner_height,  data['footer_text_info'])
     c.save()
 
+def draw_footer(c, width, height, top_margin, banner_height, footer_text_info):
+    # Dibujar el texto del pie de página con control de estilo de 
+    # Dibujar la información de la izquierda con control de estilo de fuente
+    left_text_info = [
+        (footer_text_info[0], 32, "Helvetica"),
+        (footer_text_info[4], 72, "Helvetica"),
+        (footer_text_info[5], 82, "Helvetica"),
+        (footer_text_info[7], 92, "Helvetica-Bold"),
+        (footer_text_info[8], 102, "Helvetica-Bold")
 
+    ]
 
 def set_pdf_title(c, filename):
     title = os.path.splitext(os.path.basename(filename))[0]
