@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 
 def create_pdf(data, filename):
     # Definir valores predeterminados para el modo de prueba
-    default_data = {
+    default_test = {
         'left_1': "Cooperativa de Trabajo MADYGRAF LTDA",
         'left_2': "Ruta panamericana 36.700 - Garin - 1618",
         'left_3': "C.U.I.T.: 33 71465177 9",
@@ -44,14 +44,24 @@ def create_pdf(data, filename):
             [],
             []
         ],
+        'footer_text_info': [
+            ("HORARIO DE RETIRO MERCADERÍA DE 08 A 15HS", 32 * mm, "Helvetica"),
+            ("Subtotal", "$35,318.00", 42 * mm, "Helvetica-Bold", "Helvetica"),
+            ("IVA 21%", "$7,416.78", 52 * mm, "Helvetica-Bold", "Helvetica"),
+            ("Total", "$42,734.78", 62 * mm, "Helvetica-Bold", "Helvetica"),
+            ("Gracias por su confianza", 72 * mm, "Helvetica"),
+            ("Comentarios o Instrucciones especiales:", 82 * mm, "Helvetica"),
+            ("Entrega:", "No incluye envío", 92 * mm, "Helvetica-Bold", "Helvetica"),
+            ("Condiciones:", "50% Anticipo, 50% contra entrega", 102 * mm, "Helvetica-Bold", "Helvetica")
+        ]
     }
 
     # Actualizar el diccionario data con los valores predeterminados si alguno falta
     if data is None:
-        data = default_data
+        data = default_test
     else:
-        for key in default_data:
-            data.setdefault(key, default_data[key])
+        for key in default_test:
+            data.setdefault(key, default_test[key])
 
     c = canvas.Canvas(filename, pagesize=A4)
     width, height = A4
