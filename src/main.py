@@ -3,7 +3,7 @@ import os
 import sys
 from datetime import datetime
 from pdf_generator import create_pdf
-from database import create_connection, add_project,  get_presupuesto_restante, setup_database
+from database import create_connection
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from logs.config_logger import configurar_logging
 
@@ -21,7 +21,6 @@ def main_menu():
 def handle_new_project(conn):
     nombre = input("Nombre del proyecto: ")
     presupuesto_total = float(input("Presupuesto total: "))
-    add_project(conn, nombre, presupuesto_total)
 
 def get_presupuesto_id():
     try:
@@ -55,7 +54,6 @@ def handle_generate_pdf(conn):
             data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
             logger.info("Modo TEST activado: Generando PDF vacío.")
         else:
-            data = get_presupuesto_restante(conn, presupuesto_id)
             if data is None:
                 data = {'nombre_proyecto': 'N/A', 'presupuesto_total': 'N/A', 'presupuesto_gastado': 'N/A'}
                 logger.warning(f"No se encontraron datos para el proyecto con ID: {presupuesto_id}")
@@ -80,7 +78,6 @@ def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
     conn = create_connection()
-    setup_database(conn)  
     primera_vez = True
     while True:
         if primera_vez:

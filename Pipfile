@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 reportlab = "*"
+mysql-connector-python = "*"
 
 [dev-packages]
 
