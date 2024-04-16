@@ -32,39 +32,21 @@ def create_pdf(data, filename):
     c.save()
 
 def draw_footer(c, width, height, top_margin, banner_height, footer_text_info):
-    # Dibujar el texto del pie de página con control de estilo de 
-    # Dibujar la información de la izquierda con control de estilo de fuente
-    left_text_info = [
-        (footer_text_info[0][0], 4, "Helvetica")#,
-        #(footer_text_info[1][0], 8, "Helvetica"),
-        #(footer_text_info[2][0], 12, "Helvetica"),
-        #(footer_text_info[3][0], 16, "Helvetica"),
-        #(footer_text_info[4][0], 24, "Helvetica-Bold"),
-        #(footer_text_info[5][0], 28, "Helvetica")
-    ]
+    # Definición de la posición inicial del pie de página
+    footer_start_y = height - top_margin - 250 * mm  # Ajusta según sea necesario
 
-    # Dibujar la información de la derecha, especificando estilo de fuente separado para etiqueta y valor
-    #right_text_info = [
-        #(footer_text_info[0][3], "Helvetica", footer_text_info[0][2], "Helvetica-Bold", 4),
-        #(footer_text_info[1][3], "Helvetica", footer_text_info[1][2], "Helvetica-Bold", 8),
-        #(footer_text_info[2][3], "Helvetica", footer_text_info[2][2], "Helvetica-Bold", 24),
-        #(footer_text_info[3][3], "Helvetica", footer_text_info[3][2], "Helvetica-Bold", 28),
-        #(footer_text_info[4][3], "Helvetica", footer_text_info[4][2], "Helvetica-Bold", 32),
-    #    (footer_text_info[5][3], "Helvetica", footer_text_info[5][2], "Helvetica-Bold", 36)
-    #]
+    # Iterar sobre cada fila de la información del pie de página
+    for index, info in enumerate(footer_text_info):
+        # Asumiendo que cada fila tiene exactamente 4 elementos (Texto, "", Valor, Unidad)
+        if len(info) >= 2:  # Verifica que al menos haya dos elementos para dibujar el texto y la unidad
+            text, unit = info[0], info[3] if len(info) > 3 else ""
+            font_style = "Helvetica-Bold" if index == 2 else "Helvetica"  # Ejemplo: hacer 'Total' en negrita
+            offset = 4 * mm * index  # Ajustar el offset vertical para cada línea
 
-    # Iterar sobre la información de la izquierda y aplicar el estilo de fuente adecuado
-    for text, offset, font_style in left_text_info:
-        c.setFont(font_style, 8)
-        c.drawString(21 * mm, 50 * mm, text)
-
-    # Iterar sobre la información de la derecha y aplicar el estilo de fuente adecuado, separando estilos para etiqueta y valor
-    #for label, label_font, value, value_font, offset in right_text_info:
-    #    c.setFont(label_font, 8)
-    #    label_width = c.stringWidth(label, label_font, 8)
-    #    c.drawString(width - 21 * mm - label_width - 15 * mm, 15 * mm, label)
-    #    c.setFont(value_font, 8)
-    #    c.drawRightString(width - 21 * mm, 15 * mm, value)
+            # Configurar la fuente y dibujar el texto y la unidad
+            c.setFont(font_style, 8)
+            c.drawString(21 * mm, footer_start_y - offset, text)  # Dibujar el texto
+            c.drawString(180 * mm, footer_start_y - offset, unit)  # Dibujar la unidad
 
 
 def set_pdf_title(c, filename):
