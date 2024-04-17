@@ -15,8 +15,12 @@ def main_menu():
     choice = input("Elija una opción: ") or "2"
     return choice
 
-def handle_new_presupuesto(conn):#acá debería ir la función que se encarga de crear un nuevo presupuesto, primero tengo que saber cuál es el ID_presupuesto mas grande para poder asignarle el siguiente
-    cursor = conn.cursor() #debo verificar si existe la tabla presupuestos dentro de la base de datos
+def handle_new_presupuesto(conn):
+    """
+    Crea un nuevo presupuesto en la base de datos y devuelve el ID del mismo.
+
+    """
+    cursor = conn.cursor() 
     cursor.execute("SHOW TABLES LIKE 'presupuestos';")
     if cursor.fetchone() is None:
         print("No se encontró la tabla 'presupuestos'. Creando las tablas...")
@@ -30,6 +34,25 @@ def handle_new_presupuesto(conn):#acá debería ir la función que se encarga de
         max_id = 0
     new_id = max_id + 1
     print(f"Creando un nuevo presupuesto con ID {new_id}...")
+    # Insertar el nuevo presupuesto en la base de datos, con el ID correspondiente. por medio de inputs
+    #primero ofrece una lista de los clientes, para seleccionar uno. En caso de no estar el cliente, se puede agregar uno nuevo
+    cursor.execute("SELECT * FROM clientes;")
+    clientes = cursor.fetchall()
+    print("Lista de clientes:")
+    for cliente in clientes:
+        print(f"{cliente[0]}. {cliente[1]}")
+    cliente_id = input("ID del cliente o 'n' para agregar uno nuevo: ")
+    if cliente_id == 'n':
+        nombre_cliente = input("Nombre del cliente: ")
+        cursor.execute("INSERT INTO clientes (nombre) VALUES (%s);", (nombre_cliente,))
+        conn.commit()
+        cliente_id = cursor.lastrowid
+    else:
+        cliente_id = int(cliente_id)
+    #luego se ofrece una lista de los productos, para seleccionar uno. 
+
+
+    
 
 
 

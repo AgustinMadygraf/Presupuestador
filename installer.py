@@ -1,4 +1,25 @@
 import subprocess
+import sys
+
+def check_dependencies():
+    dependencies = ["subprocess", "os", "pathlib", "winshell", "win32com.client", "pywintypes"]
+    missing_dependencies = []
+
+    for dependency in dependencies:
+        try:
+            __import__(dependency)
+        except ImportError:
+            missing_dependencies.append(dependency)
+
+    if missing_dependencies:
+        print(f"Las siguientes dependencias están faltantes: {', '.join(missing_dependencies)}")
+        print("Instalando dependencias faltantes...")
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', *missing_dependencies])
+    else:
+        print("Todas las dependencias están instaladas.")
+
+check_dependencies()
+import subprocess
 import os
 from pathlib import Path
 from src.logs.config_logger import configurar_logging
@@ -79,7 +100,6 @@ def limpieza_pantalla():
 
 def main():
     directorio_script = Path(__file__).parent.resolve()
-    limpieza_pantalla()
     logger.info("Iniciando instalador")
 
     # Crear archivo BAT
@@ -91,4 +111,5 @@ def main():
     crear_acceso_directo(ruta_archivo_bat, directorio_script)
 
 if __name__ == "__main__":
+    limpieza_pantalla()
     main()

@@ -9,7 +9,6 @@ logger = configurar_logging()
 
 load_dotenv()
 
-
 def create_tables(conn):
     """Create tables in the specified database."""
     cursor = conn.cursor()
@@ -34,8 +33,7 @@ def create_tables(conn):
         """)
         logger.info("Tabla 'presupuestos' creada exitosamente.")
 
-        # Añade aquí la creación de otras tablas: 'vendedores', 'clientes', 'items'
-        # Ejemplo de creación de otra tabla
+        # Creación de la tabla 'vendedores'
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS vendedores (
             Legajo_vendedor INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +42,34 @@ def create_tables(conn):
         );
         """)
         logger.info("Tabla 'vendedores' creada exitosamente.")
-        # Repite para 'clientes' y 'items'
+
+        # Creación de la tabla 'clientes'
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS clientes (
+            ID_clientes INT AUTO_INCREMENT PRIMARY KEY,
+            CUIT VARCHAR(255),
+            nombre VARCHAR(255),
+            apellido VARCHAR(255),
+            Razon_social VARCHAR(255),
+            N_contacto VARCHAR(255),
+            Direccion VARCHAR(255),
+            Ubicacion_geografica VARCHAR(255)
+        );
+        """)
+        logger.info("Tabla 'clientes' creada exitosamente.")
+
+        # Creación de la tabla 'items'
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS items (
+            ID_items INT AUTO_INCREMENT PRIMARY KEY,
+            ID_presupuesto INT,
+            Cantidad INT,
+            precio_por_unidad FLOAT,
+            importe FLOAT GENERATED ALWAYS AS (Cantidad * precio_por_unidad) STORED,
+            FOREIGN KEY (ID_presupuesto) REFERENCES presupuestos(ID_presupuesto)
+        );
+        """)
+        logger.info("Tabla 'items' creada exitosamente.")
 
     except Error as e:
         logger.error(f"Error al crear las tablas: {e}", exc_info=True)
