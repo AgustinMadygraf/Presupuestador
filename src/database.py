@@ -92,11 +92,11 @@ def create_database(conn, db_name):
 def create_connection():
     """Create a database connection to the MySQL database"""
     conn = None
-    
-    db_name = os.getenv('MYSQL_DB')
-    host = os.getenv('MYSQL_HOST')
-    user = os.getenv('MYSQL_USER')
-    password = os.getenv('MYSQL_PASSWORD')
+
+    host        = os.getenv('MYSQL_HOST')
+    user        = os.getenv('MYSQL_USER')
+    password    = os.getenv('MYSQL_PASSWORD')
+    db_name     = os.getenv('MYSQL_DB')
     
     # Asegúrate de que todas las variables de entorno estén configuradas
     if None in (db_name, host, user, password):

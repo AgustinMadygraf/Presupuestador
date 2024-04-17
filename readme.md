@@ -10,7 +10,7 @@ Para instalar el proyecto, ejecuta el script `installer.py`:
 python installer.py
 ```
 
-Esto creará un archivo `.bat` y un acceso directo en el escritorio para ejecutar la aplicación.
+Esto instalará las dependencias necesarias, creará un archivo `.bat` y un acceso directo en el escritorio para ejecutar la aplicación.
 
 ## Uso
 
@@ -26,12 +26,31 @@ El programa te permitirá:
 Este proyecto utiliza las siguientes dependencias:
 
 - `reportlab` para la generación de PDFs.
-- `sqlite3` para la gestión de la base de datos.
+
+## Entorno de Ejecución
+
+Este proyecto ha sido probado y es compatible con Python 3.9.13. Asegúrate de tener instalado Python 3.9.13 para evitar problemas de compatibilidad. Puedes descargar esta versión específica de Python desde el siguiente enlace:
+
+[Descargar Python 3.9.13](https://www.python.org/ftp/python/3.9.13/python-3.9.13-amd64.exe)
 
 ## Contribución
 
-Si deseas contribuir a este proyecto, por favor, abre un issue o una pull request.
+Las contribuciones son bienvenidas y se agradecen. Si deseas contribuir al proyecto, por favor:
+
+1. Clona el repositorio.
+2. Crea una nueva rama para cada característica o mejora.
+3. Envía un pull request con tu característica o corrección.
+
+## Preguntas Frecuentes
+
+**P: ¿Cómo puedo reportar un error?**
+
+R: Los errores pueden ser reportados mediante la creación de un issue en el repositorio de GitHub.
+
+**P: ¿Dónde encuentro la documentación del código?**
+
+R: La documentación se encuentra en la carpeta `DOCS` del proyecto.
 
 ## Licencia
 
-[MIT](https://choosealicense.com/licenses/mit/)
+Este proyecto está licenciado bajo la Licencia MIT - vea el archivo [LICENSE.md](https://choosealicense.com/licenses/mit/) para detalles.
