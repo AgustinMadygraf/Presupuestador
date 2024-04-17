@@ -4,21 +4,19 @@ import sys
 def check_dependencies():
     dependencies = ["subprocess", "os", "pathlib", "winshell", "win32com.client", "pywintypes"]
     missing_dependencies = []
-
     for dependency in dependencies:
         try:
             __import__(dependency)
         except ImportError:
             missing_dependencies.append(dependency)
-
     if missing_dependencies:
         print(f"Las siguientes dependencias están faltantes: {', '.join(missing_dependencies)}")
         print("Instalando dependencias faltantes...")
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', *missing_dependencies])
     else:
         print("Todas las dependencias están instaladas.")
-
 check_dependencies()
+
 import subprocess
 import os
 from pathlib import Path
@@ -29,6 +27,8 @@ from pywintypes import com_error
 
 # Configuración del logger
 logger = configurar_logging()
+
+Name_proj = "Presupuestador"
 
 def crear_acceso_directo(ruta_archivo_bat, directorio_script):
     escritorio = Path(winshell.desktop())
