@@ -26,6 +26,7 @@ El programa te permitirá:
 Este proyecto utiliza las siguientes dependencias:
 
 - `reportlab` para la generación de PDFs.
+- `dotenv` 
 
 ## Entorno de Ejecución
 
