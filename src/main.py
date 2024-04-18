@@ -5,6 +5,8 @@ from colorama import Fore, init
 from pdf_generator import create_pdf
 from database import create_connection, create_tables
 from logs.config_logger import configurar_logging
+import csv
+
 
 logger = configurar_logging()
 init(autoreset=True)
@@ -25,7 +27,7 @@ def handle_new_presupuesto(conn):
     cursor = conn.cursor() 
     cursor.execute("SHOW TABLES LIKE 'presupuestos';")
     if cursor.fetchone() is None:
-        print("No se encontró la tabla 'presupuestos'. Creando las tablas...")
+        print("No se encontró la tabla 'presupuestos'. Creando las tablas")
         # Crear las tablas en la base de datos
         create_tables(conn)
         print("Tablas creadas exitosamente.")
@@ -36,27 +38,37 @@ def handle_new_presupuesto(conn):
         max_id = 0
     new_id = max_id + 1
     print("")
-    print(f"Creando un nuevo presupuesto con ID {new_id}...")
+    print(f"Creando un nuevo presupuesto con ID {new_id}\n")
     # Insertar el nuevo presupuesto en la base de datos, con el ID correspondiente. por medio de inputs
     cursor.execute("SELECT * FROM clientes;")
     clientes = cursor.fetchall()
-    #quiero crear una variable booleana para identificar si tengo o no tengo listado de clientes
+    # Crear una variable booleana para identificar si tengo o no tengo listado de clientes
+    tengo_clientes = bool(clientes)
+
+    if tengo_clientes:
+        print("Lista de clientes:")
+        for cliente in clientes:
+            print(f"{cliente[0]}. {cliente[1]}")
+    else:
+        print(Fore.RED + "No hay clientes en la lista.\n")
+        importar_clientes()
     
 
 
 
 
-    print("Lista de clientes:")
-    for cliente in clientes:
-        print(f"{cliente[0]}. {cliente[1]}")
-    cliente_id = input("ID del cliente o 'n' para agregar uno nuevo: ")
-    if cliente_id == 'n':
-        nombre_cliente = input("Nombre del cliente: ")
-        cursor.execute("INSERT INTO clientes (nombre) VALUES (%s);", (nombre_cliente,))
-        conn.commit()
-        cliente_id = cursor.lastrowid
-    else:
-        cliente_id = int(cliente_id)
+
+    # print("Lista de clientes:")
+    # for cliente in clientes:
+    #     print(f"{cliente[0]}. {cliente[1]}")
+    # cliente_id = input("ID del cliente o 'n' para agregar uno nuevo: ")
+    # if cliente_id == 'n':
+    #     nombre_cliente = input("Nombre del cliente: ")
+    #     cursor.execute("INSERT INTO clientes (nombre) VALUES (%s);", (nombre_cliente,))
+    #     conn.commit()
+    #     cliente_id = cursor.lastrowid
+    # else:
+    #     cliente_id = int(cliente_id)
     #luego se ofrece una lista de los productos, para seleccionar uno. 
 
 
@@ -95,13 +107,13 @@ def handle_generate_pdf():
             data = None # Provisorio. Obtener los datos del presupuesto desde la base de datos
         full_file_path = os.path.join(file_path, file_name)
         logger.debug(f"Ruta del archivo configurada: {full_file_path}")
-        print(f"Generando PDF en {full_file_path}...")
+        print(f"Generando PDF en {full_file_path}")
         create_pdf(data, full_file_path)
         logger.info("PDF generado exitosamente.")
         
         # Abrir el PDF automáticamente después de crearlo
         os.startfile(full_file_path)
-        print(f"Abriendo el archivo {full_file_path}...")
+        print(f"Abriendo el archivo {full_file_path}")
         
     except Exception as e:
         logger.error(f"Error al generar el PDF: {e}", exc_info=True)
@@ -111,7 +123,7 @@ def handle_generate_pdf():
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
-    logger.info("Iniciando la aplicación...")
+    logger.info("Iniciando la aplicación")
     conn = create_connection()
     primera_vez = True
     while True:
@@ -119,7 +131,7 @@ def main():
             print(Fore.GREEN +"¡Bienvenido al Presupuestador de Proyectos!")
             primera_vez = False
         else:
-            input("Presione Enter para continuar...")
+            input("Presione Enter para continuar")
             os.system('cls' if os.name == 'nt' else 'clear')
 
         choice = main_menu()
@@ -128,10 +140,46 @@ def main():
         elif choice == '2':
             handle_generate_pdf()
         elif choice == '0':
-            print("Saliendo del programa...")
+            print("Saliendo del programa")
             break
         else:
             print("Opción no válida. Intente de nuevo.")
+
+
+
+import csv
+import logging
+
+logger = logging.getLogger(__name__)
+
+def importar_clientes():
+    clientes = []
+    try:
+        logger.info("Importando clientes desde el archivo 'clientes.csv'")
+        with open('database/clientes.csv', 'r') as file:
+            logger.debug("Abriendo el archivo 'clientes.csv'")
+            reader = csv.reader(file)
+            try:
+                logger.debug("Leyendo la cabecera del archivo 'clientes.csv'")
+                row_cabecera = next(reader)
+                logger.debug(f"Cabecera: {row_cabecera}")
+
+                next(reader)  
+                row = next(reader)
+                logger.debug("Descartando la primera fila del archivo 'clientes.csv'")
+                logger.debug("Leyendo los clientes del archivo 'clientes.csv'")
+                logger.debug(f"{row_cabecera[0]}: {row[0]}, {row_cabecera[1]}: {row[1]}, {row_cabecera[2]}: {row[2]}, {row_cabecera[3]}: {row[3]}, {row_cabecera[4]}: {row[4]}, {row_cabecera[5]}: {row[5]} ")
+            
+            except StopIteration:
+                logger.warning("El archivo 'clientes.csv' está vacío.")
+                return clientes
+            for row in reader:
+                clientes.append(row)
+    except FileNotFoundError:
+        logger.error("No se pudo abrir el archivo 'clientes.csv'.")
+    except Exception as e:
+        logger.error(f"Error al importar clientes desde el archivo 'clientes.csv': {e}")
+    return clientes
 
 if __name__ == "__main__":
     main()
