@@ -1,18 +1,20 @@
 #src/main.py
 import os
 from datetime import datetime
+from colorama import Fore, init
 from pdf_generator import create_pdf
 from database import create_connection, create_tables
 from logs.config_logger import configurar_logging
 
 logger = configurar_logging()
+init(autoreset=True)
 
 def main_menu():
     print("\nPresupuestador de Proyectos")
     print("1. Confeccionar un nuevo presupuesto")
     print("2. Generar archivo PDF del presupuesto")
-    print("0. Salir")
-    choice = input("Elija una opción: ") or "2"
+    print("0. Salir\n")
+    choice = input(Fore.BLUE + "Elija una opción: ") or "2"
     return choice
 
 def handle_new_presupuesto(conn):
@@ -33,11 +35,17 @@ def handle_new_presupuesto(conn):
     if max_id is None:
         max_id = 0
     new_id = max_id + 1
+    print("")
     print(f"Creando un nuevo presupuesto con ID {new_id}...")
     # Insertar el nuevo presupuesto en la base de datos, con el ID correspondiente. por medio de inputs
-    #primero ofrece una lista de los clientes, para seleccionar uno. En caso de no estar el cliente, se puede agregar uno nuevo
     cursor.execute("SELECT * FROM clientes;")
     clientes = cursor.fetchall()
+    #quiero crear una variable booleana para identificar si tengo o no tengo listado de clientes
+    
+
+
+
+
     print("Lista de clientes:")
     for cliente in clientes:
         print(f"{cliente[0]}. {cliente[1]}")
@@ -108,7 +116,7 @@ def main():
     primera_vez = True
     while True:
         if primera_vez:
-            print("¡Bienvenido al Presupuestador de Proyectos!")
+            print(Fore.GREEN +"¡Bienvenido al Presupuestador de Proyectos!")
             primera_vez = False
         else:
             input("Presione Enter para continuar...")
