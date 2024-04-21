@@ -17,6 +17,7 @@ def main_menu():
     print("2. Generar archivo PDF del presupuesto")
     print("0. Salir\n")
     choice = input(Fore.BLUE + "Elija una opción: ") or "2"
+    print("")
     return choice
 
 def handle_new_presupuesto(conn):
@@ -32,7 +33,7 @@ def handle_new_presupuesto(conn):
         print("Tables created successfully.")
 
     new_id = get_next_budget_id(cursor)
-    print(f"\nCreating a new budget with ID {new_id}\n")
+    print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
 
     # Insert the new budget into the database, with the corresponding ID. through inputs
     clientes = get_all_clients(cursor)
@@ -43,8 +44,19 @@ def handle_new_presupuesto(conn):
     if have_clients:
         print_client_list(clientes)
     else:
-        print(Fore.RED + "There are no clients in the list.\n")
-        importar_clientes()
+        print(Fore.RED + "No hay clientes en la lista.\n")
+        print("Te gustaría importar clientes desde un archivo CSV?")
+        importar = input("S/N: ")
+        if importar.upper() == 'S':
+            clientes = importar_clientes()
+            print_client_list(clientes)
+        else:
+            print("No se importaron clientes.")
+            agregar_cliente()
+
+def agregar_cliente():
+    print("Agregando un nuevo cliente")
+
 
 def table_exists(cursor, table_name):
     cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
@@ -122,6 +134,7 @@ def main():
     while True:
         if primera_vez:
             print(Fore.GREEN +"¡Bienvenido al Presupuestador de Proyectos!")
+            print("")
             primera_vez = False
         else:
             input("Presione Enter para continuar")
@@ -137,13 +150,6 @@ def main():
             break
         else:
             print("Opción no válida. Intente de nuevo.")
-
-
-
-import csv
-import logging
-
-logger = logging.getLogger(__name__)
 
 def importar_clientes():
     clientes = []

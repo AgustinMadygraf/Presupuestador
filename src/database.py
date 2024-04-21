@@ -34,7 +34,16 @@ def create_connection():
         if conn.is_connected():
             db_info = conn.get_server_info()
             logger.info(f"Conectado al servidor MySQL versión {db_info}")
-            create_tables(conn)
+            #quiero chequear si existen las tablas, en caso de que no existan, las creo medante create_tables(conn)
+            cursor = conn.cursor()
+            cursor.execute("SHOW TABLES")
+            tables = cursor.fetchall()
+            if len(tables) == 0:
+                logger.info("No se encontraron tablas en la base de datos. Creando tablas...")
+                create_tables(conn)
+            cursor.close()
+            
+            
     except Error as e:
         if 'Unknown database' in str(e):
             # Si la base de datos no existe, crea una conexión sin especificar la base de datos

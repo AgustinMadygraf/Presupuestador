@@ -6,3 +6,4 @@ src/logs/__pycache__/
 generated_pdfs/
 Presupuestador.bat
 .env
+Presupuestador.code-workspace
