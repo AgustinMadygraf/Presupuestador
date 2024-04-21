@@ -154,7 +154,14 @@ def create_tables(conn):
     finally:
         cursor.close()
 
+def table_exists(cursor, table_name):
+    cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
+    return cursor.fetchone() is not None
 
+def get_next_budget_id(cursor):
+    cursor.execute("SELECT MAX(ID_presupuesto) FROM presupuestos;")
+    max_id = cursor.fetchone()[0]
+    return max_id + 1 if max_id is not None else 1
 
 
 

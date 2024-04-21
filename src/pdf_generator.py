@@ -4,9 +4,13 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.platypus import Table, TableStyle
 import os
-
+from logs.config_logger import configurar_logging
+from datetime import datetime
 from data_definitions import custom_color1, custom_color2, data_test
 from reportlab.lib import colors
+
+logger = configurar_logging()
+
 
 def create_pdf(data, filename):
     if data is None:
@@ -61,9 +65,6 @@ def draw_footer(c, width, height, top_margin, footer_text_info):
         if right_value:
             c.setFont("Helvetica", 8)
             c.drawString(right_text_x + 30 * mm, footer_start_y - index * interlinea, right_value)
-
-
-
 
 def set_pdf_title(c, filename):
     title = os.path.splitext(os.path.basename(filename))[0]
@@ -133,7 +134,6 @@ def draw_table(c, width, height, start_y, side_margin, table_data):
     # Dibujar la tabla en el canvas, usando los mismos márgenes laterales que el banner
     table.wrapOn(c, table_width, height)  
     table.drawOn(c, side_margin, start_y) 
-
 
 
 
