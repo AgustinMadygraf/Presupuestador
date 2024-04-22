@@ -1,14 +1,11 @@
 #src/main.py
 import os
-from datetime import datetime
 from colorama import Fore, init
 from pdf_generator import handle_generate_pdf
 from database import create_connection, create_tables, table_exists, get_next_budget_id
-from client import select_client
 from menu import main_menu
+from client_interfaz import select_client
 from logs.config_logger import configurar_logging
-import csv
-import tabulate
 
 logger = configurar_logging()
 init(autoreset=True)
@@ -23,8 +20,6 @@ def get_new_budget_id(cursor):
     new_id = get_next_budget_id(cursor)
     print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
     return new_id
-
-
 
 def handle_new_presupuesto(conn):
     cursor = conn.cursor() 
@@ -57,7 +52,6 @@ def main():
             break
         else:
             print("Opción no válida. Intente de nuevo.")
-
 
 if __name__ == "__main__":
     main()

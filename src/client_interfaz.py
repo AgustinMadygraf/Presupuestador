@@ -1,8 +1,8 @@
 from database import create_connection, get_next_budget_id, table_exists
-import tabulate
-import csv
+from cliente_importacion import importar_clientes
 from logs.config_logger import configurar_logging
 from colorama import init, Fore
+import tabulate
 
 logger = configurar_logging()
 init(autoreset=True)
@@ -42,42 +42,6 @@ def get_all_clients(cursor):
     cursor.execute("SELECT * FROM clientes;")
     return cursor.fetchall()
 
-def importar_clientes():
-    clientes = []
-    try:
-        logger.info("Importando clientes desde el archivo 'clientes.csv'")
-        with open('database/clientes.csv', 'r') as file:
-            logger.debug("Abriendo el archivo 'clientes.csv'")
-            reader = csv.reader(file)
-            #abrir conexion con Mysql
-            conn = create_connection()
-            cursor = conn.cursor()
-            try:
-                logger.debug("Leyendo la cabecera del archivo 'clientes.csv'")
-                row_cabecera = next(reader)
-                logger.debug(f"Cabecera: {row_cabecera}")
-
-                next(reader)  
-                row = next(reader)
-                logger.debug("Descartando la primera fila del archivo 'clientes.csv'")
-                logger.debug("Leyendo los clientes del archivo 'clientes.csv'")
-                logger.debug(f"{row_cabecera[0]}: {row[0]}, {row_cabecera[1]}: {row[1]}, {row_cabecera[2]}: {row[2]}, {row_cabecera[3]}: {row[3]}, {row_cabecera[4]}: {row[4]}, {row_cabecera[5]}: {row[5]}, {row_cabecera[6]}: {row[6]}, {row_cabecera[7]}: {row[7]}")
-                logger.debug("Insertando los clientes en la base de datos")
-                sql = "INSERT INTO clientes (ID_cliente,CUIT,Razon_social,Direccion,Ubicacion_geografica,N_contacto,nombre,apellido,Unidad_de_negocio,Legajo_vendedor,Facturacion_anual) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);", (row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10])                
-                cursor.execute(sql)
-                conn.commit()
-                
-            except StopIteration:
-                logger.warning("El archivo 'clientes.csv' está vacío.")
-                return clientes
-            for row in reader:
-                clientes.append(row)
-    except FileNotFoundError:
-        logger.error("No se pudo abrir el archivo 'clientes.csv'.")
-    except Exception as e: #mayor detalle de este error
-        logger.error(f"Error al importar clientes desde el archivo 'clientes.csv': {e}")
-    return clientes
-
 def select_client(cursor):
     clientes = get_all_clients(cursor)
     have_clients = bool(clientes)
@@ -86,8 +50,12 @@ def select_client(cursor):
         print("\nSeleccione el ID del cliente al que desea asignar el presupuesto:")
         client_id = input("ID del cliente: ")
         cursor.execute("SELECT * FROM clientes WHERE ID_cliente = %s;", (client_id,))
-        Razon_social = cursor.fetchone()[2]
-        print(f"Cliente seleccionado: {Razon_social}")
+        selected_client = cursor.fetchone()
+        print("Cliente seleccionado:")
+        # Presentar el cliente seleccionado en una tabla de "tabulate"
+        headers = ["ID_cliente", "CUIT", "Razon_social", "Direccion", "Ubicacion_geografica", "N_contacto", "nombre", "apellido", "Unidad_de_negocio", "Legajo_vendedor", "Facturacion_anual"]
+        print(tabulate.tabulate([selected_client], headers=headers))
+        print("\n")
         return client_id
     else:
         print(Fore.RED + "No hay clientes en la lista.\n")
