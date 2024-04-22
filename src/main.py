@@ -4,10 +4,11 @@ from datetime import datetime
 from colorama import Fore, init
 from pdf_generator import handle_generate_pdf
 from database import create_connection, create_tables, table_exists, get_next_budget_id
-from client import agregar_cliente
+from client import agregar_cliente, print_client_list
 from menu import main_menu
 from logs.config_logger import configurar_logging
 import csv
+import tabulate
 
 logger = configurar_logging()
 init(autoreset=True)
@@ -35,6 +36,19 @@ def handle_new_presupuesto(conn):
 
     if have_clients:
         print_client_list(clientes)
+        print("\nSeleccione el ID del cliente al que desea asignar el presupuesto:")
+        client_id = input("ID del cliente: ")
+        cursor.execute("SELECT * FROM clientes WHERE ID_cliente = %s;", (client_id,))
+        Razon_social = cursor.fetchone()[2]
+        print(f"Cliente seleccionado: {Razon_social}")
+        #tabla del cliente seleccionado con sus respectivos valores        
+        
+
+        client = cursor.fetchone()
+        if client is None:
+            print(Fore.RED + "Cliente no encontrado. Por favor, inténtelo de nuevo.")
+            return
+        
     else:
         print(Fore.RED + "No hay clientes en la lista.\n")
         print("Te gustaría importar clientes desde un archivo CSV?")
@@ -53,11 +67,6 @@ def get_all_clients(cursor):
     cursor.execute("SELECT * FROM clientes;")
     return cursor.fetchall()
 
-def print_client_list(clientes):
-    print("Client list:")
-    for cliente in clientes:
-        print(f"{cliente[0]}. {cliente[1]}")
-
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
@@ -70,7 +79,7 @@ def main():
             print("")
             primera_vez = False
         else:
-            input("Presione Enter para continuar")
+            input("Presione Enter para Reiniciar:\n")
             os.system('cls' if os.name == 'nt' else 'clear')
 
         choice = main_menu()

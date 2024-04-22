@@ -1,4 +1,5 @@
 from database import create_connection, get_next_budget_id
+import tabulate
 
 def agregar_cliente():
     print("Ingrese los datos del cliente a continuación:")
@@ -22,3 +23,8 @@ def agregar_cliente():
     cursor.execute(sql, (ID_cliente, CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual))
     conn.commit()
     print("Cliente agregado con éxito")
+
+def print_client_list(clientes):
+    headers = ["ID_cliente", "CUIT", "Razon_social", "Direccion", "Ubicacion_geografica", "N_contacto", "nombre", "apellido", "Unidad_de_negocio", "Legajo_vendedor", "Facturacion_anual"]
+    table = [headers] + clientes
+    print(tabulate.tabulate(table, headers="firstrow"))
