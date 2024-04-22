@@ -8,6 +8,8 @@ reportlab = "*"
 mysql-connector-python = "*"
 python-dotenv = "*"
 mysql = "*"
+colorama = "*"
+tabulate = "*"
 
 [dev-packages]
 
