@@ -39,3 +39,12 @@ def importar_clientes():
     except Exception as e: #mayor detalle de este error
         logger.error(f"Error al importar clientes desde el archivo 'clientes.csv': {e}")
     return clientes
+
+#        print("¿Te gustaría importar clientes desde un archivo CSV?")
+#        importar = input("S/N: ")
+#        if importar.upper() == 'S':
+#            clientes = importar_clientes()
+#            print_client_list(clientes)
+#        else:
+#            print("No se importaron clientes.")
+#            agregar_cliente()

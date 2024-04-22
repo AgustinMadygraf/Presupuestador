@@ -1,6 +1,6 @@
 #src/client_interfaz.py
 from database import create_connection, get_next_budget_id, table_exists
-from cliente_importacion import importar_clientes
+#from cliente_importacion import importar_clientes
 from logs.config_logger import configurar_logging
 from colorama import init, Fore
 import tabulate
@@ -64,11 +64,3 @@ def select_client(cursor):
                 print(Fore.RED + "Entrada inválida, por favor ingrese un número de ID válido.\n")
     else:
         print(Fore.RED + "No hay clientes en la lista.\n")
-        print("¿Te gustaría importar clientes desde un archivo CSV?")
-        importar = input("S/N: ")
-        if importar.upper() == 'S':
-            clientes = importar_clientes()
-            print_client_list(clientes)
-        else:
-            print("No se importaron clientes.")
-            agregar_cliente()
