@@ -89,7 +89,7 @@ def select_client(cursor):
         response = input("¿Desea agregar un nuevo cliente? (S/N): ")
         if response.strip().upper() == 'S':
             conn = create_connection()
-            return agregar_cliente(cursor, conn)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
+            return agregar_cliente()  
         else:
             return None
 
@@ -121,6 +121,7 @@ def agregar_cliente():
             cursor.execute(sql, (ID_cliente, CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual))
             conn.commit()
             print("Cliente agregado con éxito")
+            return ID_cliente
         except mysql.connector.Error as error:
             print(Fore.RED + f"Error al añadir cliente: {error}")
             conn.rollback()

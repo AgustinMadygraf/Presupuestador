@@ -26,6 +26,10 @@ def handle_new_presupuesto(conn):
     check_and_create_tables(cursor, conn)
     new_id = get_new_budget_id(cursor)
     client_id = select_client(cursor)
+    if client_id is None:
+        return
+    print(f"Cliente seleccionado: {client_id}")
+    
 
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
