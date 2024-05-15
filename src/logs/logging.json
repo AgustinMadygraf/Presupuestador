@@ -3,20 +3,20 @@
     "disable_existing_loggers": false,
     "formatters": {
         "standard": {
-            "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s",
             "datefmt": "%Y-%m-%d %H:%M:%S"
         }
     },
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
-            "level": "DEBUG", 
+            "level": "DEBUG",
             "formatter": "standard",
             "stream": "ext://sys.stdout"
         },
         "file": {
             "class": "logging.handlers.RotatingFileHandler",
-            "level": "DEBUG", 
+            "level": "DEBUG",
             "formatter": "standard",
             "filename": "src/logs/sistema.log",
             "maxBytes": 10485760,
