@@ -4,6 +4,7 @@ from logs.config_logger import configurar_logging
 from colorama import init, Fore
 import tabulate
 import re
+import mysql.connector
 
 logger = configurar_logging()
 init(autoreset=True)
@@ -85,3 +86,46 @@ def select_client(cursor):
                 print(Fore.RED + "Entrada inválida, por favor ingrese un número de ID válido.\n")
     else:
         print(Fore.RED + "No hay clientes en la lista.\n")
+        response = input("¿Desea agregar un nuevo cliente? (S/N): ")
+        if response.strip().upper() == 'S':
+            return agregar_cliente(cursor)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
+        else:
+            return None
+
+def agregar_cliente(cursor):
+    print("Ingrese los datos del nuevo cliente:")
+    CUIT = input_validado("CUIT (xx-xxxxxxxx-x): ", str, validar_cuit)
+    Razon_social = input("Razon social: ")
+    Direccion = input("Direccion: ")
+    Ubicacion_geografica = input("Ubicacion geografica: ")
+    N_contacto = input_validado("Número de contacto (solo números): ", int)
+    nombre = input("Nombre: ")
+    apellido = input("Apellido: ")
+    Unidad_de_negocio = input("Unidad de negocio: ")
+    Legajo_vendedor = input_validado("Legajo del vendedor (solo números): ", int)
+    Facturacion_anual = input_validado("Facturación anual (formato numérico): ", float)
+
+    # Verificar que los datos esenciales no estén vacíos
+    if not (CUIT and Razon_social and nombre and apellido):
+        print(Fore.RED + "Error: Faltan datos esenciales.")
+        return None
+
+    try:
+        # Inserción de los datos en la base de datos
+        sql = """
+        INSERT INTO clientes (CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+        cursor.execute(sql, (CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual))
+        cursor.connection.commit()
+
+        # Obtener el ID del cliente recién insertado
+        new_client_id = cursor.lastrowid
+        print(Fore.GREEN + f"Cliente agregado con éxito. ID asignado: {new_client_id}")
+        return new_client_id
+    except mysql.connector.Error as error:
+        print(Fore.RED + f"Error al añadir cliente: {error}")
+        cursor.connection.rollback()
+        return None
+
+

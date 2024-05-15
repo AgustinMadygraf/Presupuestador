@@ -1,6 +1,6 @@
 #src/database.py
 import mysql.connector
-from mysql.connector import Error
+from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
 from logs.config_logger import configurar_logging
 from dotenv import load_dotenv
 import os
@@ -43,13 +43,15 @@ def attempt_connection(host, user, password, db_name):
             database=db_name
         )
         return conn
+    except ProgrammingError as pe:
+        logger.error(f"Error de programación en SQL: {pe}")
+        return None
+    except DatabaseError as de:
+        logger.error(f"Error de base de datos: {de}")
+        return None
     except Error as e:
-        if 'Unknown database' in str(e):
-            logger.info("La base de datos especificada no existe. Intentando crearla...")
-            return create_and_connect_db(host, user, password, db_name)
-        else:
-            logger.error(f"Error al conectar a la base de datos: {e}")
-            return None
+        logger.error(f"Error general de conexión a la base de datos: {e}")
+        return None
 
 def create_and_connect_db(host, user, password, db_name):
     """Crea la base de datos si no existe y reconecta."""
@@ -177,9 +179,18 @@ def create_tables(conn):
         );
         """)
         logger.info("Tabla 'items' creada exitosamente.")
-
+    except IntegrityError as ie:
+        conn.rollback()
+        logger.error(f"Error de integridad: {ie}")
+    except ProgrammingError as pe:
+        conn.rollback()
+        logger.error(f"Error de sintaxis SQL: {pe}")
+    except DatabaseError as de:
+        conn.rollback()
+        logger.error(f"Error al interactuar con la base de datos: {de}")
     except Error as e:
-        logger.error(f"Error al crear las tablas: {e}", exc_info=True)
+        conn.rollback()
+        logger.error(f"Error de MySQL no especificado: {e}")
     finally:
         cursor.close()
 
