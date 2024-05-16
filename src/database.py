@@ -10,6 +10,12 @@ logger = configurar_logging()
 
 load_dotenv()
 
+def list_salespeople(cursor, conn):
+    """Obtiene la lista de vendedores de la base de datos."""
+    cursor.execute("SELECT Legajo_vendedor, nombre, apellido FROM vendedores;")
+    return cursor.fetchall()
+
+
 def create_connection():
     """Create a database connection to the MySQL database."""
     host = os.getenv('MYSQL_HOST')
