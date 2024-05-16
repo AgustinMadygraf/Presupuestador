@@ -32,6 +32,7 @@ def select_client(cursor):
     if have_clients:
         print_client_list(clientes)
         print("\nSeleccione el ID del cliente al que desea asignar el presupuesto:")
+        print("Si no ve el cliente que busca, puede agregar uno nuevo con el ID 0.")
         while True:
             client_id = input("ID del cliente: ")
             if client_id.isdigit():  # Asegura que el ID es numérico
@@ -43,6 +44,9 @@ def select_client(cursor):
                     print(tabulate.tabulate([selected_client], headers=headers))
                     print("\n")
                     return client_id
+                elif client_id == '0':  # Agregar nuevo cliente con ID 0
+                    conn = create_connection()
+                    return agregar_cliente(cursor, conn)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
                 else:
                     print(Fore.RED + "No se encontró un cliente con ese ID. Por favor, intente de nuevo.\n")
             else:
