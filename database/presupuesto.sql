@@ -92,6 +92,7 @@ CREATE TABLE `presupuestos` (
 --
 
 CREATE TABLE `vendedores` (
+  `ID_vendedor` int(11) NOT NULL,
   `Legajo_vendedor` int(11) NOT NULL,
   `nombre` varchar(255) NOT NULL,
   `apellido` varchar(255) NOT NULL

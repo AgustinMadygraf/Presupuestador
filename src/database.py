@@ -1,20 +1,13 @@
-#src/database.py
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
 from logs.config_logger import configurar_logging
 from dotenv import load_dotenv
 import os
-from  colorama import Fore
+from colorama import Fore
 
 logger = configurar_logging()
 
 load_dotenv()
-
-def list_salespeople(cursor, conn):
-    """Obtiene la lista de vendedores de la base de datos."""
-    cursor.execute("SELECT Legajo_vendedor, nombre, apellido FROM vendedores;")
-    return cursor.fetchall()
-
 
 def create_connection():
     """Create a database connection to the MySQL database."""
@@ -22,8 +15,7 @@ def create_connection():
     user = os.getenv('MYSQL_USER')
     password = os.getenv('MYSQL_PASSWORD')
     db_name = os.getenv('MYSQL_DB')
-    
-    # Asegúrate de que todas las variables de entorno estén configuradas
+
     if None in (db_name, host, user, password):
         logger.error("Falta una o más variables de entorno requeridas para la conexión a la base de datos.")
         return None
@@ -37,7 +29,7 @@ def create_connection():
         db_info = conn.get_server_info()
         logger.info(f"Conectado al servidor MySQL versión {db_info}")
         initialize_database(conn)
-    
+
     return conn
 
 def attempt_connection(host, user, password, db_name):
@@ -100,27 +92,6 @@ def initialize_database(conn):
             logger.info("No se encontraron tablas en la base de datos. Creando tablas...")
             create_tables(conn)
 
-def create_database(conn, db_name):
-    """Create the database if it does not exist and create tables within a transaction."""
-    cursor = conn.cursor()
-    try:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
-        conn.database = db_name  # Esto es necesario para apuntar a la base de datos recién creada
-        logger.info(f"Base de datos '{db_name}' creada exitosamente.")
-        
-        # Iniciar transacción para crear tablas
-        conn.start_transaction()
-        create_tables(conn)
-        conn.commit()  # Confirmar cambios solo si todas las tablas se crean sin errores
-        logger.info("Todas las tablas fueron creadas exitosamente en la transacción.")
-        
-    except Error as e:
-        conn.rollback()  # Revertir cambios en caso de error
-        logger.error(f"Error al crear la base de datos o las tablas: {e}", exc_info=True)
-    finally:
-        cursor.close()
-
-
 def create_tables(conn):
     """Create tables in the specified database."""
     cursor = conn.cursor()
@@ -149,7 +120,8 @@ def create_tables(conn):
         # Creación de la tabla 'vendedores'
         cursor.execute("""
         CREATE TABLE IF NOT EXISTS vendedores (
-            Legajo_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+            ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+            Legajo_vendedor INT NOT NULL,
             nombre VARCHAR(255) NOT NULL,
             apellido VARCHAR(255) NOT NULL
         );
@@ -200,6 +172,69 @@ def create_tables(conn):
         logger.error(f"Error de MySQL no especificado: {e}")
     finally:
         cursor.close()
+
+from mysql.connector import Error, IntegrityError, ProgrammingError, DatabaseError
+
+def list_salespeople(cursor, conn):
+    """Obtiene la lista de vendedores de la base de datos y agrega un nuevo vendedor si no hay ninguno."""
+    if not table_exists(cursor, 'vendedores'):
+        print("La tabla 'vendedores' no existe. Creándola ahora...")
+        create_vendedores_table(cursor, conn)
+    
+    cursor.execute("SELECT ID_vendedor, Legajo_vendedor, nombre, apellido FROM vendedores;")
+    vendedores = cursor.fetchall()
+    
+    if not vendedores:
+        print("No hay vendedores disponibles.")
+        response = input("¿Desea agregar un nuevo vendedor? (S/N): ")
+        if response.strip().upper() == 'S':
+            new_vendedor_id = agregar_vendedor(cursor, conn)
+            if new_vendedor_id:
+                cursor.execute("SELECT ID_vendedor, Legajo_vendedor, nombre, apellido FROM vendedores;")
+                vendedores = cursor.fetchall()
+            else:
+                return []
+        else:
+            return [] 
+    return vendedores
+
+def create_vendedores_table(cursor, conn):
+    """Crea la tabla 'vendedores' si no existe."""
+    try:
+        cursor.execute("""
+        CREATE TABLE vendedores (
+            ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+            Legajo_vendedor INT NOT NULL,
+            nombre VARCHAR(255) NOT NULL,
+            apellido VARCHAR(255) NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        """)
+        conn.commit()
+        print("Tabla 'vendedores' creada exitosamente.")
+    except (Error, IntegrityError, ProgrammingError, DatabaseError) as e:
+        conn.rollback()
+        print(f"Error al crear la tabla 'vendedores': {e}")
+
+def agregar_vendedor(cursor, conn):
+    print("Ingrese los datos del nuevo vendedor:")
+    legajo = input("Legajo: ")
+    nombre = input("Nombre: ")
+    apellido = input("Apellido: ")
+
+    try:
+        sql = """
+        INSERT INTO vendedores (nombre, apellido, Legajo_vendedor)
+        VALUES (%s, %s, %s);
+        """
+        cursor.execute(sql, (nombre, apellido, legajo))
+        conn.commit()
+        new_vendedor_id = cursor.lastrowid
+        print(Fore.GREEN + f"Vendedor agregado con éxito. ID asignado: {new_vendedor_id}")
+        return new_vendedor_id
+    except mysql.connector.Error as error:
+        print(Fore.RED + f"Error al añadir vendedor: {error}")
+        conn.rollback()
+        return None
 
 def table_exists(cursor, table_name):
     cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
