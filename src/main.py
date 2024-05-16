@@ -12,9 +12,9 @@ init(autoreset=True)
 
 def check_and_create_tables(cursor, conn):
     if not table_exists(cursor, 'presupuestos'):
-        print("The 'presupuestos' table was not found. Creating tables...")
+        logger.info("The 'presupuestos' table was not found. Creating tables...")
         create_tables(conn)
-        print("Tables created successfully.")
+        logger.info("Tables created successfully.")
 
 def handle_new_presupuesto(conn):
     try:
@@ -27,9 +27,9 @@ def handle_new_presupuesto(conn):
         finally:
             cursor.close()
     except AttributeError as e:
-        print(f"Error: {e}. Verifique la conexión a la base de datos.")
+        logger.error(f"Error: {e}. Verifique la conexión a la base de datos.")
     except Exception as e:
-        print(f"Se produjo un error: {e}")
+        logger.error(f"Se produjo un error: {e}")
 
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')

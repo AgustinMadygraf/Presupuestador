@@ -19,17 +19,14 @@ def create_connection():
     if None in (db_name, host, user, password):
         logger.error("Falta una o más variables de entorno requeridas para la conexión a la base de datos.")
         return None
-
     conn = attempt_connection(host, user, password, db_name)
     if conn is None:
         logger.error("No fue posible establecer una conexión inicial con la base de datos.")
         return None
-
     if conn.is_connected():
         db_info = conn.get_server_info()
         logger.info(f"Conectado al servidor MySQL versión {db_info}")
         initialize_database(conn)
-
     return conn
 
 def attempt_connection(host, user, password, db_name):
@@ -172,8 +169,6 @@ def create_tables(conn):
         logger.error(f"Error de MySQL no especificado: {e}")
     finally:
         cursor.close()
-
-from mysql.connector import Error, IntegrityError, ProgrammingError, DatabaseError
 
 def list_salespeople(cursor, conn):
     """Obtiene la lista de vendedores de la base de datos y agrega un nuevo vendedor si no hay ninguno."""
