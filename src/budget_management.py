@@ -64,6 +64,34 @@ def collect_budget_data(cursor, conn):
 def select_salesperson(salespeople):
     while True:
         try:
+            selection = int(input("Seleccione el número del vendedor: "))
+            if 1 <= selection <= len(salespeople):
+                return salespeople[selection - 1][0]
+            else:
+                print("Número inválido, por favor seleccione un número de la lista.")
+        except ValueError:
+            print("Entrada inválida, por favor ingrese un número.")
+
+def collect_yes_no_input(prompt):
+    while True:
+        response = input(prompt).upper()
+        if response in ['S', 'N']:
+            return response
+        print("Respuesta inválida, por favor ingrese 'S' o 'N'.")
+
+def collect_input(prompt):
+    return input(prompt)
+
+def collect_numeric_input(prompt, value_type):
+    while True:
+        try:
+            return value_type(input(prompt))
+        except ValueError:
+            print(f"Entrada inválida, por favor ingrese un valor de tipo {value_type.__name__}.")
+
+def select_salesperson(salespeople):
+    while True:
+        try:
             #mostar la lista de vendedores
             print("Seleccione un vendedor:")
             for idx, salesperson in enumerate(salespeople, start=1):
