@@ -4,6 +4,7 @@ from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityErr
 from logs.config_logger import configurar_logging
 from dotenv import load_dotenv
 import os
+from  colorama import Fore
 
 logger = configurar_logging()
 
@@ -203,6 +204,26 @@ def get_next_budget_id(cursor):
     max_id = cursor.fetchone()[0]
     return max_id + 1 if max_id is not None else 1
 
+def insert_budget_into_db(cursor, conn, budget_data):
+    if budget_data is None:
+        return
+    try:
+        sql = """
+        INSERT INTO presupuestos (ID_presupuesto, Legajo_vendedor, ID_cliente, Entrega_incluido, Fecha_envio, comentario, Condiciones, subtotal, tiempo_dias_valido)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+        cursor.execute(sql, (
+            budget_data["new_id"], budget_data["Legajo_vendedor"], budget_data["client_id"], 
+            budget_data["Entrega_incluido"], budget_data["Fecha_envio"], budget_data["comentario"], 
+            budget_data["Condiciones"], budget_data["subtotal"], budget_data["tiempo_dias_valido"]
+        ))
+        conn.commit()
+        print(Fore.GREEN + "Presupuesto creado con éxito.")
+    except mysql.connector.Error as error:
+        print(Fore.RED + f"Error al crear presupuesto: {error}")
+        conn.rollback()
 
-
-
+def get_new_budget_id(cursor):
+    new_id = get_next_budget_id(cursor)
+    print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
+    return new_id
