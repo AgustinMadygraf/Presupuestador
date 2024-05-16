@@ -4,8 +4,8 @@ from colorama import Fore, init
 from pdf_generator import handle_generate_pdf
 from database import create_connection, create_tables, table_exists, get_next_budget_id
 from menu import main_menu
-from client_interfaz import select_client
 from logs.config_logger import configurar_logging
+from client_selection import select_client
 
 logger = configurar_logging()
 init(autoreset=True)
