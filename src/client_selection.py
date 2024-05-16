@@ -81,7 +81,7 @@ def agregar_cliente(cursor, conn):
     N_contacto = input_validado("Número de contacto (solo números): ", int)
     nombre = input("Nombre: ")
     apellido = input("Apellido: ")
-    Unidad_de_negocio = input("Unidad de negocio: ")
+    Unidad_de_negocio = "Bolsas"
     Legajo_vendedor = input_validado("Legajo del vendedor (solo números): ", int)
     Facturacion_anual = input_validado("Facturación anual (formato numérico): ", float)
 

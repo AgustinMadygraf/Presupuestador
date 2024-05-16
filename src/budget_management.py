@@ -58,10 +58,18 @@ def collect_budget_data(cursor, conn):
             print("Entrada inválida, por favor ingrese un número.")
     
     Entrega_incluido = input("Entrega incluido (S/N): ")
+    if Entrega_incluido.upper() == 'S':
+        Entrega_incluido = "Entrega incluida"
+    else:
+        Entrega_incluido = "Entrega no incluida"
     Fecha_envio = input("Fecha de envío (YYYY-MM-DD): ")
     comentario = input("Comentario: ")
-    Condiciones = input("Condiciones: ")
-    subtotal = input_validado("Subtotal (formato numérico): ", float)
+    Condiciones = input('Condiciones "50% Anticipo, 50% contra entrega" (S/N)": ')
+    if Condiciones.upper() == "S":
+        Condiciones = "50% Anticipo, 50% contra entrega"
+    else:
+        Condiciones = input("Ingrese las condiciones: ")
+    subtotal = 1 #provisorio
     tiempo_dias_valido = input_validado("Tiempo válido en días (solo números): ", int)
 
     return {
