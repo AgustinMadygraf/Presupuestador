@@ -17,11 +17,19 @@ def check_and_create_tables(cursor, conn):
         print("Tables created successfully.")
 
 def handle_new_presupuesto(conn):
-    cursor = conn.cursor() 
-    check_and_create_tables(cursor, conn)
-    budget_data = collect_budget_data(cursor, conn)
-    insert_budget_into_db(cursor, conn, budget_data)
-    cursor.close()
+    try:
+        cursor = conn.cursor()
+        try:
+            check_and_create_tables(cursor, conn)
+            budget_data = collect_budget_data(cursor, conn)
+            if budget_data:
+                insert_budget_into_db(cursor, conn, budget_data)
+        finally:
+            cursor.close()
+    except AttributeError as e:
+        print(f"Error: {e}. Verifique la conexión a la base de datos.")
+    except Exception as e:
+        print(f"Se produjo un error: {e}")
 
 def main():
     os.system('cls' if os.name == 'nt' else 'clear')
