@@ -1,8 +1,6 @@
 import re
 from colorama import Fore
 
-
-
 def validar_cuit(cuit):
     """Valida que el CUIT tenga el formato correcto (xx-xxxxxxxx-x)."""
     pattern = r'^\d{2}-\d{8}-\d{1}$'

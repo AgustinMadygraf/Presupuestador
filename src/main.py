@@ -29,7 +29,8 @@ def handle_new_presupuesto(conn):
     if client_id is None:
         return
     print(f"Cliente seleccionado: {client_id}")
-    # Aquí iría la lógica para crear un nuevo item de presupuesto #####################################################
+    print(f"ID de presupuesto: {new_id}")
+    # Aquí iría la lógica para crear un nuevo presupuesto
 
 
 def main():

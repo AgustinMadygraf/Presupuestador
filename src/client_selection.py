@@ -3,8 +3,6 @@ from database import create_connection
 from colorama import Fore
 from client_management import agregar_cliente, get_all_clients, print_client_list
 
-
-
 def select_client(cursor):
     clientes = get_all_clients(cursor)
     have_clients = bool(clientes)
