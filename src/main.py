@@ -2,7 +2,7 @@
 import os
 from colorama import Fore, init
 from pdf_generator import handle_generate_pdf
-from database import create_connection, create_tables, table_exists, get_next_budget_id, insert_budget_into_db
+from database import create_connection, create_tables, table_exists, insert_budget_into_db
 from menu import main_menu
 from logs.config_logger import configurar_logging
 from budget_management import collect_budget_data
@@ -19,7 +19,7 @@ def check_and_create_tables(cursor, conn):
 def handle_new_presupuesto(conn):
     cursor = conn.cursor() 
     check_and_create_tables(cursor, conn)
-    budget_data = collect_budget_data(cursor)
+    budget_data = collect_budget_data(cursor, conn)
     insert_budget_into_db(cursor, conn, budget_data)
     cursor.close()
 
