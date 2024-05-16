@@ -104,7 +104,7 @@ def create_tables(conn):
             Legajo_vendedor INT NOT NULL,
             ID_cliente INT NOT NULL,
             Entrega_incluido VARCHAR(255),
-            Fecha_envio VARCHAR(255),
+            Fecha_presupuesto VARCHAR(255),
             comentario TEXT,
             Condiciones TEXT,
             subtotal FLOAT,
@@ -250,12 +250,12 @@ def insert_budget_into_db(cursor, conn, budget_data):
         return
     try:
         sql = """
-        INSERT INTO presupuestos (ID_presupuesto, Legajo_vendedor, ID_cliente, Entrega_incluido, Fecha_envio, comentario, Condiciones, subtotal, tiempo_dias_valido)
+        INSERT INTO presupuestos (ID_presupuesto, Legajo_vendedor, ID_cliente, Entrega_incluido, Fecha_presupuesto, comentario, Condiciones, subtotal, tiempo_dias_valido)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
         cursor.execute(sql, (
             budget_data["new_id"], budget_data["Legajo_vendedor"], budget_data["client_id"], 
-            budget_data["Entrega_incluido"], budget_data["Fecha_envio"], budget_data["comentario"], 
+            budget_data["Entrega_incluido"], budget_data["Fecha_presupuesto"], budget_data["comentario"], 
             budget_data["Condiciones"], budget_data["subtotal"], budget_data["tiempo_dias_valido"]
         ))
         conn.commit()

@@ -74,7 +74,7 @@ CREATE TABLE `presupuestos` (
   `Legajo_vendedor` int(11) NOT NULL,
   `ID_cliente` int(11) NOT NULL,
   `Entrega_incluido` varchar(255) DEFAULT NULL,
-  `Fecha_envio` varchar(255) DEFAULT NULL,
+  `Fecha_presupuesto` varchar(255) DEFAULT NULL,
   `comentario` text,
   `Condiciones` text,
   `subtotal` float DEFAULT NULL,

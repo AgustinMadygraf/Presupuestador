@@ -32,44 +32,27 @@ def collect_budget_data(cursor, conn):
     if client_id is None:
         return None
     print(f"Cliente seleccionado: {client_id}")
+    
     new_id = get_new_budget_id(cursor)
     print(f"ID de presupuesto: {new_id}")
 
-    while True:
-        vendedores = list_salespeople(cursor, conn)
-        if not vendedores:
-            return None
-
-        print("\nLista de veendedores:")
-        for idx, vendedor in enumerate(vendedores, start=1):
-            print(f"{idx}. {vendedor[2]} {vendedor[3]} (Legajo: {vendedor[1]})")
-        print("0. Agregar nuevo vendedor")
-
-        try:
-            seleccion = int(input("\nSeleccione el número del vendedor (o 0 para agregar un nuevo vendedor): "))
-            if seleccion == 0:
-                agregar_vendedor(cursor, conn)
-            elif 1 <= seleccion <= len(vendedores):
-                Legajo_vendedor = vendedores[seleccion - 1][1]  # [1] para Legajo_vendedor
-                break
-            else:
-                print("Número inválido, por favor seleccione un número de la lista.")
-        except ValueError:
-            print("Entrada inválida, por favor ingrese un número.")
+    Legajo_vendedor = select_salesperson(cursor, conn)
+    if Legajo_vendedor is None:
+        return None
     
     Entrega_incluido = input("Entrega incluido (S/N): ")
-    if Entrega_incluido.upper() == 'S':
-        Entrega_incluido = "Entrega incluida"
-    else:
-        Entrega_incluido = "Entrega no incluida"
-    Fecha_envio = input("Fecha de envío (YYYY-MM-DD): ")
+    Entrega_incluido = "Entrega incluida" if Entrega_incluido.upper() == 'S' else "Entrega no incluida"
+    
+    Fecha_presupuesto = input("Fecha de envío (YYYY-MM-DD): ")
     comentario = input("Comentario: ")
+    
     Condiciones = input('Condiciones "50% Anticipo, 50% contra entrega" (S/N)": ')
     if Condiciones.upper() == "S":
         Condiciones = "50% Anticipo, 50% contra entrega"
     else:
         Condiciones = input("Ingrese las condiciones: ")
-    subtotal = 1 #provisorio
+    
+    subtotal = 1000
     tiempo_dias_valido = input_validado("Tiempo válido en días (solo números): ", int)
 
     return {
@@ -77,23 +60,12 @@ def collect_budget_data(cursor, conn):
         "client_id": client_id,
         "Legajo_vendedor": Legajo_vendedor,
         "Entrega_incluido": Entrega_incluido,
-        "Fecha_envio": Fecha_envio,
+        "Fecha_presupuesto": Fecha_presupuesto,
         "comentario": comentario,
         "Condiciones": Condiciones,
         "subtotal": subtotal,
         "tiempo_dias_valido": tiempo_dias_valido
     }
-
-def select_salesperson(salespeople):
-    while True:
-        try:
-            selection = int(input("2 - Seleccione el número del vendedor: "))
-            if 1 <= selection <= len(salespeople):
-                return salespeople[selection - 1][0]
-            else:
-                print("Número inválido, por favor seleccione un número de la lista.")
-        except ValueError:
-            print("Entrada inválida, por favor ingrese un número.")
 
 def collect_yes_no_input(prompt):
     while True:
@@ -112,21 +84,23 @@ def collect_numeric_input(prompt, value_type):
         except ValueError:
             print(f"Entrada inválida, por favor ingrese un valor de tipo {value_type.__name__}.")
 
-def select_salesperson(salespeople,cursor, conn):
+def select_salesperson(cursor, conn):
     while True:
+        vendedores = list_salespeople(cursor, conn)
+        if not vendedores:
+            return None
+
+        print("\nLista de vendedores:")
+        for idx, vendedor in enumerate(vendedores, start=1):
+            print(f"{idx}. {vendedor[2]} {vendedor[3]} (Legajo: {vendedor[1]})")
+        print("0. Agregar nuevo vendedor")
+
         try:
-            #mostar la lista de vendedores
-            print("Seleccione un vendedor:")
-            print("Si no ve el vendedor que busca, puede agregar uno nuevo con el ID 0.")
-            for idx, salesperson in enumerate(salespeople, start=1):
-                print(f"{idx}. {salesperson[1]} {salesperson[2]} (Legajo: {salesperson[0]})")
-            
-            selection = int(input("3 - Seleccione el número del vendedor: "))
-            if 1 <= selection <= len(salespeople):
-                return salespeople[selection - 1][0]
-            elif selection == 0:
-                insertar_vendedor(cursor, conn)  
-                return select_salesperson(salespeople,cursor, conn)  
+            seleccion = int(input("\nSeleccione el número del vendedor (o 0 para agregar un nuevo vendedor): "))
+            if seleccion == 0:
+                agregar_vendedor(cursor, conn)
+            elif 1 <= seleccion <= len(vendedores):
+                return vendedores[seleccion - 1][1]  # [1] para Legajo_vendedor
             else:
                 print("Número inválido, por favor seleccione un número de la lista.")
         except ValueError:
