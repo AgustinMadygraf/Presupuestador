@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
-from logs.config_logger import configurar_logging
+from config_logger import configurar_logging
 from dotenv import load_dotenv
 import os
 from colorama import Fore
@@ -107,7 +107,6 @@ def create_tables(conn):
             subtotal FLOAT,
             IVA_21 FLOAT GENERATED ALWAYS AS (subtotal * 0.21) STORED,
             total FLOAT GENERATED ALWAYS AS (subtotal * 1.21) STORED,
-            fecha_presupuesto DATETIME DEFAULT CURRENT_TIMESTAMP,
             tiempo_dias_valido INT,
             fecha_caducidad DATETIME GENERATED ALWAYS AS (DATE_ADD(fecha_presupuesto, INTERVAL tiempo_dias_valido DAY)) STORED
         );

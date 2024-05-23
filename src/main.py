@@ -1,10 +1,10 @@
 #src/main.py
 import os
 from colorama import Fore, init
-from pdf_generator import handle_generate_pdf
+from generated_reports import handle_generate_pdf
 from database import create_connection, create_tables, table_exists, insert_budget_into_db
 from menu import main_menu
-from logs.config_logger import configurar_logging
+from config_logger import configurar_logging
 from budget_management import collect_budget_data
 
 logger = configurar_logging()
