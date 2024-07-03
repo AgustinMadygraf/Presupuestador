@@ -1,4 +1,5 @@
-#src/main.py
+# src/main.py
+
 import os
 from colorama import Fore, init
 from generated_reports import handle_generate_pdf
@@ -7,50 +8,61 @@ from menu import main_menu
 from budget_management import collect_budget_data
 from logs.config_logger import LoggerConfigurator
 
-logger = LoggerConfigurator().get_logger()
-
 init(autoreset=True)
 
-def handle_new_presupuesto(conn):
-    try:
-        cursor = conn.cursor()
-        try:
-            check_and_create_tables(cursor, conn)
-            budget_data = collect_budget_data(cursor, conn)
-            if budget_data:
-                insert_budget_into_db(cursor, conn, budget_data)
-        finally:
-            cursor.close()
-    except AttributeError as e:
-        logger.error(f"Error: {e}. Verifique la conexión a la base de datos.")
-    except Exception as e:
-        logger.error(f"Se produjo un error: {e}")
+class PresupuestadorApp:
+    def __init__(self):
+        self.logger = LoggerConfigurator().get_logger()
+        self.conn = None
+        self.primera_vez = True
 
-def main():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    # Configurar el sistema de logging
-    logger.info("Iniciando la aplicación")
-    conn = create_connection()
-    primera_vez = True
-    while True:
-        if primera_vez:
-            print(Fore.GREEN +"¡Bienvenido al Presupuestador de Proyectos!")
+    def iniciar(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+        self.logger.info("Iniciando la aplicación")
+        self.conn = create_connection()
+
+        while True:
+            self.mostrar_bienvenida()
+            choice = main_menu()
+            self.procesar_opcion(choice)
+
+    def mostrar_bienvenida(self):
+        if self.primera_vez:
+            print(Fore.GREEN + "¡Bienvenido al Presupuestador de Proyectos!")
             print("")
-            primera_vez = False
+            self.primera_vez = False
         else:
             input("Presione Enter para Reiniciar:\n")
             os.system('cls' if os.name == 'nt' else 'clear')
 
-        choice = main_menu()
+    def procesar_opcion(self, choice):
         if choice == '1':
-            handle_new_presupuesto(conn)
+            self.handle_new_presupuesto()
         elif choice == '2':
             handle_generate_pdf()
         elif choice == '0':
             print("Saliendo del programa")
-            break
+            self.logger.info("Saliendo del programa")
+            return
         else:
             print("Opción no válida. Intente de nuevo.")
+            self.logger.warning(f"Opción no válida seleccionada: {choice}")
+
+    def handle_new_presupuesto(self):
+        try:
+            cursor = self.conn.cursor()
+            try:
+                check_and_create_tables(cursor, self.conn)
+                budget_data = collect_budget_data(cursor, self.conn)
+                if budget_data:
+                    insert_budget_into_db(cursor, self.conn, budget_data)
+            finally:
+                cursor.close()
+        except AttributeError as e:
+            self.logger.error(f"Error: {e}. Verifique la conexión a la base de datos.")
+        except Exception as e:
+            self.logger.error(f"Se produjo un error: {e}")
 
 if __name__ == "__main__":
-    main()
+    app = PresupuestadorApp()
+    app.iniciar()

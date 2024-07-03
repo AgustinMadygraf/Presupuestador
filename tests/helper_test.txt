@@ -1,0 +1,1 @@
+$env:PYTHONPATH="C:\AppServ\www\Presupuestador;C:\AppServ\www\Presupuestador\src"
