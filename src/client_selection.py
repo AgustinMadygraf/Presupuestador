@@ -1,7 +1,7 @@
 import re
 from colorama import Fore
 from database import create_connection, get_next_budget_id, table_exists
-from config_logger import configurar_logging
+from src.logs.config_logger import configurar_logging
 import tabulate
 import mysql.connector
 from colorama import init

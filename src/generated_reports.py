@@ -4,7 +4,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm
 from reportlab.platypus import Table, TableStyle
 import os
-from config_logger import configurar_logging
+from src.logs.config_logger import configurar_logging
 from datetime import datetime
 from data_definitions import custom_color1, custom_color2, data_test
 from reportlab.lib import colors

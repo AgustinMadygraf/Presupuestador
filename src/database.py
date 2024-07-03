@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
-from config_logger import configurar_logging
+from src.logs.config_logger import configurar_logging
 from dotenv import load_dotenv
 import os
 from colorama import Fore

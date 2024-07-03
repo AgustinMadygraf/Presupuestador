@@ -4,7 +4,7 @@ from colorama import Fore, init
 from generated_reports import handle_generate_pdf
 from database import create_connection, create_tables, table_exists, insert_budget_into_db
 from menu import main_menu
-from config_logger import configurar_logging
+from src.logs.config_logger import configurar_logging
 from budget_management import collect_budget_data
 
 logger = configurar_logging()
@@ -31,7 +31,7 @@ def handle_new_presupuesto(conn):
     except Exception as e:
         logger.error(f"Se produjo un error: {e}")
 
-def main():
+def run_app():
     os.system('cls' if os.name == 'nt' else 'clear')
     # Configurar el sistema de logging
     logger.info("Iniciando la aplicación")
@@ -57,5 +57,3 @@ def main():
         else:
             print("Opción no válida. Intente de nuevo.")
 
-if __name__ == "__main__":
-    main()
