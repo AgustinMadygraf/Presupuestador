@@ -5,3 +5,5 @@ Presupuestador.bat
 .env
 Presupuestador.code-workspace
 src/sistema.log
+src/logs/__pycache__/
+src/logs/sistema.log

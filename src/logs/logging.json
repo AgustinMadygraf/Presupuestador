@@ -1,0 +1,54 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "standard": {
+            "format": "%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s\n",
+            "datefmt": "%Y-%m-%d %H:%M:%S"
+        },
+        "colored": {
+            "class": "colorlog.ColoredFormatter",
+            "format": "%(log_color)s%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s\n",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+            "log_colors": {
+                "DEBUG": "cyan",
+                "INFO": "green",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "bold_red"
+            }
+        }
+    },
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "colored",
+            "stream": "ext://sys.stdout"
+        },
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "DEBUG",
+            "formatter": "standard",
+            "filename": "src/logs/sistema.log",
+            "maxBytes": 10485760,
+            "backupCount": 5
+        }
+    },
+    "loggers": {
+        "": {
+            "level": "DEBUG",
+            "handlers": ["console", "file"]
+        },
+        "asyncio": {
+            "level": "WARNING",
+            "handlers": ["console", "file"],
+            "propagate": false
+        },
+        "httpx": {
+            "level": "DEBUG",
+            "handlers": ["file"],
+            "propagate": false
+        }
+    }
+}

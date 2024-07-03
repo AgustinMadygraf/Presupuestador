@@ -2,19 +2,14 @@
 import os
 from colorama import Fore, init
 from generated_reports import handle_generate_pdf
-from database import create_connection, create_tables, table_exists, insert_budget_into_db
+from database import create_connection, insert_budget_into_db, check_and_create_tables
 from menu import main_menu
-from config_logger import configurar_logging
 from budget_management import collect_budget_data
+from logs.config_logger import LoggerConfigurator
 
-logger = configurar_logging()
+logger = LoggerConfigurator().get_logger()
+
 init(autoreset=True)
-
-def check_and_create_tables(cursor, conn):
-    if not table_exists(cursor, 'presupuestos'):
-        logger.info("The 'presupuestos' table was not found. Creating tables...")
-        create_tables(conn)
-        logger.info("Tables created successfully.")
 
 def handle_new_presupuesto(conn):
     try:

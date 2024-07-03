@@ -2,13 +2,13 @@
 import subprocess
 import os
 from pathlib import Path
-from .logs.config_logger import configurar_logging
+from logs.config_logger import LoggerConfigurator
 import winshell
 from win32com.client import Dispatch
 from pywintypes import com_error
 
 # Configuración del logger
-logger = configurar_logging()
+logger = LoggerConfigurator().get_logger()
 
 Name_proj = "Presupuestador"
 

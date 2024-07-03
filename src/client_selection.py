@@ -1,12 +1,12 @@
 import re
 from colorama import Fore
 from database import create_connection, get_next_budget_id, table_exists
-from config_logger import configurar_logging
+from logs.config_logger import LoggerConfigurator
 import tabulate
 import mysql.connector
 from colorama import init
 
-logger = configurar_logging()
+logger = LoggerConfigurator().get_logger()
 init(autoreset=True)
 
 def validar_cuit(cuit):

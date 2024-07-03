@@ -1,11 +1,10 @@
+#Presupuestador/src/database.py
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
-from config_logger import configurar_logging
+from logs.config_logger import logger
 from dotenv import load_dotenv
 import os
 from colorama import Fore
-
-logger = configurar_logging()
 
 load_dotenv()
 
@@ -262,3 +261,9 @@ def get_new_budget_id(cursor):
     new_id = get_next_budget_id(cursor)
     print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
     return new_id
+
+def check_and_create_tables(cursor, conn):
+    if not table_exists(cursor, 'presupuestos'):
+        logger.info("The 'presupuestos' table was not found. Creating tables...")
+        create_tables(conn)
+        logger.info("Tables created successfully.")
