@@ -1,3 +1,4 @@
+#Presupuestador/src/database.py
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
 from src.logs.config_logger import configurar_logging

@@ -6,3 +6,5 @@ Presupuestador.bat
 Presupuestador.code-workspace
 src/logs/sistema.log
 src/logs/__pycache__/
+models/__pycache__/
+tests/__pycache__/
