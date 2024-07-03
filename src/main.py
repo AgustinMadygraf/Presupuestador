@@ -1,3 +1,4 @@
+# src/main.py
 import os
 from colorama import Fore, init
 from generated_reports import handle_generate_pdf
@@ -5,6 +6,7 @@ from database import create_connection, insert_budget_into_db, check_and_create_
 from menu import main_menu
 from budget_management import collect_budget_data
 from logs.config_logger import LoggerConfigurator
+from models.user_interface import UserInterface
 
 init(autoreset=True)
 
@@ -20,7 +22,7 @@ class PresupuestadorApp:
         """
         self.logger = LoggerConfigurator().get_logger()
         self.conn = None
-        self.primera_vez = True
+        self.ui = UserInterface(self.logger)  # Agregamos la instancia de UserInterface
 
     def iniciar(self):
         """
@@ -31,23 +33,9 @@ class PresupuestadorApp:
         self.conn = create_connection()
 
         while True:
-            self.mostrar_bienvenida()
+            self.ui.mostrar_bienvenida()
             choice = main_menu()
             self.procesar_opcion(choice)
-
-    def mostrar_bienvenida(self):
-        """
-        Muestra el mensaje de bienvenida al usuario.
-        """
-        if self.primera_vez:
-            self.logger.debug("Mostrando mensaje de bienvenida por primera vez.")
-            print(Fore.GREEN + "¡Bienvenido al Presupuestador de Proyectos!")
-            print("")
-            self.primera_vez = False
-        else:
-            self.logger.debug("Reiniciando la aplicación por solicitud del usuario.")
-            input("Presione Enter para Reiniciar:\n")
-            os.system('cls' if os.name == 'nt' else 'clear')
 
     def procesar_opcion(self, choice):
         """

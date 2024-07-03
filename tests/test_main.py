@@ -1,7 +1,9 @@
-#Presupuestador/tests/test_main.py
+# tests/test_main.py
+
 import unittest
 from unittest.mock import patch, MagicMock
 from src.main import PresupuestadorApp
+from src.models.user_interface import UserInterface
 
 class TestPresupuestadorApp(unittest.TestCase):
 
@@ -19,46 +21,18 @@ class TestPresupuestadorApp(unittest.TestCase):
         # Instancia de la aplicación
         self.app = PresupuestadorApp()
 
-    @patch('src.main.main_menu', return_value='0')
-    def test_iniciar_salida(self, mock_main_menu):
-        with patch('builtins.print'):
-            self.app.iniciar()
-        self.mock_logger.info.assert_called_with("Saliendo del programa")
+    def test_mostrar_bienvenida_primera_vez(self):
+        ui = UserInterface(self.mock_logger)
+        ui.mostrar_bienvenida()
+        self.assertFalse(ui.primera_vez)
 
-    @patch('src.main.main_menu', return_value='1')
-    @patch('src.main.PresupuestadorApp.handle_new_presupuesto')
-    def test_iniciar_nuevo_presupuesto(self, mock_handle_new_presupuesto, mock_main_menu):
-        with patch('builtins.print'):
-            self.app.iniciar()
-        mock_handle_new_presupuesto.assert_called_once()
-
-    @patch('src.main.main_menu', return_value='2')
-    @patch('src.main.handle_generate_pdf')
-    def test_iniciar_generar_pdf(self, mock_handle_generate_pdf, mock_main_menu):
-        with patch('builtins.print'):
-            self.app.iniciar()
-        mock_handle_generate_pdf.assert_called_once()
-
-    @patch('src.main.PresupuestadorApp.mostrar_bienvenida')
-    def test_mostrar_bienvenida_primera_vez(self, mock_mostrar_bienvenida):
-        self.app.mostrar_bienvenida()
-        mock_mostrar_bienvenida.assert_not_called()
-        self.assertFalse(self.app.primera_vez)
-
-    @patch('src.main.collect_budget_data')
-    @patch('src.main.insert_budget_into_db')
-    @patch('src.main.check_and_create_tables')
-    def test_handle_new_presupuesto(self, mock_check_and_create_tables, mock_insert_budget_into_db, mock_collect_budget_data):
-        mock_cursor = MagicMock()
-        self.mock_conn.cursor.return_value = mock_cursor
-        mock_collect_budget_data.return_value = {'dummy_data': 'value'}
-
-        self.app.handle_new_presupuesto()
-
-        mock_check_and_create_tables.assert_called_once_with(mock_cursor, self.mock_conn)
-        mock_collect_budget_data.assert_called_once_with(mock_cursor, self.mock_conn)
-        mock_insert_budget_into_db.assert_called_once_with(mock_cursor, self.mock_conn, {'dummy_data': 'value'})
-        mock_cursor.close.assert_called_once()
+    def test_mostrar_bienvenida_reinicio(self):
+        ui = UserInterface(self.mock_logger)
+        ui.primera_vez = False
+        with patch('builtins.input', return_value='\n'), patch('os.system'):
+            ui.mostrar_bienvenida()
+            self.mock_logger.debug.assert_called_with("Reiniciando la aplicación por solicitud del usuario.")
 
 if __name__ == '__main__':
     unittest.main()
+

@@ -8,3 +8,4 @@ src/sistema.log
 src/logs/__pycache__/
 src/logs/sistema.log
 tests/__pycache__/
+src/models/__pycache__/
