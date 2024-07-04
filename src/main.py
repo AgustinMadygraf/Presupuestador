@@ -3,9 +3,9 @@ import os
 from colorama import Fore, init
 from src.generated_reports import handle_generate_pdf
 from src.models.database import DatabaseManager
-from src.logs.config_logger import LoggerConfigurator
 from src.models.user_interface import UserInterface
 from src.models.budget_management import BudgetManager
+from src.logs.config_logger import LoggerConfigurator
 
 init(autoreset=True)
 
