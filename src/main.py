@@ -1,11 +1,11 @@
 #Presupuestador/src/main.py
 import os
 from colorama import Fore, init
-from src.models.database import DatabaseManager
-from src.models.user_interface import UserInterface
-from src.models.budget_management import BudgetService
-from src.models.pdf_generator import PDFGenerator
-from src.logs.config_logger import LoggerConfigurator
+from models.database import DatabaseManager
+from models.user_interface import UserInterface
+from models.budget_management import BudgetService
+from models.pdf_generator import PDFGenerator
+from logs.config_logger import LoggerConfigurator
 
 init(autoreset=True)
 
@@ -67,7 +67,6 @@ class PresupuestadorApp:
             self.handle_new_presupuesto()   
         elif choice == '2':
             self.pdf_generator.handle_generate_pdf()
-            #handle_generate_pdf()
         elif choice == '0':
             print("Saliendo del programa")
             self.logger.info("Saliendo del programa")
@@ -84,13 +83,13 @@ class PresupuestadorApp:
         try:
             self.logger.debug("Iniciando proceso para manejar un nuevo presupuesto.")
             cursor = self.conn.cursor()
-            budget_manager = BudgetService(cursor, self.conn)
+            budget_service = BudgetService(cursor, self.conn)
             try:
                 self.logger.debug("Recolectando datos del presupuesto.")
-                budget_data = budget_manager.collect_budget_data()
+                budget_data = budget_service.collect_budget_data()
                 if budget_data:
                     self.logger.debug(f"Datos del presupuesto recolectados: {budget_data}")
-                    budget_manager.insert_budget_into_db(cursor, self.conn, budget_data)
+                    budget_service.insert_budget_into_db(budget_data)
             finally:
                 cursor.close()
                 self.logger.debug("Cursor cerrado.")
@@ -98,4 +97,3 @@ class PresupuestadorApp:
             self.logger.error(f"Error: {e}. Verifique la conexión a la base de datos.")
         except Exception as e:
             self.logger.error(f"Se produjo un error: {e}")
-

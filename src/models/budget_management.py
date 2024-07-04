@@ -1,7 +1,9 @@
 #Presupuestador/src/models/budget_management.py
+from client_selection import select_client, input_validado
+from database import get_new_budget_id
+from models.salesperson_manager import SalespersonManager
 import mysql.connector
-from src.database import get_new_budget_id, list_salespeople, agregar_vendedor
-from src.client_selection import select_client, input_validado
+from colorama import Fore
 
 class BudgetService:
     def __init__(self, cursor, conn):
@@ -9,31 +11,12 @@ class BudgetService:
         self.conn = conn
 
     def listar_vendedores(self, retry=False):
-        self.cursor.execute("SELECT Legajo_vendedor, nombre, apellido FROM vendedores;")
-        vendedores = self.cursor.fetchall()
-        if not vendedores:
-            if not retry:
-                print("No hay vendedores disponibles. Por favor, inserte un nuevo vendedor.")
-                self.add_salesperson()
-                return self.listar_vendedores(retry=True)
-            else:
-                return []
-        else:
-            print("Lista de vendedores:")
-            for idx, vendedor in enumerate(vendedores, start=1):
-                print(f"{idx}. {vendedor[1]} {vendedor[2]} (Legajo: {vendedor[0]})")
-        return vendedores
+        manager = SalespersonManager(self.cursor, self.conn)
+        return manager.list_salespeople()
 
-    def add_salesperson(self):
-        nombre = input("Ingrese el nombre del vendedor: ")
-        apellido = input("Ingrese el apellido del vendedor: ")
-        try:
-            self.cursor.execute("INSERT INTO vendedores (nombre, apellido) VALUES (%s, %s)", (nombre, apellido))
-            self.conn.commit()
-            print("Vendedor insertado exitosamente.")
-        except mysql.connector.Error as err:
-            print("Error al insertar vendedor:", err)
-            self.conn.rollback()
+    def insertar_vendedor(self):
+        manager = SalespersonManager(self.cursor, self.conn)
+        return manager.add_salesperson()
 
     def collect_budget_data(self):
         client_id = select_client(self.cursor)
@@ -76,8 +59,9 @@ class BudgetService:
         }
 
     def select_salesperson(self):
+        manager = SalespersonManager(self.cursor, self.conn)
         while True:
-            vendedores = list_salespeople(self.cursor, self.conn)
+            vendedores = manager.list_salespeople()
             if not vendedores:
                 return None
 
@@ -89,10 +73,29 @@ class BudgetService:
             try:
                 seleccion = int(input("\nSeleccione el número del vendedor (o 0 para agregar un nuevo vendedor): "))
                 if seleccion == 0:
-                    agregar_vendedor(self.cursor, self.conn)
+                    manager.add_salesperson()
                 elif 1 <= seleccion <= len(vendedores):
                     return vendedores[seleccion - 1][1]  # [1] para Legajo_vendedor
                 else:
                     print("Número inválido, por favor seleccione un número de la lista.")
             except ValueError:
                 print("Entrada inválida, por favor ingrese un número.")
+
+    def insert_budget_into_db(self, budget_data):
+        if budget_data is None:
+            return
+        try:
+            sql = """
+            INSERT INTO presupuestos (ID_presupuesto, Legajo_vendedor, ID_cliente, Entrega_incluido, Fecha_presupuesto, comentario, Condiciones, subtotal, tiempo_dias_valido)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """
+            self.cursor.execute(sql, (
+                budget_data["new_id"], budget_data["Legajo_vendedor"], budget_data["client_id"], 
+                budget_data["Entrega_incluido"], budget_data["Fecha_presupuesto"], budget_data["comentario"], 
+                budget_data["Condiciones"], budget_data["subtotal"], budget_data["tiempo_dias_valido"]
+            ))
+            self.conn.commit()
+            print(Fore.GREEN + "Presupuesto creado con éxito.")
+        except mysql.connector.Error as error:
+            print(Fore.RED + f"Error al crear presupuesto: {error}")
+            self.conn.rollback()
