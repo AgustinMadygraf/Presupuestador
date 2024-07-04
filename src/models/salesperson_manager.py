@@ -1,41 +1,54 @@
+#Presupuestador/src/models/salesperson_manager.py
+import mysql.connector
+from colorama import Fore
+
 class SalespersonManager:
     def __init__(self, cursor, conn):
         self.cursor = cursor
         self.conn = conn
 
-    def get_new_budget_id(self):
-        new_id = self.get_next_budget_id()
-        print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
-        return new_id
-
-    def get_next_budget_id(self):
-        self.cursor.execute("SELECT MAX(ID_presupuesto) FROM presupuestos;")
-        max_id = self.cursor.fetchone()[0]
-        return max_id + 1 if max_id is not None else 1
-
     def list_salespeople(self):
+        """Obtiene la lista de vendedores de la base de datos y agrega un nuevo vendedor si no hay ninguno."""
         if not self.table_exists('vendedores'):
             print("La tabla 'vendedores' no existe. Creándola ahora...")
             self.create_vendedores_table()
-        
+
         self.cursor.execute("SELECT ID_vendedor, Legajo_vendedor, nombre, apellido FROM vendedores;")
         vendedores = self.cursor.fetchall()
-        
+
         if not vendedores:
             print("No hay vendedores disponibles.")
             response = input("¿Desea agregar un nuevo vendedor? (S/N): ")
             if response.strip().upper() == 'S':
-                new_vendedor_id = self.agregar_vendedor()
+                new_vendedor_id = self.add_salesperson()
                 if new_vendedor_id:
                     self.cursor.execute("SELECT ID_vendedor, Legajo_vendedor, nombre, apellido FROM vendedores;")
                     vendedores = self.cursor.fetchall()
                 else:
                     return []
             else:
-                return [] 
+                return []
         return vendedores
 
-    def agregar_vendedor(self):
+    def create_vendedores_table(self):
+        """Crea la tabla 'vendedores' si no existe."""
+        try:
+            self.cursor.execute("""
+            CREATE TABLE vendedores (
+                ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+                Legajo_vendedor INT NOT NULL,
+                nombre VARCHAR(255) NOT NULL,
+                apellido VARCHAR(255) NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+            """)
+            self.conn.commit()
+            print("Tabla 'vendedores' creada exitosamente.")
+        except mysql.connector.Error as e:
+            self.conn.rollback()
+            print(f"Error al crear la tabla 'vendedores': {e}")
+
+    def add_salesperson(self):
+        """Añade un nuevo vendedor a la base de datos."""
         print("Ingrese los datos del nuevo vendedor:")
         legajo = input("Legajo: ")
         nombre = input("Nombre: ")
@@ -57,22 +70,6 @@ class SalespersonManager:
             return None
 
     def table_exists(self, table_name):
+        """Verifica si una tabla existe en la base de datos."""
         self.cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
         return self.cursor.fetchone() is not None
-
-    def create_vendedores_table(self):
-        try:
-            self.cursor.execute("""
-            CREATE TABLE vendedores (
-                ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
-                Legajo_vendedor INT NOT NULL,
-                nombre VARCHAR(255) NOT NULL,
-                apellido VARCHAR(255) NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-            """)
-            self.conn.commit()
-            print("Tabla 'vendedores' creada exitosamente.")
-        except (mysql.connector.Error, mysql.connector.IntegrityError, 
-                mysql.connector.ProgrammingError, mysql.connector.DatabaseError) as e:
-            self.conn.rollback()
-            print(f"Error al crear la tabla 'vendedores': {e}")
