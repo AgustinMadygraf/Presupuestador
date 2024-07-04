@@ -1,4 +1,4 @@
-# src/main.py
+#Presupuestador/src/main.py
 
 import os
 from colorama import Fore, init
