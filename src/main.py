@@ -1,7 +1,6 @@
 #Presupuestador/src/main.py
 import os
 from colorama import Fore, init
-from src.generated_reports import handle_generate_pdf
 from src.models.database import DatabaseManager
 from src.models.user_interface import UserInterface
 from src.models.budget_management import BudgetManager
@@ -67,8 +66,8 @@ class PresupuestadorApp:
         if choice == '1':
             self.handle_new_presupuesto()   
         elif choice == '2':
-            #self.pdf_generator.handle_generate_pdf()
-            handle_generate_pdf()
+            self.pdf_generator.handle_generate_pdf()
+            #handle_generate_pdf()
         elif choice == '0':
             print("Saliendo del programa")
             self.logger.info("Saliendo del programa")

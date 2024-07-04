@@ -83,14 +83,14 @@ class PDFGenerator:
         title = os.path.splitext(os.path.basename(filename))[0]
         c.setTitle(title)
 
-def draw_banner(self, c, width, height, side_margin, top_margin, banner_height, data):
-    banner_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'resources', 'banner.jpg'))
-    if not os.path.exists(banner_path):
-        self.logger.error(f"El archivo de banner no se encontró en la ruta: {banner_path}")
-        return
-    c.drawImage(banner_path, side_margin, height - top_margin - banner_height, 
-                width - 2 * side_margin, banner_height, 
-                preserveAspectRatio=True, anchor='n')
+    def draw_banner(self, c, width, height, side_margin, top_margin, banner_height, data):
+        banner_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'resources', 'banner.jpg'))
+        if not os.path.exists(banner_path):
+            self.logger.error(f"El archivo de banner no se encontró en la ruta: {banner_path}")
+            return
+        c.drawImage(banner_path, side_margin, height - top_margin - banner_height, 
+                    width - 2 * side_margin, banner_height, 
+                    preserveAspectRatio=True, anchor='n')
 
     def draw_header(self, c, width, height, top_margin, banner_height, side_margin, sub_banner_text_size, data):
         # Dibujar la información de la izquierda con control de estilo de fuente
@@ -144,6 +144,8 @@ def draw_banner(self, c, width, height, side_margin, top_margin, banner_height, 
         colWidths = [table_width * 0.16, table_width * 0.48, table_width * 0.18, table_width * 0.18]
 
         # Crear la tabla y configurar el estilo
+        if not table_data:
+            table_data = [["", "", "", ""]]
         table = Table(table_data, colWidths=colWidths)
         table.setStyle(table_style)
 
