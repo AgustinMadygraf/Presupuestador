@@ -1,5 +1,4 @@
 #Presupuestador/src/main.py
-
 import os
 from colorama import Fore, init
 from generated_reports import handle_generate_pdf
@@ -25,9 +24,12 @@ class PresupuestadorApp:
         self.conn = None
         self.ui = UserInterface(self.logger)
 
-    def iniciar(self):
+    def iniciar(self, run_once=False):
         """
         Inicia la aplicación y maneja el ciclo principal.
+
+        Args:
+            run_once (bool): Si es True, el bucle principal se ejecutará una sola vez (para pruebas).
         """
         os.system('cls' if os.name == 'nt' else 'clear')
         self.logger.debug("Iniciando la aplicación")
@@ -37,6 +39,8 @@ class PresupuestadorApp:
             self.ui.mostrar_bienvenida()
             choice = main_menu()
             self.procesar_opcion(choice)
+            if run_once:
+                break
 
     def procesar_opcion(self, choice):
         """
@@ -86,4 +90,3 @@ class PresupuestadorApp:
 if __name__ == "__main__":
     app = PresupuestadorApp()
     app.iniciar()
-
