@@ -5,6 +5,7 @@ from src.generated_reports import handle_generate_pdf
 from src.models.database import DatabaseManager
 from src.models.user_interface import UserInterface
 from src.models.budget_management import BudgetManager
+from src.models.pdf_generator import PDFGenerator
 from src.logs.config_logger import LoggerConfigurator
 
 init(autoreset=True)
@@ -23,6 +24,7 @@ class PresupuestadorApp:
         self.conn = None
         self.ui = UserInterface(self.logger)
         self.db_manager = DatabaseManager()
+        self.pdf_generator = PDFGenerator()  
 
     def iniciar(self, run_once=False):
         """
@@ -63,9 +65,10 @@ class PresupuestadorApp:
         """
         self.logger.debug(f"Procesando opción seleccionada: {choice}")
         if choice == '1':
-            self.handle_new_presupuesto()   # Maneja la creación de un nuevo presupuesto
+            self.handle_new_presupuesto()   
         elif choice == '2':
-            handle_generate_pdf()           # Genera un archivo PDF del presupuesto
+            #self.pdf_generator.handle_generate_pdf()
+            handle_generate_pdf()
         elif choice == '0':
             print("Saliendo del programa")
             self.logger.info("Saliendo del programa")
@@ -97,6 +100,3 @@ class PresupuestadorApp:
         except Exception as e:
             self.logger.error(f"Se produjo un error: {e}")
 
-if __name__ == "__main__":
-    app = PresupuestadorApp()
-    app.iniciar()
