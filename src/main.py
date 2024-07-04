@@ -4,7 +4,6 @@ from colorama import Fore, init
 from generated_reports import handle_generate_pdf
 from database import insert_budget_into_db, check_and_create_tables
 from models.database import DatabaseManager
-from menu import main_menu
 from logs.config_logger import LoggerConfigurator
 from models.user_interface import UserInterface
 from models.budget_management import BudgetManager
@@ -39,10 +38,22 @@ class PresupuestadorApp:
 
         while True:
             self.ui.mostrar_bienvenida()
-            choice = main_menu()
+            choice = self.main_menu()
             self.procesar_opcion(choice)
             if run_once:
                 break
+
+    def main_menu(self):
+        """
+        Muestra el menú principal y devuelve la opción seleccionada por el usuario.
+        """
+        print("\nPresupuestador de Proyectos")
+        print("1. Confeccionar un nuevo presupuesto")
+        print("2. Generar archivo PDF del presupuesto")
+        print("0. Salir\n")
+        choice = input(Fore.BLUE + "Elija una opción: ") or "2"
+        print("")
+        return choice
 
     def procesar_opcion(self, choice):
         """

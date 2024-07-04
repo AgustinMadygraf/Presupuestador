@@ -8,7 +8,7 @@ class TestPresupuestadorApp(unittest.TestCase):
 
     @patch('os.system')
     @patch('src.main.DatabaseManager.create_connection')  # Cambiar el parcheo al método correcto
-    @patch('src.main.main_menu', return_value='0')
+    @patch.object(PresupuestadorApp, 'main_menu', return_value='0')  # Parchear el método main_menu de la instancia
     @patch('src.main.UserInterface.mostrar_bienvenida')
     @patch('src.main.LoggerConfigurator.get_logger')
     def test_iniciar(self, mock_get_logger, mock_mostrar_bienvenida, mock_main_menu, mock_create_connection, mock_os_system):
