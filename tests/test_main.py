@@ -7,7 +7,7 @@ from src.main import PresupuestadorApp
 class TestPresupuestadorApp(unittest.TestCase):
 
     @patch('os.system')
-    @patch('src.main.create_connection')
+    @patch('src.main.DatabaseManager.create_connection')  # Cambiar el parcheo al método correcto
     @patch('src.main.main_menu', return_value='0')
     @patch('src.main.UserInterface.mostrar_bienvenida')
     @patch('src.main.LoggerConfigurator.get_logger')
