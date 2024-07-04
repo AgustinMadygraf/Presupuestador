@@ -48,36 +48,6 @@ def attempt_connection(host, user, password, db_name):
         logger.error(f"Error general de conexión a la base de datos: {e}")
         return None
 
-def create_and_connect_db(host, user, password, db_name):
-    """Crea la base de datos si no existe y reconecta."""
-    try:
-        conn = mysql.connector.connect(
-            host=host,
-            user=user,
-            password=password
-        )
-        if conn.is_connected():
-            create_database(conn, db_name)
-            conn.close()
-            return mysql.connector.connect(
-                host=host,
-                user=user,
-                password=password,
-                database=db_name
-            )
-    except Error as e:
-        logger.error(f"No se pudo crear la base de datos '{db_name}': {e}")
-        return None
-
-def create_database(conn, db_name):
-    """Create the database if it does not exist."""
-    cursor = conn.cursor()
-    try:
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
-        logger.info(f"Base de datos '{db_name}' creada exitosamente.")
-    finally:
-        cursor.close()
-
 def initialize_database(conn):
     """Verifica y crea tablas si es necesario utilizando un nuevo cursor para evitar conflictos de resultados no consumidos."""
     with conn.cursor() as cursor:
@@ -165,6 +135,39 @@ def create_tables(conn):
     except Error as e:
         conn.rollback()
         logger.error(f"Error de MySQL no especificado: {e}")
+    finally:
+        cursor.close()
+
+
+
+
+def create_and_connect_db(host, user, password, db_name):
+    """Crea la base de datos si no existe y reconecta."""
+    try:
+        conn = mysql.connector.connect(
+            host=host,
+            user=user,
+            password=password
+        )
+        if conn.is_connected():
+            create_database(conn, db_name)
+            conn.close()
+            return mysql.connector.connect(
+                host=host,
+                user=user,
+                password=password,
+                database=db_name
+            )
+    except Error as e:
+        logger.error(f"No se pudo crear la base de datos '{db_name}': {e}")
+        return None
+
+def create_database(conn, db_name):
+    """Create the database if it does not exist."""
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
+        logger.info(f"Base de datos '{db_name}' creada exitosamente.")
     finally:
         cursor.close()
 

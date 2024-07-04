@@ -3,6 +3,7 @@ import os
 from colorama import Fore, init
 from generated_reports import handle_generate_pdf
 from database import create_connection, insert_budget_into_db, check_and_create_tables
+from models.database import DatabaseManager  # Reemplazar la importación de create_connection
 from menu import main_menu
 from logs.config_logger import LoggerConfigurator
 from models.user_interface import UserInterface
@@ -23,6 +24,7 @@ class PresupuestadorApp:
         self.logger = LoggerConfigurator().get_logger()
         self.conn = None
         self.ui = UserInterface(self.logger)
+        self.db_manager = DatabaseManager()
 
     def iniciar(self, run_once=False):
         """
@@ -33,7 +35,7 @@ class PresupuestadorApp:
         """
         os.system('cls' if os.name == 'nt' else 'clear')
         self.logger.debug("Iniciando la aplicación")
-        self.conn = create_connection()
+        self.conn = self.db_manager.create_connection()  # Utiliza DatabaseManager para crear la conexión
 
         while True:
             self.ui.mostrar_bienvenida()
