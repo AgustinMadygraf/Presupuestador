@@ -1,7 +1,7 @@
 #Presupuestador/src/models/budget_management.py
 import mysql.connector
-from database import get_new_budget_id, list_salespeople, agregar_vendedor
-from client_selection import select_client, input_validado
+from src.database import get_new_budget_id, list_salespeople, agregar_vendedor
+from src.client_selection import select_client, input_validado
 
 class BudgetManager:
     def __init__(self, cursor, conn):
