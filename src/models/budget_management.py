@@ -1,5 +1,4 @@
 # src/models/budget_management.py
-
 import mysql.connector
 from database import get_new_budget_id, list_salespeople, agregar_vendedor
 from client_selection import select_client, input_validado
@@ -9,13 +8,16 @@ class BudgetManager:
         self.cursor = cursor
         self.conn = conn
 
-    def listar_vendedores(self):
+    def listar_vendedores(self, retry=False):
         self.cursor.execute("SELECT Legajo_vendedor, nombre, apellido FROM vendedores;")
         vendedores = self.cursor.fetchall()
         if not vendedores:
-            print("No hay vendedores disponibles. Por favor, inserte un nuevo vendedor.")
-            self.insertar_vendedor()
-            return self.listar_vendedores()
+            if not retry:
+                print("No hay vendedores disponibles. Por favor, inserte un nuevo vendedor.")
+                self.insertar_vendedor()
+                return self.listar_vendedores(retry=True)
+            else:
+                return []
         else:
             print("Lista de vendedores:")
             for idx, vendedor in enumerate(vendedores, start=1):
@@ -94,4 +96,3 @@ class BudgetManager:
                     print("Número inválido, por favor seleccione un número de la lista.")
             except ValueError:
                 print("Entrada inválida, por favor ingrese un número.")
-
