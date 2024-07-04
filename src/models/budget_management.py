@@ -3,7 +3,7 @@ import mysql.connector
 from src.database import get_new_budget_id, list_salespeople, agregar_vendedor
 from src.client_selection import select_client, input_validado
 
-class BudgetManager:
+class BudgetService:
     def __init__(self, cursor, conn):
         self.cursor = cursor
         self.conn = conn
@@ -14,7 +14,7 @@ class BudgetManager:
         if not vendedores:
             if not retry:
                 print("No hay vendedores disponibles. Por favor, inserte un nuevo vendedor.")
-                self.insertar_vendedor()
+                self.add_salesperson()
                 return self.listar_vendedores(retry=True)
             else:
                 return []
@@ -24,7 +24,7 @@ class BudgetManager:
                 print(f"{idx}. {vendedor[1]} {vendedor[2]} (Legajo: {vendedor[0]})")
         return vendedores
 
-    def insertar_vendedor(self):
+    def add_salesperson(self):
         nombre = input("Ingrese el nombre del vendedor: ")
         apellido = input("Ingrese el apellido del vendedor: ")
         try:

@@ -8,7 +8,7 @@ def listar_vendedores(cursor, conn):  # Añade 'conn' como argumento
     vendedores = cursor.fetchall()
     if not vendedores:
         print("No hay vendedores disponibles. Por favor, inserte un nuevo vendedor.")
-        insertar_vendedor(cursor, conn)  # Llama a la función para insertar un vendedor
+        add_salesperson(cursor, conn)  # Llama a la función para insertar un vendedor
         return listar_vendedores(cursor, conn)  # Llama recursivamente para mostrar la lista actualizada de vendedores
     else:
         print("Listaa de vendedores:")
@@ -16,7 +16,7 @@ def listar_vendedores(cursor, conn):  # Añade 'conn' como argumento
             print(f"{idx}. {vendedor[1]} {vendedor[2]} (Legajo: {vendedor[0]})")
     return vendedores
 
-def insertar_vendedor(cursor, conn):
+def add_salesperson(cursor, conn):
     nombre = input("Ingrese el nombre del vendedor: ")
     apellido = input("Ingrese el apellido del vendedor: ")
     try:

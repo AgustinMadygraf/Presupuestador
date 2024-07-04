@@ -49,7 +49,7 @@ def select_client(cursor):
                     return client_id
                 elif client_id == '0':  # Agregar nuevo cliente con ID 0
                     conn = db_manager.create_connection()
-                    return agregar_cliente(cursor, conn)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
+                    return add_client(cursor, conn)  # Suponiendo que add_client() retorna el ID del nuevo cliente
                 else:
                     print(Fore.RED + "No se encontró un cliente con ese ID. Por favor, intente de nuevo.\n")
             else:
@@ -59,7 +59,7 @@ def select_client(cursor):
         response = input("¿Desea agregar un nuevo cliente? (S/N): ")
         if response.strip().upper() == 'S':
             conn = db_manager.create_connection()
-            return agregar_cliente(cursor, conn)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
+            return add_client(cursor, conn)  # Suponiendo que add_client() retorna el ID del nuevo cliente
         else:
             return None
 
@@ -75,7 +75,7 @@ def get_all_clients(cursor):
     cursor.execute("SELECT * FROM clientes;")
     return cursor.fetchall()
 
-def agregar_cliente(cursor, conn):
+def add_client(cursor, conn):
     print("Ingrese los datos del nuevo cliente:")
     CUIT = input_validado("CUIT (xx-xxxxxxxx-x): ", str, validar_cuit)
     Razon_social = input("Razon social: ")

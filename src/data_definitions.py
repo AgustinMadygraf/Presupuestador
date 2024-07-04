@@ -23,7 +23,7 @@ data_test = {
     'right_3_b': (datetime.now() + timedelta(days=30)).strftime("%d/%m/%Y"),
     'table1_data': [
         ["Vendedor", "Nombre", "Fecha de envío", "Condiciones"],
-        [1497, "Najarro Eymy", "a convenir", "50% anticipo"]
+        [100, "Ponce José", "a convenir", "50% anticipo"]
     ],
     'table2_data': [
         ["Cantidad", "Descripción", "Precio por unidad", "Importe"],

@@ -3,7 +3,7 @@ import os
 from colorama import Fore, init
 from src.models.database import DatabaseManager
 from src.models.user_interface import UserInterface
-from src.models.budget_management import BudgetManager
+from src.models.budget_management import BudgetService
 from src.models.pdf_generator import PDFGenerator
 from src.logs.config_logger import LoggerConfigurator
 
@@ -84,7 +84,7 @@ class PresupuestadorApp:
         try:
             self.logger.debug("Iniciando proceso para manejar un nuevo presupuesto.")
             cursor = self.conn.cursor()
-            budget_manager = BudgetManager(cursor, self.conn)
+            budget_manager = BudgetService(cursor, self.conn)
             try:
                 self.logger.debug("Recolectando datos del presupuesto.")
                 budget_data = budget_manager.collect_budget_data()

@@ -5,7 +5,7 @@ from client_validation import input_validado, validar_cuit
 from database import create_connection, get_next_budget_id, table_exists
 import mysql.connector
 
-def agregar_cliente():
+def add_client():
     print("Ingrese los datos del cliente a continuación:")
     with create_connection() as conn:
         if conn is None:
