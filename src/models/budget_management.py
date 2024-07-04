@@ -1,4 +1,4 @@
-# src/models/budget_management.py
+#Presupuestador/src/models/budget_management.py
 import mysql.connector
 from database import get_new_budget_id, list_salespeople, agregar_vendedor
 from client_selection import select_client, input_validado

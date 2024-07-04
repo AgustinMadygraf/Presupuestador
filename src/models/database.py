@@ -2,6 +2,7 @@ import os
 import mysql.connector
 from mysql.connector import Error, ProgrammingError, DatabaseError, IntegrityError
 from dotenv import load_dotenv
+from colorama import Fore
 from src.logs.config_logger import LoggerConfigurator
 
 load_dotenv()
@@ -156,3 +157,22 @@ class DatabaseManager:
             self.create_tables()
             logger.info("Tables created successfully.")
         cursor.close()
+
+    def insert_budget_into_db(cursor, conn, budget_data):
+        if budget_data is None:
+            return
+        try:
+            sql = """
+            INSERT INTO presupuestos (ID_presupuesto, Legajo_vendedor, ID_cliente, Entrega_incluido, Fecha_presupuesto, comentario, Condiciones, subtotal, tiempo_dias_valido)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """
+            cursor.execute(sql, (
+                budget_data["new_id"], budget_data["Legajo_vendedor"], budget_data["client_id"], 
+                budget_data["Entrega_incluido"], budget_data["Fecha_presupuesto"], budget_data["comentario"], 
+                budget_data["Condiciones"], budget_data["subtotal"], budget_data["tiempo_dias_valido"]
+            ))
+            conn.commit()
+            print(Fore.GREEN + "Presupuesto creado con éxito.")
+        except mysql.connector.Error as error:
+            print(Fore.RED + f"Error al crear presupuesto: {error}")
+            conn.rollback()

@@ -2,7 +2,6 @@
 import os
 from colorama import Fore, init
 from src.generated_reports import handle_generate_pdf
-from src.database import insert_budget_into_db
 from src.models.database import DatabaseManager
 from src.logs.config_logger import LoggerConfigurator
 from src.models.user_interface import UserInterface
@@ -89,7 +88,7 @@ class PresupuestadorApp:
                 budget_data = budget_manager.collect_budget_data()
                 if budget_data:
                     self.logger.debug(f"Datos del presupuesto recolectados: {budget_data}")
-                    insert_budget_into_db(cursor, self.conn, budget_data)
+                    budget_manager.insert_budget_into_db(cursor, self.conn, budget_data)
             finally:
                 cursor.close()
                 self.logger.debug("Cursor cerrado.")

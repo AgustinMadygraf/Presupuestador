@@ -1,4 +1,3 @@
-#Presupuestador/tests/test_main.py
 import unittest
 from unittest.mock import patch, MagicMock
 import os
@@ -7,10 +6,10 @@ from src.main import PresupuestadorApp
 class TestPresupuestadorApp(unittest.TestCase):
 
     @patch('os.system')
-    @patch('src.main.DatabaseManager.create_connection')  # Cambiar el parcheo al método correcto
+    @patch('src.models.database.DatabaseManager.create_connection')  # Parchear el método correcto de DatabaseManager
     @patch.object(PresupuestadorApp, 'main_menu', return_value='0')  # Parchear el método main_menu de la instancia
-    @patch('src.main.UserInterface.mostrar_bienvenida')
-    @patch('src.main.LoggerConfigurator.get_logger')
+    @patch('src.models.user_interface.UserInterface.mostrar_bienvenida')
+    @patch('src.logs.config_logger.LoggerConfigurator.get_logger')
     def test_iniciar(self, mock_get_logger, mock_mostrar_bienvenida, mock_main_menu, mock_create_connection, mock_os_system):
         mock_logger = MagicMock()
         mock_get_logger.return_value = mock_logger

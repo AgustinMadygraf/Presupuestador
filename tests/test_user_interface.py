@@ -1,7 +1,7 @@
 #Presupuestador/tests/test_user_interface.py
 import unittest
 from unittest.mock import patch, MagicMock
-from src.models.user_interface import UserInterface
+from src.models.user_interface import UserInterface  # Verifica que la ruta sea correcta
 import os
 import re
 

@@ -50,7 +50,5 @@ class TestBudgetManager(unittest.TestCase):
         mock_print.assert_called_with("Error al insertar vendedor:", self.mock_cursor.execute.side_effect)
         self.mock_conn.rollback.assert_called_once()
 
-
-
 if __name__ == '__main__':
     unittest.main()
