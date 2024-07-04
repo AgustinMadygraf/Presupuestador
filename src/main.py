@@ -64,7 +64,7 @@ class PresupuestadorApp:
         """
         self.logger.debug(f"Procesando opción seleccionada: {choice}")
         if choice == '1':
-            self.handle_new_presupuesto()   
+            self.handle_new_invoice()   
         elif choice == '2':
             self.pdf_generator.handle_generate_pdf()
         elif choice == '0':
@@ -75,7 +75,7 @@ class PresupuestadorApp:
             print("Opción no válida. Intente de nuevo.")
             self.logger.warning(f"Opción no válida seleccionada: {choice}")
 
-    def handle_new_presupuesto(self):
+    def handle_new_invoice(self):
         """
         Maneja la creación de un nuevo presupuesto, incluyendo la verificación y creación
         de tablas, recolección de datos e inserción en la base de datos.
@@ -86,10 +86,10 @@ class PresupuestadorApp:
             budget_service = BudgetService(cursor, self.conn)
             try:
                 self.logger.debug("Recolectando datos del presupuesto.")
-                budget_data = budget_service.collect_budget_data()
-                if budget_data:
-                    self.logger.debug(f"Datos del presupuesto recolectados: {budget_data}")
-                    budget_service.insert_budget_into_db(budget_data)
+                presupuesto = budget_service.collect_budget_data()
+                if presupuesto:
+                    self.logger.debug(f"Datos del presupuesto recolectados: {presupuesto}")
+                    budget_service.insert_budget_into_db(presupuesto)
             finally:
                 cursor.close()
                 self.logger.debug("Cursor cerrado.")
