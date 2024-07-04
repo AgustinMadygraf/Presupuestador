@@ -2,8 +2,8 @@
 import os
 from colorama import Fore, init
 from generated_reports import handle_generate_pdf
-from database import create_connection, insert_budget_into_db, check_and_create_tables
-from models.database import DatabaseManager  # Reemplazar la importación de create_connection
+from database import insert_budget_into_db, check_and_create_tables
+from models.database import DatabaseManager
 from menu import main_menu
 from logs.config_logger import LoggerConfigurator
 from models.user_interface import UserInterface

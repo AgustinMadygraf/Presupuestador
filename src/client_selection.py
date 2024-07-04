@@ -1,7 +1,7 @@
 #Presupuestador/src/client_selection.py
 import re
 from colorama import Fore
-from database import create_connection, get_next_budget_id, table_exists
+from models.database import DatabaseManager
 from logs.config_logger import LoggerConfigurator
 import tabulate
 import mysql.connector
@@ -9,6 +9,8 @@ from colorama import init
 
 logger = LoggerConfigurator().get_logger()
 init(autoreset=True)
+
+db_manager = DatabaseManager()
 
 def validar_cuit(cuit):
     """Valida que el CUIT tenga el formato correcto (xx-xxxxxxxx-x)."""
@@ -46,7 +48,7 @@ def select_client(cursor):
                     print("\n")
                     return client_id
                 elif client_id == '0':  # Agregar nuevo cliente con ID 0
-                    conn = create_connection()
+                    conn = db_manager.create_connection()
                     return agregar_cliente(cursor, conn)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
                 else:
                     print(Fore.RED + "No se encontró un cliente con ese ID. Por favor, intente de nuevo.\n")
@@ -56,7 +58,7 @@ def select_client(cursor):
         print(Fore.RED + "No hay clientes en la lista.\n")
         response = input("¿Desea agregar un nuevo cliente? (S/N): ")
         if response.strip().upper() == 'S':
-            conn = create_connection()
+            conn = db_manager.create_connection()
             return agregar_cliente(cursor, conn)  # Suponiendo que agregar_cliente() retorna el ID del nuevo cliente
         else:
             return None
@@ -67,7 +69,7 @@ def print_client_list(clientes):
     print(tabulate.tabulate(table, headers="firstrow"))
 
 def get_all_clients(cursor):
-    if not table_exists(cursor, 'clientes'):
+    if not db_manager.table_exists(cursor, 'clientes'):
         print("The 'clientes' table does not exist. Please create it before proceeding.")
         return []
     cursor.execute("SELECT * FROM clientes;")

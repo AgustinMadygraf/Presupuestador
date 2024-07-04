@@ -1,3 +1,4 @@
+#Presupuestador/src/models/database.py
 import os
 import mysql.connector
 from mysql.connector import Error, ProgrammingError, DatabaseError, IntegrityError
@@ -140,3 +141,8 @@ class DatabaseManager:
             logger.error(f"Error de MySQL no especificado: {e}")
         finally:
             cursor.close()
+
+    def table_exists(self, cursor, table_name):
+        """Check if a table exists in the database."""
+        cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
+        return cursor.fetchone() is not None
