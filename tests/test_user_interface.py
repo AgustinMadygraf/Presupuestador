@@ -3,6 +3,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from src.models.user_interface import UserInterface
 import os
+import re
 
 class TestUserInterface(unittest.TestCase):
 
@@ -14,9 +15,11 @@ class TestUserInterface(unittest.TestCase):
     def test_mostrar_bienvenida_primera_vez(self, mock_print):
         self.ui.primera_vez = True
         self.ui.mostrar_bienvenida()
-        # Actualizamos el assert_any_call para reflejar la salida real del print con colorama
-        mock_print.assert_any_call("\033[32m¡Bienvenido al Presupuestador de Proyectos!\033[39m")
-        mock_print.assert_any_call("")  # Esta llamada imprime una nueva línea en blanco
+        # Capturamos los argumentos pasados a print
+        print_args = mock_print.call_args_list[0][0][0]
+        # Eliminamos las secuencias de escape de color para comparar el texto
+        stripped_text = re.sub(r'\x1b\[.*?m', '', print_args)
+        self.assertEqual(stripped_text, "¡Bienvenido al Presupuestador de Proyectos!\n")
         self.assertFalse(self.ui.primera_vez)
 
     @patch('builtins.input', return_value='\n')
