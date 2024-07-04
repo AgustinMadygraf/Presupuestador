@@ -1,9 +1,8 @@
-#Presupuestador/src/models/database.py
 import os
 import mysql.connector
 from mysql.connector import Error, ProgrammingError, DatabaseError, IntegrityError
-from logs.config_logger import LoggerConfigurator
 from dotenv import load_dotenv
+from src.logs.config_logger import LoggerConfigurator
 
 load_dotenv()
 
@@ -32,6 +31,7 @@ class DatabaseManager:
             db_info = self.conn.get_server_info()
             logger.info(f"Conectado al servidor MySQL versión {db_info}")
             self.initialize_database()
+            self.check_and_create_tables()
         return self.conn
 
     def attempt_connection(self):
@@ -146,3 +146,13 @@ class DatabaseManager:
         """Check if a table exists in the database."""
         cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
         return cursor.fetchone() is not None
+
+    def check_and_create_tables(self):
+        """Check and create tables if they do not exist."""
+        logger.debug("Verificando y creando tablas si es necesario.")
+        cursor = self.conn.cursor()
+        if not self.table_exists(cursor, 'presupuestos'):
+            logger.info("The 'presupuestos' table was not found. Creating tables...")
+            self.create_tables()
+            logger.info("Tables created successfully.")
+        cursor.close()

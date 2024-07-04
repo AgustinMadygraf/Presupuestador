@@ -1,12 +1,12 @@
 #Presupuestador/src/main.py
 import os
 from colorama import Fore, init
-from generated_reports import handle_generate_pdf
-from database import insert_budget_into_db, check_and_create_tables
-from models.database import DatabaseManager
-from logs.config_logger import LoggerConfigurator
-from models.user_interface import UserInterface
-from models.budget_management import BudgetManager
+from src.generated_reports import handle_generate_pdf
+from src.database import insert_budget_into_db
+from src.models.database import DatabaseManager
+from src.logs.config_logger import LoggerConfigurator
+from src.models.user_interface import UserInterface
+from src.models.budget_management import BudgetManager
 
 init(autoreset=True)
 
@@ -34,7 +34,7 @@ class PresupuestadorApp:
         """
         os.system('cls' if os.name == 'nt' else 'clear')
         self.logger.debug("Iniciando la aplicación")
-        self.conn = self.db_manager.create_connection()  # Utiliza DatabaseManager para crear la conexión
+        self.conn = self.db_manager.create_connection()
 
         while True:
             self.ui.mostrar_bienvenida()
@@ -64,9 +64,9 @@ class PresupuestadorApp:
         """
         self.logger.debug(f"Procesando opción seleccionada: {choice}")
         if choice == '1':
-            self.handle_new_presupuesto()
+            self.handle_new_presupuesto()   # Maneja la creación de un nuevo presupuesto
         elif choice == '2':
-            handle_generate_pdf()
+            handle_generate_pdf()           # Genera un archivo PDF del presupuesto
         elif choice == '0':
             print("Saliendo del programa")
             self.logger.info("Saliendo del programa")
@@ -85,8 +85,6 @@ class PresupuestadorApp:
             cursor = self.conn.cursor()
             budget_manager = BudgetManager(cursor, self.conn)
             try:
-                self.logger.debug("Verificando y creando tablas si es necesario.")
-                check_and_create_tables(cursor, self.conn)
                 self.logger.debug("Recolectando datos del presupuesto.")
                 budget_data = budget_manager.collect_budget_data()
                 if budget_data:

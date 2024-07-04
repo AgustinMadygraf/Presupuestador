@@ -102,7 +102,7 @@ def agregar_vendedor(cursor, conn):
         conn.rollback()
         return None
 
-def table_exists(cursor, table_name):
+def table_exists(cursor, table_name): # función duplicada en /src/models/database.py
     cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
     return cursor.fetchone() is not None
 
@@ -134,10 +134,3 @@ def get_new_budget_id(cursor):
     new_id = get_next_budget_id(cursor)
     print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
     return new_id
-
-def check_and_create_tables(cursor, conn):
-    if not table_exists(cursor, 'presupuestos'):
-        logger.info("The 'presupuestos' table was not found. Creating tables...")
-        db_manager = DatabaseManager()
-        db_manager.create_tables()
-        logger.info("Tables created successfully.")
