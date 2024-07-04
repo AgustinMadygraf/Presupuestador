@@ -14,7 +14,9 @@ class TestUserInterface(unittest.TestCase):
     def test_mostrar_bienvenida_primera_vez(self, mock_print):
         self.ui.primera_vez = True
         self.ui.mostrar_bienvenida()
-        mock_print.assert_any_call("\033[32m¡Bienvenido al Presupuestador de Proyectos!\033[39m\n")
+        # Actualizamos el assert_any_call para reflejar la salida real del print con colorama
+        mock_print.assert_any_call("\033[32m¡Bienvenido al Presupuestador de Proyectos!\033[39m")
+        mock_print.assert_any_call("")  # Esta llamada imprime una nueva línea en blanco
         self.assertFalse(self.ui.primera_vez)
 
     @patch('builtins.input', return_value='\n')

@@ -1,5 +1,4 @@
-# models/user_interface.py
-
+#Presupuestos/src/models/user_interface.py
 import os
 from colorama import Fore, init
 
@@ -20,11 +19,9 @@ class UserInterface:
         """
         if self.primera_vez:
             self.logger.debug("Mostrando mensaje de bienvenida por primera vez.")
-            print(Fore.GREEN + "¡Bienvenido al Presupuestador de Proyectos!")
-            print("")
+            print(Fore.GREEN + "¡Bienvenido al Presupuestador de Proyectos!\n")  # Añadir un salto de línea al final
             self.primera_vez = False
         else:
             self.logger.debug("Reiniciando la aplicación por solicitud del usuario.")
             input("Presione Enter para Reiniciar:\n")
             os.system('cls' if os.name == 'nt' else 'clear')
-
