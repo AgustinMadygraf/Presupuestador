@@ -1,3 +1,4 @@
+#Presupuesto/src/models/database.py
 import os
 import mysql.connector
 from mysql.connector import Error, ProgrammingError, DatabaseError, IntegrityError
@@ -23,6 +24,7 @@ class DatabaseManager:
             logger.error("Falta una o más variables de entorno requeridas para la conexión a la base de datos.")
             return None
 
+        logger.debug("Intentando establecer una conexión inicial con la base de datos.")
         self.conn = self.attempt_connection()
         if self.conn is None:
             logger.error("No fue posible establecer una conexión inicial con la base de datos.")
@@ -55,9 +57,13 @@ class DatabaseManager:
 
     def initialize_database(self):
         """Verifica y crea tablas si es necesario utilizando un nuevo cursor para evitar conflictos de resultados no consumidos."""
+        logger.debug("Inicializando la base de datos.")
         with self.conn.cursor() as cursor:
+            logger.debug("Ejecutando SHOW TABLES para verificar las tablas existentes.")
             cursor.execute("SHOW TABLES")
             tables = cursor.fetchall()  # Asegúrate de consumir todos los resultados
+
+            logger.debug(f"Tablas encontradas: {tables}")
 
             if not tables:  # Si no hay tablas, procede a crearlas
                 logger.info("No se encontraron tablas en la base de datos. Creando tablas...")
@@ -65,83 +71,67 @@ class DatabaseManager:
 
     def create_tables(self):
         """Create tables in the specified database."""
-        cursor = self.conn.cursor()
         try:
-            logger.debug("Creando tablas en la base de datos")
-            # Creación de la tabla 'presupuestos'
-            cursor.execute("""
-            CREATE TABLE IF NOT EXISTS presupuestos (
-                ID_presupuesto INT AUTO_INCREMENT PRIMARY KEY,
-                Legajo_vendedor INT NOT NULL,
-                ID_cliente INT NOT NULL,
-                Entrega_incluido VARCHAR(255),
-                Fecha_presupuesto VARCHAR(255),
-                comentario TEXT,
-                Condiciones TEXT,
-                subtotal FLOAT,
-                IVA_21 FLOAT GENERATED ALWAYS AS (subtotal * 0.21) STORED,
-                total FLOAT GENERATED ALWAYS AS (subtotal * 1.21) STORED,
-                tiempo_dias_valido INT,
-                fecha_caducidad DATETIME GENERATED ALWAYS AS (DATE_ADD(fecha_presupuesto, INTERVAL tiempo_dias_valido DAY)) STORED
-            );
-            """)
-            logger.info("Tabla 'presupuestos' creada exitosamente.")
-
-            # Creación de la tabla 'vendedores'
-            cursor.execute("""
-            CREATE TABLE IF NOT EXISTS vendedores (
-                ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
-                Legajo_vendedor INT NOT NULL,
-                nombre VARCHAR(255) NOT NULL,
-                apellido VARCHAR(255) NOT NULL
-            );
-            """)
-            logger.info("Tabla 'vendedores' creada exitosamente.")
-
-            # Creación de la tabla 'clientes'
-            cursor.execute("""
-            CREATE TABLE IF NOT EXISTS clientes (
-                ID_cliente INT AUTO_INCREMENT PRIMARY KEY,
-                CUIT VARCHAR(255),
-                Razon_social VARCHAR(255),
-                Direccion VARCHAR(255),
-                Ubicacion_geografica VARCHAR(255),
-                N_contacto VARCHAR(255),
-                nombre VARCHAR(255),
-                apellido VARCHAR(255),
-                Unidad_de_negocio VARCHAR(255),
-                Legajo_vendedor INT,
-                Facturacion_anual FLOAT
-            );
-            """)
-            logger.info("Tabla 'clientes' creada exitosamente.")
-
-            # Creación de la tabla 'items'
-            cursor.execute("""
-            CREATE TABLE IF NOT EXISTS items (
-                ID_items INT AUTO_INCREMENT PRIMARY KEY,
-                ID_presupuesto INT,
-                Cantidad INT,
-                precio_por_unidad FLOAT,
-                importe FLOAT GENERATED ALWAYS AS (Cantidad * precio_por_unidad) STORED,
-                FOREIGN KEY (ID_presupuesto) REFERENCES presupuestos(ID_presupuesto)
-            );
-            """)
-            logger.info("Tabla 'items' creada exitosamente.")
-        except IntegrityError as ie:
+            with self.conn.cursor() as cursor:
+                logger.debug("Creando tablas en la base de datos")
+                table_definitions = {
+                    'presupuestos': """
+                        CREATE TABLE IF NOT EXISTS presupuestos (
+                            ID_presupuesto INT AUTO_INCREMENT PRIMARY KEY,
+                            Legajo_vendedor INT NOT NULL,
+                            ID_cliente INT NOT NULL,
+                            Entrega_incluido VARCHAR(255),
+                            Fecha_presupuesto VARCHAR(255),
+                            comentario TEXT,
+                            Condiciones TEXT,
+                            subtotal FLOAT,
+                            IVA_21 FLOAT GENERATED ALWAYS AS (subtotal * 0.21) STORED,
+                            total FLOAT GENERATED ALWAYS AS (subtotal * 1.21) STORED,
+                            tiempo_dias_valido INT,
+                            fecha_caducidad DATETIME GENERATED ALWAYS AS (DATE_ADD(fecha_presupuesto, INTERVAL tiempo_dias_valido DAY)) STORED
+                        );
+                    """,
+                    'vendedores': """
+                        CREATE TABLE IF NOT EXISTS vendedores (
+                            ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+                            Legajo_vendedor INT NOT NULL,
+                            nombre VARCHAR(255) NOT NULL,
+                            apellido VARCHAR(255) NOT NULL
+                        );
+                    """,
+                    'clientes': """
+                        CREATE TABLE IF NOT EXISTS clientes (
+                            ID_cliente INT AUTO_INCREMENT PRIMARY KEY,
+                            CUIT VARCHAR(255),
+                            Razon_social VARCHAR(255),
+                            Direccion VARCHAR(255),
+                            Ubicacion_geografica VARCHAR(255),
+                            N_contacto VARCHAR(255),
+                            nombre VARCHAR(255),
+                            apellido VARCHAR(255),
+                            Unidad_de_negocio VARCHAR(255),
+                            Legajo_vendedor INT,
+                            Facturacion_anual FLOAT
+                        );
+                    """,
+                    'items': """
+                        CREATE TABLE IF NOT EXISTS items (
+                            ID_items INT AUTO_INCREMENT PRIMARY KEY,
+                            ID_presupuesto INT,
+                            Cantidad INT,
+                            precio_por_unidad FLOAT,
+                            importe FLOAT GENERATED ALWAYS AS (Cantidad * precio_por_unidad) STORED,
+                            FOREIGN KEY (ID_presupuesto) REFERENCES presupuestos(ID_presupuesto)
+                        );
+                    """
+                }
+                
+                for table_name, table_sql in table_definitions.items():
+                    cursor.execute(table_sql)
+                    logger.info(f"Tabla '{table_name}' creada exitosamente.")
+        except (IntegrityError, ProgrammingError, DatabaseError, Error) as e:
             self.conn.rollback()
-            logger.error(f"Error de integridad: {ie}")
-        except ProgrammingError as pe:
-            self.conn.rollback()
-            logger.error(f"Error de sintaxis SQL: {pe}")
-        except DatabaseError as de:
-            self.conn.rollback()
-            logger.error(f"Error al interactuar con la base de datos: {de}")
-        except Error as e:
-            self.conn.rollback()
-            logger.error(f"Error de MySQL no especificado: {e}")
-        finally:
-            cursor.close()
+            logger.error(f"Error al crear las tablas: {e}")
 
     def table_exists(self, cursor, table_name):
         """Check if a table exists in the database."""
@@ -151,14 +141,13 @@ class DatabaseManager:
     def check_and_create_tables(self):
         """Check and create tables if they do not exist."""
         logger.debug("Verificando y creando tablas si es necesario.")
-        cursor = self.conn.cursor()
-        if not self.table_exists(cursor, 'presupuestos'):
-            logger.info("The 'presupuestos' table was not found. Creating tables...")
-            self.create_tables()
-            logger.info("Tables created successfully.")
-        cursor.close()
+        with self.conn.cursor() as cursor:
+            if not self.table_exists(cursor, 'presupuestos'):
+                logger.info("The 'presupuestos' table was not found. Creating tables...")
+                self.create_tables()
+                logger.info("Tables created successfully.")
 
-    def insert_budget_into_db(cursor, conn, budget_data):
+    def insert_budget_into_db(self, cursor, conn, budget_data):
         if budget_data is None:
             return
         try:
@@ -172,7 +161,7 @@ class DatabaseManager:
                 budget_data["Condiciones"], budget_data["subtotal"], budget_data["tiempo_dias_valido"]
             ))
             conn.commit()
-            print(Fore.GREEN + "Presupuesto creado con éxito.")
+            logger.info("Presupuesto creado con éxito.")
         except mysql.connector.Error as error:
-            print(Fore.RED + f"Error al crear presupuesto: {error}")
+            logger.error(f"Error al crear presupuesto: {error}")
             conn.rollback()

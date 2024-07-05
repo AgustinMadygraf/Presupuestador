@@ -34,6 +34,7 @@ class PresupuestadorApp:
         """
         os.system('cls' if os.name == 'nt' else 'clear')
         self.logger.debug("Iniciando la aplicación")
+        self.logger.debug("creando conexión a la base de datos")
         self.conn = self.db_manager.create_connection()
 
         while True:
