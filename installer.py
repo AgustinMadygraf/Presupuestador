@@ -1,4 +1,5 @@
 # /setup.py
+input("Presiona Enter para comenzar la instalación...")
 import subprocess
 import sys
 import os

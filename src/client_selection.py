@@ -1,7 +1,7 @@
 #Presupuestador/src/client_selection.py
 import re
 from colorama import Fore
-from models.database import DatabaseManager
+from models.db_manager import DatabaseManager
 from logs.config_logger import LoggerConfigurator
 import tabulate
 import mysql.connector

@@ -1,4 +1,5 @@
 # /src/installer_utils.py
+input("Presiona Enter para comenzar la instalación...")
 from pathlib import Path
 from src.logs.config_logger import LoggerConfigurator
 import winshell
@@ -95,8 +96,3 @@ class BatFileCreator:
             archivo_bat.write(contenido_bat.strip())
         self.logger.debug(f"Archivo '{self.name_proj}.bat' creado exitosamente.")
         self.logger.debug(f"La dirección del archivo .bat es {ruta_archivo_bat}")
-
-
-if __name__ == "__main__":
-    installer = ProjectInstaller()
-    installer.main()

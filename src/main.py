@@ -1,7 +1,7 @@
 #Presupuestador/src/main.py
 import os
 from colorama import Fore, init
-from models.database import DatabaseManager
+from models.db_manager import DatabaseManager
 from models.user_interface import UserInterface
 from models.budget_management import BudgetService
 from models.pdf_generator import PDFGenerator
@@ -95,6 +95,6 @@ class PresupuestadorApp:
                 cursor.close()
                 self.logger.debug("Cursor cerrado.")
         except AttributeError as e:
-            self.logger.error(f"Error: {e}. Verifique la conexión a la base de datos.")
+            self.logger.error(f"Error: {e}.")
         except Exception as e:
             self.logger.error(f"Se produjo un error: {e}")

@@ -5,7 +5,7 @@ from logs.config_logger import logger
 from dotenv import load_dotenv
 import os
 from colorama import Fore
-from models.database import DatabaseManager
+from models.db_manager import DatabaseManager
 
 load_dotenv()
 
