@@ -116,3 +116,9 @@ class DatabaseManager:
         except mysql.connector.Error as error:
             logger.error(f"Error al crear presupuesto: {error}")
             conn.rollback()
+
+    def table_exists(self, cursor, table_name):
+        """Verifica si una tabla existe en la base de datos."""
+        cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
+        return cursor.fetchone() is not None
+
