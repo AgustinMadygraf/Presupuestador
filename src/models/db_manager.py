@@ -34,7 +34,7 @@ class DatabaseManager:
             db_info = self.conn.get_server_info()
             logger.info(f"Conectado al servidor MySQL versión {db_info}")
             self.initialize_database()
-            self.check_and_create_tables()
+            self.check_tables()
         return self.conn
 
     def attempt_connection(self):
@@ -88,13 +88,14 @@ class DatabaseManager:
                 logger.info("No se encontraron tablas en la base de datos. Creando tablas...")
                 TableManager(self.conn).create_tables()
 
-    def check_and_create_tables(self):
+    def check_tables(self):
         """Check and create tables if they do not exist."""
         logger.debug("Verificando y creando tablas si es necesario.")
+        table_manager = TableManager(self.conn)
         with self.conn.cursor() as cursor:
-            if not TableManager(self.conn).table_exists(cursor, 'presupuestos'):
+            if not table_manager.table_exists(cursor, 'presupuestos'):
                 logger.info("The 'presupuestos' table was not found. Creating tables...")
-                TableManager(self.conn).create_tables()
+                table_manager.create_tables()
                 logger.info("Tables created successfully.")
 
     def insert_budget_into_db(self, cursor, conn, budget_data):
