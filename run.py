@@ -9,6 +9,5 @@ from src.main import PresupuestadorApp
 
 if __name__ == "__main__":
     app = PresupuestadorApp()
-    input("Presione Enter para Iniciar:\n")
     app.iniciar()
 
