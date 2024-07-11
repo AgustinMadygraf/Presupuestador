@@ -1,5 +1,4 @@
 # /src/installer_utils.py
-input("Presiona Enter para comenzar la instalación...")
 from pathlib import Path
 from src.logs.config_logger import LoggerConfigurator
 import winshell

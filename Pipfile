@@ -10,6 +10,7 @@ python-dotenv = "*"
 mysql = "*"
 colorama = "*"
 tabulate = "*"
+colorlog = "*"
 
 [dev-packages]
 
