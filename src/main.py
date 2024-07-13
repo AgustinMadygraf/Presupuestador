@@ -26,15 +26,8 @@ class PresupuestadorApp:
         self.pdf_generator = PDFGenerator()  
 
     def iniciar(self, run_once=False):
-        """
-        Inicia la aplicación y maneja el ciclo principal.
-
-        Args:
-            run_once (bool): Si es True, el bucle principal se ejecutará una sola vez (para pruebas).
-        """
-        os.system('cls' if os.name == 'nt' else 'clear')
+        self._clear_screen()
         self.logger.debug("Iniciando la aplicación")
-        self.logger.debug("creando conexión a la base de datos")
         self.conn = self.db_manager.create_connection()
 
         while True:
@@ -44,10 +37,10 @@ class PresupuestadorApp:
             if run_once:
                 break
 
+    def _clear_screen(self):
+        os.system('cls' if os.name == 'nt' else 'clear')
+
     def main_menu(self):
-        """
-        Muestra el menú principal y devuelve la opción seleccionada por el usuario.
-        """
         print("\nPresupuestador de Proyectos")
         print("1. Confeccionar un nuevo presupuesto")
         print("2. Generar archivo PDF del presupuesto")
@@ -57,30 +50,17 @@ class PresupuestadorApp:
         return choice
 
     def procesar_opcion(self, choice):
-        """
-        Procesa la opción seleccionada por el usuario en el menú principal.
-
-        Args:
-            choice (str): La opción seleccionada por el usuario.
-        """
         self.logger.debug(f"Procesando opción seleccionada: {choice}")
         if choice == '1':
             self.handle_new_invoice()   
         elif choice == '2':
             self.pdf_generator.handle_generate_pdf()
         elif choice == '0':
-            print("Saliendo del programa")
-            self.logger.info("Saliendo del programa")
-            return
+            self._salir_programa()
         else:
-            print("Opción no válida. Intente de nuevo.")
-            self.logger.warning(f"Opción no válida seleccionada: {choice}")
+            self._opcion_no_valida(choice)
 
     def handle_new_invoice(self):
-        """
-        Maneja la creación de un nuevo presupuesto, incluyendo la verificación y creación
-        de tablas, recolección de datos e inserción en la base de datos.
-        """
         try:
             self.logger.debug("Iniciando proceso para manejar un nuevo presupuesto.")
             cursor = self.conn.cursor()
@@ -98,3 +78,11 @@ class PresupuestadorApp:
             self.logger.error(f"Error: {e}.")
         except Exception as e:
             self.logger.error(f"Se produjo un error: {e}")
+
+    def _salir_programa(self):
+        print("Saliendo del programa")
+        self.logger.info("Saliendo del programa")
+
+    def _opcion_no_valida(self, choice):
+        print("Opción no válida. Intente de nuevo.")
+        self.logger.warning(f"Opción no válida seleccionada: {choice}")

@@ -13,33 +13,36 @@ def add_client():
             print("No se pudo establecer conexión con la base de datos.")
             return None
         cursor = conn.cursor()
-        ID_cliente = get_next_budget_id(cursor)
-        print(f"ID_cliente: {ID_cliente}")
-        CUIT = input_validado("CUIT (xx-xxxxxxxx-x): ", str, validar_cuit)
-        Razon_social = input("Razon_social: ")
-        Direccion = input("Direccion: ")
-        Ubicacion_geografica = input("Ubicacion_geografica: ")
-        N_contacto = input_validado("N_contacto (solo números): ", int)
-        nombre = input("nombre: ")
-        apellido = input("apellido: ")
-        Unidad_de_negocio = input("Unidad_de_negocio: ")
-        Legajo_vendedor = input_validado("Legajo_vendedor (solo números): ", int)
-        Facturacion_anual = input_validado("Facturacion_anual (formato numérico): ", float)
-        
-        sql = """
-        INSERT INTO clientes (ID_cliente, CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
-        """
         try:
-            cursor.execute(sql, (ID_cliente, CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual))
+            client_data = _get_client_data(cursor)
+            sql = """
+            INSERT INTO clientes (ID_cliente, CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+            """
+            cursor.execute(sql, client_data)
             conn.commit()
             print("Cliente agregado con éxito")
-            return ID_cliente
+            return client_data[0]
         except mysql.connector.Error as error:
             print(Fore.RED + f"Error al añadir cliente: {error}")
             conn.rollback()
         finally:
             cursor.close()
+
+def _get_client_data(cursor):
+    ID_cliente = get_next_budget_id(cursor)
+    print(f"ID_cliente: {ID_cliente}")
+    CUIT = input_validado("CUIT (xx-xxxxxxxx-x): ", str, validar_cuit)
+    Razon_social = input("Razon_social: ")
+    Direccion = input("Direccion: ")
+    Ubicacion_geografica = input("Ubicacion_geografica: ")
+    N_contacto = input_validado("N_contacto (solo números): ", int)
+    nombre = input("nombre: ")
+    apellido = input("apellido: ")
+    Unidad_de_negocio = input("Unidad_de_negocio: ")
+    Legajo_vendedor = input_validado("Legajo_vendedor (solo números): ", int)
+    Facturacion_anual = input_validado("Facturacion_anual (formato numérico): ", float)
+    return (ID_cliente, CUIT, Razon_social, Direccion, Ubicacion_geografica, N_contacto, nombre, apellido, Unidad_de_negocio, Legajo_vendedor, Facturacion_anual)
 
 def print_client_list(clientes):
     headers = ["ID_cliente", "CUIT", "Razon_social", "Direccion", "Ubicacion_geografica", "N_contacto", "nombre", "apellido", "Unidad_de_negocio", "Legajo_vendedor", "Facturacion_anual"]
