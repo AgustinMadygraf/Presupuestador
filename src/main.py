@@ -3,7 +3,7 @@ import os
 from colorama import Fore, init
 from models.db_manager import DatabaseManager
 from models.user_interface import UserInterface
-from models.budget_management import BudgetService
+from models.budget_service import BudgetService
 from models.pdf_generator import PDFGenerator
 from logs.config_logger import LoggerConfigurator
 

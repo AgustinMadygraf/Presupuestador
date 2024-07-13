@@ -1,7 +1,7 @@
 #Presupuestador/tests/test_budget_management.py
 import unittest
 from unittest.mock import MagicMock, patch
-from src.models.budget_management import BudgetService
+from models.budget_service import BudgetService
 import mysql.connector
 
 class TestBudgetService(unittest.TestCase):
