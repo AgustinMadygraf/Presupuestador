@@ -74,8 +74,3 @@ class TableManager:
         except (IntegrityError, ProgrammingError, DatabaseError, Error) as e:
             self.conn.rollback()
             logger.error(f"Error al crear las tablas: {e}")
-
-    def table_exists(self, cursor, table_name):
-        """Check if a table exists in the database."""
-        cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
-        return cursor.fetchone() is not None

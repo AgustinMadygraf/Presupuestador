@@ -5,6 +5,7 @@ from mysql.connector import Error, ProgrammingError, DatabaseError, IntegrityErr
 from dotenv import load_dotenv
 from src.logs.config_logger import LoggerConfigurator
 from src.models.table_manager import TableManager
+from src.utils import table_exists
 
 load_dotenv()
 
@@ -89,14 +90,14 @@ class DatabaseManager:
                 TableManager(self.conn).create_tables()
 
     def check_tables(self):
-        """Check and create tables if they do not exist."""
+        """Verificar y crear tablas si es necesario."""
         logger.debug("Verificando y creando tablas si es necesario.")
         table_manager = TableManager(self.conn)
         with self.conn.cursor() as cursor:
-            if not table_manager.table_exists(cursor, 'presupuestos'):
-                logger.info("The 'presupuestos' table was not found. Creating tables...")
+            if not table_exists(cursor, 'presupuestos'):
+                logger.info("La tabla 'presupuestos' no existe. Creando tablas...")
                 table_manager.create_tables()
-                logger.info("Tables created successfully.")
+                logger.info("Tablas creadas exitosamente.")
 
     def insert_budget_into_db(self, cursor, conn, budget_data):
         if budget_data is None:
@@ -116,9 +117,4 @@ class DatabaseManager:
         except mysql.connector.Error as error:
             logger.error(f"Error al crear presupuesto: {error}")
             conn.rollback()
-
-    def table_exists(self, cursor, table_name):
-        """Verifica si una tabla existe en la base de datos."""
-        cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
-        return cursor.fetchone() is not None
 

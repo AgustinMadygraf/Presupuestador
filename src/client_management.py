@@ -2,9 +2,8 @@
 import tabulate
 from database import create_connection, get_next_budget_id, table_exists
 from colorama import Fore
-from client_validation import input_validado, validar_cuit
-from database import create_connection, get_next_budget_id, table_exists
 import mysql.connector
+from utils import input_validado, validar_cuit, table_exists
 
 def add_client():
     print("Ingrese los datos del cliente a continuación:")
@@ -51,7 +50,7 @@ def print_client_list(clientes):
 
 def get_all_clients(cursor):
     if not table_exists(cursor, 'clientes'):
-        print("The 'clientes' table does not exist. Please create it before proceeding.")
+        print("La tabla 'clientes' no existe. Por favor, créela antes de continuar.")
         return []
     cursor.execute("SELECT * FROM clientes;")
     return cursor.fetchall()

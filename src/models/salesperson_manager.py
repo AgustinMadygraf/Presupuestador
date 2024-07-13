@@ -68,8 +68,3 @@ class SalespersonManager:
             print(Fore.RED + f"Error al añadir vendedor: {error}")
             self.conn.rollback()
             return None
-
-    def table_exists(self, table_name):
-        """Verifica si una tabla existe en la base de datos."""
-        self.cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
-        return self.cursor.fetchone() is not None

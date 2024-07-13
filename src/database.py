@@ -3,9 +3,8 @@ import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
 from logs.config_logger import logger
 from dotenv import load_dotenv
-import os
 from colorama import Fore
-from models.db_manager import DatabaseManager
+from utils import table_exists
 
 load_dotenv()
 
@@ -101,10 +100,6 @@ def agregar_vendedor(cursor, conn):
         print(Fore.RED + f"Error al añadir vendedor: {error}")
         conn.rollback()
         return None
-
-def table_exists(cursor, table_name): # función duplicada en /src/models/database.py
-    cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
-    return cursor.fetchone() is not None
 
 def get_next_budget_id(cursor):
     cursor.execute("SELECT MAX(ID_presupuesto) FROM presupuestos;")

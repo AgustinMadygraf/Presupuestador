@@ -1,33 +1,17 @@
 #Presupuestador/src/client_selection.py
-import re
 from colorama import Fore
 from models.db_manager import DatabaseManager
 from logs.config_logger import LoggerConfigurator
 import tabulate
 import mysql.connector
 from colorama import init
+from utils import input_validado, validar_cuit, table_exists
+
 
 logger = LoggerConfigurator().get_logger()
 init(autoreset=True)
 
 db_manager = DatabaseManager()
-
-def validar_cuit(cuit):
-    """Valida que el CUIT tenga el formato correcto (xx-xxxxxxxx-x)."""
-    pattern = r'^\d{2}-\d{8}-\d{1}$'
-    return re.match(pattern, cuit) is not None
-
-def input_validado(prompt, tipo=str, validacion=None):
-    """Solicita al usuario una entrada y valida su tipo y formato."""
-    while True:
-        entrada = input(prompt)
-        try:
-            entrada = tipo(entrada)
-            if validacion and not validacion(entrada):
-                raise ValueError
-            return entrada
-        except ValueError:
-            print(Fore.RED + f"Entrada inválida, por favor ingrese un valor correcto para {tipo.__name__}.")
 
 def select_client(cursor):
     clientes = get_all_clients(cursor)
@@ -69,8 +53,8 @@ def print_client_list(clientes):
     print(tabulate.tabulate(table, headers="firstrow"))
 
 def get_all_clients(cursor):
-    if not db_manager.table_exists(cursor, 'clientes'):
-        print("The 'clientes' table does not exist. Please create it before proceeding.")
+    if not table_exists(cursor, 'clientes'):
+        print("La tabla 'clientes' no existe. Por favor, créela antes de continuar.")
         return []
     cursor.execute("SELECT * FROM clientes;")
     return cursor.fetchall()
