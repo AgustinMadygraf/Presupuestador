@@ -1,7 +1,7 @@
 ### Objetivos Específicos para la Refactorización del Código Fuente
 
 1. **División de Métodos Largos en Funciones Más Pequeñas:**
-   - Identificar métodos con más de 30 líneas de código en los módulos `budget_management.py`, `client_management.py`, y `main.py`.
+   - Identificar métodos con más de 30 líneas de código en los módulos `budget_service.py`, `client_management.py`, y `main.py`.
    - Dividir estos métodos en funciones más pequeñas, asegurando que cada una tenga una única responsabilidad clara.
 
 2. **Eliminación de Código Duplicado:**
