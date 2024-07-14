@@ -15,14 +15,14 @@ class PresupuestadorApp:
     Maneja la inicialización, el ciclo principal y las opciones del menú.
     """
 
-    def __init__(self):
+    def __init__(self, db_manager=None):
         """
         Inicializa la aplicación, configurando el logger y la conexión a la base de datos.
         """
         self.logger = LoggerConfigurator().get_logger()
         self.conn = None
         self.ui = UserInterface(self.logger)
-        self.db_manager = DatabaseManager()
+        self.db_manager = db_manager if db_manager else DatabaseManager()
         self.pdf_generator = PDFGenerator()  
 
     def iniciar(self, run_once=False):
