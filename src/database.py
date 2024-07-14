@@ -8,10 +8,10 @@ from utils import table_exists
 
 load_dotenv()
 
-
-
 def create_and_connect_db(host, user, password, db_name):
-    """Crea la base de datos si no existe y reconecta."""
+    """
+    Crea la base de datos si no existe y reconecta.
+    """
     try:
         conn = mysql.connector.connect(
             host=host,
@@ -32,7 +32,9 @@ def create_and_connect_db(host, user, password, db_name):
         return None
 
 def create_database(conn, db_name):
-    """Create the database if it does not exist."""
+    """
+    Crea la base de datos si no existe.
+    """
     cursor = conn.cursor()
     try:
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {db_name};")
@@ -41,7 +43,9 @@ def create_database(conn, db_name):
         cursor.close()
 
 def list_salespeople(cursor, conn):
-    """Obtiene la lista de vendedores de la base de datos y agrega un nuevo vendedor si no hay ninguno."""
+    """
+    Obtiene la lista de vendedores de la base de datos y agrega un nuevo vendedor si no hay ninguno.
+    """
     if not table_exists(cursor, 'vendedores'):
         print("La tabla 'vendedores' no existe. Creándola ahora...")
         create_vendedores_table(cursor, conn)
@@ -64,7 +68,9 @@ def list_salespeople(cursor, conn):
     return vendedores
 
 def create_vendedores_table(cursor, conn):
-    """Crea la tabla 'vendedores' si no existe."""
+    """
+    Crea la tabla 'vendedores' si no existe.
+    """
     try:
         cursor.execute("""
         CREATE TABLE vendedores (
@@ -81,6 +87,9 @@ def create_vendedores_table(cursor, conn):
         print(f"Error al crear la tabla 'vendedores': {e}")
 
 def agregar_vendedor(cursor, conn):
+    """
+    Añade un nuevo vendedor a la base de datos.
+    """
     print("Ingrese los datos del nuevo vendedor:")
     legajo = input("Legajo: ")
     nombre = input("Nombre: ")
@@ -102,11 +111,17 @@ def agregar_vendedor(cursor, conn):
         return None
 
 def get_next_budget_id(cursor):
+    """
+    Obtiene el próximo ID de presupuesto disponible.
+    """
     cursor.execute("SELECT MAX(ID_presupuesto) FROM presupuestos;")
     max_id = cursor.fetchone()[0]
     return max_id + 1 if max_id is not None else 1
 
 def get_new_budget_id(cursor):
+    """
+    Crea un nuevo presupuesto y obtiene su ID.
+    """
     new_id = get_next_budget_id(cursor)
     print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
     return new_id

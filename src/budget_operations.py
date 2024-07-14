@@ -1,10 +1,12 @@
-#Presupuestador/src/budget_management.py
+#Presupuestador/src/budget_operations.py
 from client_selection import select_client, input_validado
 from database import get_new_budget_id
 from models.salesperson_manager import SalespersonManager
 
-
 def collect_budget_data(cursor, conn):
+    """
+    Recolecta los datos necesarios para un nuevo presupuesto.
+    """
     client_id = select_client(cursor)
     if client_id is None:
         return None
@@ -45,6 +47,9 @@ def collect_budget_data(cursor, conn):
     }
 
 def select_salesperson(cursor, conn):
+    """
+    Selecciona un vendedor de la base de datos o permite agregar uno nuevo.
+    """
     manager = SalespersonManager(cursor, conn)
     while True:
         vendedores = manager.list_salespeople()

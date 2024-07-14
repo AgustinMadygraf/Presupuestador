@@ -6,6 +6,9 @@ import mysql.connector
 from utils import input_validado, validar_cuit, table_exists
 
 def add_client():
+    """
+    Añade un nuevo cliente a la base de datos.
+    """
     print("Ingrese los datos del cliente a continuación:")
     with create_connection() as conn:
         if conn is None:
@@ -29,6 +32,9 @@ def add_client():
             cursor.close()
 
 def _get_client_data(cursor):
+    """
+    Obtiene los datos del cliente desde la entrada del usuario.
+    """
     ID_cliente = get_next_budget_id(cursor)
     print(f"ID_cliente: {ID_cliente}")
     CUIT = input_validado("CUIT (xx-xxxxxxxx-x): ", str, validar_cuit)

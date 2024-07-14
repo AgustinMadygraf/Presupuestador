@@ -14,6 +14,9 @@ init(autoreset=True)
 db_manager = DatabaseManager()
 
 def select_client(cursor):
+    """
+    Permite seleccionar un cliente existente o agregar uno nuevo.
+    """
     clientes = get_all_clients(cursor)
     have_clients = bool(clientes)
     if have_clients:
@@ -48,11 +51,17 @@ def select_client(cursor):
             return None
 
 def print_client_list(clientes):
+    """
+    Imprime la lista de clientes en formato tabular.
+    """
     headers = ["ID_cliente", "CUIT", "Razon_social", "Direccion", "Ubicacion_geografica", "N_contacto", "nombre", "apellido", "Unidad_de_negocio", "Legajo_vendedor", "Facturacion_anual"]
     table = [headers] + clientes
     print(tabulate.tabulate(table, headers="firstrow"))
 
 def get_all_clients(cursor):
+    """
+    Obtiene todos los clientes de la base de datos.
+    """
     if not table_exists(cursor, 'clientes'):
         print("La tabla 'clientes' no existe. Por favor, créela antes de continuar.")
         return []
@@ -60,6 +69,9 @@ def get_all_clients(cursor):
     return cursor.fetchall()
 
 def add_client(cursor, conn):
+    """
+    Añade un nuevo cliente a la base de datos.
+    """
     print("Ingrese los datos del nuevo cliente:")
     CUIT = input_validado("CUIT (xx-xxxxxxxx-x): ", str, validar_cuit)
     Razon_social = input("Razon social: ")
