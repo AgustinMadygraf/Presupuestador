@@ -16,15 +16,14 @@ class TestPresupuestadorApp(unittest.TestCase):
         mock_get_logger.return_value = mock_logger
         mock_conn = MagicMock()
         mock_create_connection.return_value = mock_conn
-        
-        app = PresupuestadorApp()
-        app.ui.primera_vez = True  # Asegurarse de que primera_vez esté en True
 
-        with patch.object(app.db_manager, 'create_connection', return_value=mock_conn) as patched_create_connection:
+        app = PresupuestadorApp()
+
+        with patch.object(app.ui, 'mostrar_bienvenida') as mock_mostrar_bienvenida:
             app.iniciar(run_once=True)
-        
+
             mock_os_system.assert_called_once_with('cls' if os.name == 'nt' else 'clear')
-            patched_create_connection.assert_called_once()
+            mock_create_connection.assert_called_once()  # Verifica que se haya llamado una vez
             mock_mostrar_bienvenida.assert_called()
             mock_main_menu.assert_called()
             mock_logger.debug.assert_any_call("Iniciando la aplicación")

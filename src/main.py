@@ -10,10 +10,6 @@ from logs.config_logger import LoggerConfigurator
 init(autoreset=True)
 
 class PresupuestadorApp:
-    """
-    Clase principal para la aplicación de Presupuestador de Proyectos.
-    Maneja la inicialización, el ciclo principal y las opciones del menú.
-    """
 
     def __init__(self, db_manager=None):
         """
@@ -23,7 +19,7 @@ class PresupuestadorApp:
         self.conn = None
         self.ui = UserInterface(self.logger)
         self.db_manager = db_manager if db_manager else DatabaseManager()
-        self.pdf_generator = PDFGenerator()  
+        self.pdf_generator = PDFGenerator()
 
     def iniciar(self, run_once=False):
         """

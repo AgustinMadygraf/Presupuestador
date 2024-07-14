@@ -1,55 +1,24 @@
-### TODO.txt - Lista de Tareas para Pruebas
+1. Verificar la Ruta del Parcheo:
+   - Revisar la ruta utilizada en el parcheo `@patch('src.models.db_manager.DatabaseManager.create_connection')` para asegurarse de que es correcta.
+   - Archivo: tests/test_main.py
+   - Acción: Confirmar que la ruta al método create_connection de DatabaseManager es la correcta y coincide con su ubicación en el código fuente.
 
-## Pruebas Unitarias
-1. Desarrollar pruebas unitarias para `database.py`:
-   - **Conexión a la base de datos**:
-     - Probar la conexión exitosa a la base de datos.
-     - Verificar el manejo correcto de errores de conexión.
-   - **Operaciones CRUD**:
-     - Simular operaciones CRUD básicas y asegurar su correcto funcionamiento.
+2. Revisar el Código de la Aplicación:
+   - Inspeccionar el método `iniciar` en la clase `PresupuestadorApp` para asegurarse de que `self.db_manager.create_connection()` se está llamando sin condiciones que puedan evitar su ejecución.
+   - Archivo: src/main.py
+   - Acción: Verificar que no haya condiciones que impidan la llamada a create_connection y que esta se ejecute siempre que iniciar sea llamado.
 
-2. Implementar pruebas unitarias para `salesperson_manager.py`:
-   - Probar la adición de nuevos vendedores y manejo de errores (ej. duplicados).
-   - Verificar la correcta recuperación y listado de vendedores existentes.
+3. Agregar Mensajes de Depuración:
+   - Insertar mensajes de depuración (logging o print statements) antes y después de la llamada a `create_connection` en el método `iniciar` para confirmar su ejecución.
+   - Archivo: src/main.py
+   - Acción: Agregar mensajes antes y después de self.db_manager.create_connection() y ejecutar el test para verificar si los mensajes aparecen en la salida.
 
-3. Refactorizar y ampliar `test_budget_management.py`:
-   - Solucionar errores de pruebas fallidas debido a métodos inexistentes (`add_salesperson`, `listar_vendedores`).
-   - Incluir pruebas para manejar entradas inválidas y verificar la robustez de las validaciones.
-   - Simular fallos en la creación y modificación de presupuestos, verificando la respuesta del sistema.
+4. Revisar Dependencias de Mocks:
+   - Asegurarse de que los otros mocks en la prueba `test_iniciar` no estén interfiriendo con la llamada a `create_connection`.
+   - Archivo: tests/test_main.py
+   - Acción: Revisar las configuraciones de los otros mocks (mock_get_logger, mock_mostrar_bienvenida, mock_main_menu, mock_os_system) para garantizar que no afecten negativamente la ejecución de create_connection.
 
-4. Ampliar pruebas unitarias para `client_management.py`:
-   - Cubrir todos los métodos con pruebas de éxito esperado y manejo de excepciones.
-   - Probar la integración con la base de datos simulando diferentes escenarios de falla.
-
-5. Crear pruebas para `installer_utils.py`:
-   - Verificar que el script de instalación configura correctamente el entorno necesario.
-   - Probar la creación de accesos directos y archivos de configuración, asegurando que no existan errores.
-
-## Pruebas de Integración
-6. Diseñar y ejecutar pruebas de integración completas para el flujo de creación de presupuestos:
-   - Desde la entrada de datos por el usuario hasta la generación final del PDF.
-   - Asegurar la correcta integración entre módulos `client_management`, `budget_service`, y `pdf_generator`.
-
-## Pruebas de Interfaz de Usuario
-7. Implementar pruebas para la interfaz de usuario en `main.py` y `user_interface.py`:
-   - Verificar que todas las interacciones y flujos del usuario están siendo manejados sin errores.
-   - Usar herramientas de automatización para simular interacciones del usuario en la consola.
-
-## Seguridad y Confiabilidad
-8. Desarrollar pruebas enfocadas en la seguridad de la aplicación:
-   - Verificar la gestión segura de datos del usuario y el acceso a la base de datos.
-   - Simular ataques comunes como SQL Injection y Cross-Site Scripting (si aplicable).
-
-## Integración Continua y Mantenimiento
-9. Configurar y mantener un sistema de integración continua:
-   - Establecer GitHub Actions o Jenkins para ejecutar pruebas automáticamente con cada commit.
-   - Asegurar que todas las pruebas se ejecuten y reporten de manera correcta antes de cualquier despliegue.
-
-10. Revisar y mejorar la documentación técnica y de pruebas:
-    - Asegurar que la documentación es clara, completa y útil para nuevos desarrolladores y testers.
-    - Incluir ejemplos de casos de prueba y resultados esperados para facilitar la comprensión.
-
-## Revisión y Optimización
-11. Realizar revisiones periódicas del código de pruebas:
-    - Optimizar pruebas existentes para mejorar la velocidad y eficiencia.
-    - Eliminar redundancias y actualizar pruebas según cambios en el código base.
+5. Revisar la Inicialización de `PresupuestadorApp`:
+   - Verificar la inicialización de la clase `PresupuestadorApp` en el test para asegurar que se está configurando correctamente.
+   - Archivo: tests/test_main.py
+   - Acción: Confirmar que la instancia de PresupuestadorApp en el test se inicializa correctamente y que el atributo db_manager se asigna de manera adecuada.
