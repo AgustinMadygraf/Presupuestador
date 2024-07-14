@@ -1,3 +1,4 @@
+#presupuestador/tests/test_database.py
 import unittest
 from unittest.mock import patch, MagicMock
 import mysql.connector
@@ -14,7 +15,7 @@ class TestDatabase(unittest.TestCase):
         conn = create_and_connect_db('localhost', 'user', 'password', 'test_db')
         
         self.assertTrue(conn.is_connected())
-        mock_connect.assert_called_with(host='localhost', user='user', password='password')
+        mock_connect.assert_called_with(host='localhost', user='user', password='password', database='test_db')
         mock_conn.close.assert_called_once()
 
     @patch('mysql.connector.connect')
@@ -63,12 +64,12 @@ class TestDatabase(unittest.TestCase):
         create_vendedores_table(mock_cursor, mock_conn)
         
         mock_cursor.execute.assert_called_with("""
-            CREATE TABLE vendedores (
-                ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
-                Legajo_vendedor INT NOT NULL,
-                nombre VARCHAR(255) NOT NULL,
-                apellido VARCHAR(255) NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+        CREATE TABLE vendedores (
+            ID_vendedor INT AUTO_INCREMENT PRIMARY KEY,
+            Legajo_vendedor INT NOT NULL,
+            nombre VARCHAR(255) NOT NULL,
+            apellido VARCHAR(255) NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
         """)
         mock_conn.commit.assert_called_once()
     
@@ -85,8 +86,8 @@ class TestDatabase(unittest.TestCase):
         
         self.assertIsNotNone(new_vendedor_id)
         mock_cursor.execute.assert_called_with("""
-            INSERT INTO vendedores (nombre, apellido, Legajo_vendedor)
-            VALUES (%s, %s, %s);
+        INSERT INTO vendedores (nombre, apellido, Legajo_vendedor)
+        VALUES (%s, %s, %s);
         """, ('John', 'Doe', '123'))
         mock_conn.commit.assert_called_once()
 
