@@ -59,7 +59,10 @@ class BudgetService:
         while True:
             vendedores = manager.list_salespeople()
             if not vendedores:
-                return None
+                self.add_salesperson()
+                vendedores = manager.list_salespeople()
+                if not vendedores:
+                    return None
 
             print("\nLista de vendedores:")
             for idx, vendedor in enumerate(vendedores, start=1):
@@ -102,7 +105,40 @@ class BudgetService:
                 presupuesto.condiciones, presupuesto.subtotal, presupuesto.tiempo_valido
             ))
             self.conn.commit()
-            print(Fore.GREEN + "Presupuesto creado con éxito.")
+            print("Presupuesto creado con éxito.")
         except mysql.connector.Error as error:
-            print(Fore.RED + f"Error al crear presupuesto: {error}")
+            print(f"Error al crear presupuesto: {error}")
             self.conn.rollback()
+
+    def add_salesperson(self):
+        """
+        Añade un nuevo vendedor a la base de datos.
+        """
+        nombre = input("Nombre del vendedor: ")
+        apellido = input("Apellido del vendedor: ")
+        legajo = input("Legajo del vendedor: ")
+        try:
+            sql = "INSERT INTO vendedores (nombre, apellido, Legajo_vendedor) VALUES (%s, %s, %s)"
+            self.cursor.execute(sql, (nombre, apellido, legajo))
+            self.conn.commit()
+            print("Vendedor agregado con éxito.")
+        except mysql.connector.Error as error:
+            print(f"Error al insertar vendedor: {error}")
+            self.conn.rollback()
+
+    def listar_vendedores(self):
+        """
+        Lista los vendedores en la base de datos.
+        """
+        try:
+            sql = "SELECT ID_vendedor, Legajo_vendedor, nombre, apellido FROM vendedores"
+            self.cursor.execute(sql)
+            vendedores = self.cursor.fetchall()
+            if not vendedores:
+                print("No hay vendedores disponibles.")
+                self.add_salesperson()
+                return []
+            return vendedores
+        except mysql.connector.Error as error:
+            print(f"Error al listar vendedores: {error}")
+            return []
