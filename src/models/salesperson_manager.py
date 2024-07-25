@@ -7,6 +7,11 @@ class SalespersonManager:
         self.cursor = cursor
         self.conn = conn
 
+    def table_exists(self, table_name):
+        """Verifica si una tabla existe en la base de datos."""
+        self.cursor.execute(f"SHOW TABLES LIKE '{table_name}';")
+        return self.cursor.fetchone() is not None
+
     def list_salespeople(self):
         """Obtiene la lista de vendedores de la base de datos y agrega un nuevo vendedor si no hay ninguno."""
         if not self.table_exists('vendedores'):
