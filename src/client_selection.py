@@ -6,13 +6,29 @@ import tabulate
 import mysql.connector
 from colorama import init
 from utils import input_validado, validar_cuit, table_exists
+import os
+import mysql.connector
+from dotenv import load_dotenv
+from src.logs.config_logger import LoggerConfigurator
+from src.models.db_manager import DatabaseManager
+from colorama import init
+
+load_dotenv()
+
+conn = mysql.connector.connect(
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    host=os.getenv('DB_HOST'),  # Asegúrate de que DB_HOST es 'localhost' o '127.0.0.1'
+    port=3306,  # Especifica el puerto de MySQL
+    database=os.getenv('DB_NAME'),
+    use_pure=True  # Usar el conector puro en lugar del C extension
+)
 
 
 logger = LoggerConfigurator().configure()
 init(autoreset=True)
 
-db_manager = DatabaseManager()
-
+db_manager = DatabaseManager(conn)
 def select_client(cursor):
     """
     Permite seleccionar un cliente existente o agregar uno nuevo.

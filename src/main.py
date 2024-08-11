@@ -1,6 +1,7 @@
 #Presupuestador/src/main.py
 import os
 from colorama import Fore, init
+import mysql.connector
 from models.db_manager import DatabaseManager
 from models.user_interface import UserInterface
 from models.budget_service import BudgetService
@@ -9,18 +10,14 @@ from logs.config_logger import LoggerConfigurator
 
 init(autoreset=True)
 
+# src/main.py
 class PresupuestadorApp:
-
     def __init__(self, db_manager=None):
-        """
-        Inicializa la aplicación, configurando el logger y la conexión a la base de datos.
-        """
         self.logger = LoggerConfigurator().configure()
-        self.conn = None
+        self.conn = mysql.connector.connect(user='user', password='password', host='127.0.0.1', database='database_name')
         self.ui = UserInterface(self.logger)
-        self.db_manager = db_manager if db_manager else DatabaseManager()
+        self.db_manager = db_manager if db_manager else DatabaseManager(self.conn)
         self.pdf_generator = PDFGenerator()
-
     def iniciar(self, run_once=False):
         """
         Inicia la aplicación y muestra el menú principal.
