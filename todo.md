@@ -1,9 +1,5 @@
 ### **ToDo List para Mejorar el Proyecto Presupuestador**
 
-4. **Tarea: Crear Interfaces para `SalespersonManager`**
-   - **Archivo a Crear**: `src/interfaces/salesperson_interface.py`
-   - **Descripción**: Definir interfaces pequeñas y específicas (por ejemplo, `SalespersonLister`, `SalespersonCreator`) y hacer que `SalespersonManager` implemente estas interfaces para cumplir con el Principio de Segregación de Interfaces (ISP).
-
 5. **Tarea: Aplicar el Patrón Estrategia para la Validación de Presupuestos**
    - **Archivo a Crear**: `src/strategies/budget_validation.py`
    - **Descripción**: Crear un conjunto de estrategias de validación para los presupuestos, que puedan ser fácilmente intercambiadas sin modificar la clase `BudgetService`. Esto mejorará la adherencia al Principio Abierto/Cerrado (OCP).
