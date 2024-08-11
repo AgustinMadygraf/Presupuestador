@@ -1,10 +1,11 @@
 #Presupuestador/src/database.py
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
-from src.logs.config_logger import LoggerConfigurator
 from dotenv import load_dotenv
 from colorama import Fore
 from utils import table_exists
+from src.factories.database_connection_factory import DatabaseConnectionFactory
+from src.logs.config_logger import LoggerConfigurator
 
 logger = LoggerConfigurator().configure()
 
@@ -127,3 +128,15 @@ def get_new_budget_id(cursor):
     new_id = get_next_budget_id(cursor)
     print(f"\nCreando un nuevo presupuesto con ID {new_id}\n")
     return new_id
+
+def create_and_connect_db():
+    """
+    Crea la base de datos si no existe y reconecta.
+    """
+    conn = DatabaseConnectionFactory.create_connection()
+    if conn:
+        # Lógica adicional si la conexión es exitosa
+        return conn
+    else:
+        # Manejo de error si la conexión falla
+        return None
