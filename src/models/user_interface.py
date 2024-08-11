@@ -1,6 +1,7 @@
-#Presupuestos/src/models/user_interface.py
+# src/models/user_interface.py
 import os
 from colorama import Fore, init
+from .user_input_handler import UserInputHandler
 
 init(autoreset=True)
 
@@ -12,6 +13,7 @@ class UserInterface:
     def __init__(self, logger):
         self.logger = logger
         self.primera_vez = True
+        self.input_handler = UserInputHandler()
 
     def mostrar_bienvenida(self):
         """
@@ -23,5 +25,4 @@ class UserInterface:
             self.primera_vez = False
         else:
             self.logger.debug("Reiniciando la aplicación por solicitud del usuario.")
-            input("Presione Enter para Reiniciar:\n")
-            os.system('cls' if os.name == 'nt' else 'clear')
+            self.input_handler.wait_for_restart()
