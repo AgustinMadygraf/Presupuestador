@@ -33,8 +33,4 @@ class DatabaseManager:
         """Verificar y crear tablas si es necesario."""
         logger.debug("Verificando y creando tablas si es necesario.")
         table_manager = TableManager(self.conn)
-        with self.conn.cursor() as cursor:
-            if not table_exists(cursor, 'presupuestos'):
-                logger.info("La tabla 'presupuestos' no existe. Creando tablas...")
-                table_manager.create_tables()
-                logger.info("Tablas creadas exitosamente.")
+        table_manager.check_and_create_tables()

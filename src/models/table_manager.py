@@ -2,6 +2,8 @@
 from mysql.connector import Error, ProgrammingError, DatabaseError, IntegrityError
 from dotenv import load_dotenv
 from src.logs.config_logger import LoggerConfigurator
+from src.utils import table_exists
+import mysql.connector
 
 load_dotenv()
 
@@ -63,14 +65,19 @@ class TableManager:
                             Cantidad INT,
                             precio_por_unidad FLOAT,
                             importe FLOAT GENERATED ALWAYS AS (Cantidad * precio_por_unidad) STORED,
-                            FOREIGN KEY (ID_presupuesto) REFERENCES presupuestos(ID_presupuesto)
                         );
                     """
                 }
-                
-                for table_name, table_sql in table_definitions.items():
-                    cursor.execute(table_sql)
-                    logger.info(f"Tabla '{table_name}' creada exitosamente.")
-        except (IntegrityError, ProgrammingError, DatabaseError, Error) as e:
-            self.conn.rollback()
-            logger.error(f"Error al crear las tablas: {e}")
+                for table_name, table_definition in table_definitions.items():
+                    cursor.execute(table_definition)
+                logger.info("Tablas creadas exitosamente.")
+        except mysql.connector.Error as err:
+            logger.error(f"Error al crear las tablas: {err}")
+            raise
+
+    def check_and_create_tables(self):
+        """Verificar y crear tablas si es necesario."""
+        with self.conn.cursor() as cursor:
+            if not table_exists(cursor, 'presupuestos'):
+                logger.info("La tabla 'presupuestos' no existe. Creando tablas...")
+                self.create_tables()
