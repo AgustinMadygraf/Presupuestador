@@ -35,3 +35,4 @@ class UserInterface:
         """
         self.logger.debug("Mostrando mensaje de despedida.")
         print(Fore.GREEN + "¡Gracias por usar el Presupuestador de Proyectos!\n")
+        
