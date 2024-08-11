@@ -1,24 +1,41 @@
-1. Verificar la Ruta del Parcheo:
-   - Revisar la ruta utilizada en el parcheo `@patch('src.models.db_manager.DatabaseManager.create_connection')` para asegurarse de que es correcta.
-   - Archivo: tests/test_main.py
-   - Acción: Confirmar que la ruta al método create_connection de DatabaseManager es la correcta y coincide con su ubicación en el código fuente.
+### **ToDo List para Mejorar el Proyecto Presupuestador**
 
-2. Revisar el Código de la Aplicación:
-   - Inspeccionar el método `iniciar` en la clase `PresupuestadorApp` para asegurarse de que `self.db_manager.create_connection()` se está llamando sin condiciones que puedan evitar su ejecución.
-   - Archivo: src/main.py
-   - Acción: Verificar que no haya condiciones que impidan la llamada a create_connection y que esta se ejecute siempre que iniciar sea llamado.
+1. **Tarea: Refactorizar la Clase `PDFGenerator`**
+   - **Archivo a Modificar**: `src/models/pdf_generator.py`
+   - **Descripción**: Extraer la lógica de manejo de directorios en `PDFGenerator` a una nueva clase `DirectoryManager`. Esto sigue el Principio de Responsabilidad Única (SRP) y mejora la modularidad del código.
 
-3. Agregar Mensajes de Depuración:
-   - Insertar mensajes de depuración (logging o print statements) antes y después de la llamada a `create_connection` en el método `iniciar` para confirmar su ejecución.
-   - Archivo: src/main.py
-   - Acción: Agregar mensajes antes y después de self.db_manager.create_connection() y ejecutar el test para verificar si los mensajes aparecen en la salida.
+2. **Tarea: Implementar el Patrón de Inyección de Dependencias**
+   - **Archivo a Modificar**: `src/models/db_manager.py`
+   - **Descripción**: Refactorizar `DatabaseManager` para aceptar una conexión de base de datos inyectada en lugar de crearla internamente. Esto facilita las pruebas y la sustitución de implementaciones.
 
-4. Revisar Dependencias de Mocks:
-   - Asegurarse de que los otros mocks en la prueba `test_iniciar` no estén interfiriendo con la llamada a `create_connection`.
-   - Archivo: tests/test_main.py
-   - Acción: Revisar las configuraciones de los otros mocks (mock_get_logger, mock_mostrar_bienvenida, mock_main_menu, mock_os_system) para garantizar que no afecten negativamente la ejecución de create_connection.
+3. **Tarea: Dividir la Lógica de `BudgetService` en Múltiples Clases**
+   - **Archivo a Modificar**: `src/models/budget_service.py`
+   - **Descripción**: Separar la recolección de datos, validaciones, y persistencia de `BudgetService` en clases independientes. Cada clase debería manejar una responsabilidad específica para adherirse al SRP.
 
-5. Revisar la Inicialización de `PresupuestadorApp`:
-   - Verificar la inicialización de la clase `PresupuestadorApp` en el test para asegurar que se está configurando correctamente.
-   - Archivo: tests/test_main.py
-   - Acción: Confirmar que la instancia de PresupuestadorApp en el test se inicializa correctamente y que el atributo db_manager se asigna de manera adecuada.
+4. **Tarea: Crear Interfaces para `SalespersonManager`**
+   - **Archivo a Crear**: `src/interfaces/salesperson_interface.py`
+   - **Descripción**: Definir interfaces pequeñas y específicas (por ejemplo, `SalespersonLister`, `SalespersonCreator`) y hacer que `SalespersonManager` implemente estas interfaces para cumplir con el Principio de Segregación de Interfaces (ISP).
+
+5. **Tarea: Aplicar el Patrón Estrategia para la Validación de Presupuestos**
+   - **Archivo a Crear**: `src/strategies/budget_validation.py`
+   - **Descripción**: Crear un conjunto de estrategias de validación para los presupuestos, que puedan ser fácilmente intercambiadas sin modificar la clase `BudgetService`. Esto mejorará la adherencia al Principio Abierto/Cerrado (OCP).
+
+6. **Tarea: Refactorizar `DatabaseManager` para Mejorar la Creación de Tablas**
+   - **Archivo a Modificar**: `src/models/db_manager.py`
+   - **Descripción**: Mover la lógica de creación de tablas a una clase `TableManager` separada, de modo que `DatabaseManager` no tenga múltiples responsabilidades. Esto mejora la modularidad y adherencia al SRP.
+
+7. **Tarea: Mejorar la Cobertura de Pruebas Unitarias**
+   - **Archivo a Modificar**: `tests/test_budget_management.py`
+   - **Descripción**: Agregar pruebas adicionales para cubrir casos extremos y asegurar que todas las ramas de código en `BudgetService` estén probadas. Esto aumentará la confianza en la estabilidad del sistema.
+
+8. **Tarea: Implementar el Patrón Fábrica para la Creación de Conexiones a Base de Datos**
+   - **Archivo a Crear**: `src/factories/database_connection_factory.py`
+   - **Descripción**: Crear una fábrica para gestionar la creación de conexiones a bases de datos. Esto sigue el Principio de Inversión de Dependencias (DIP) y facilita la sustitución de la base de datos en el futuro.
+
+9. **Tarea: Refactorizar `UserInterface` para Separar la Lógica de Presentación y Control**
+   - **Archivo a Modificar**: `src/models/user_interface.py`
+   - **Descripción**: Separar la lógica de presentación de la lógica de control en `UserInterface`, creando una clase `UserInputHandler` para manejar la entrada del usuario. Esto sigue el SRP y mejora la mantenibilidad.
+
+10. **Tarea: Documentar el Código Refactorizado**
+    - **Archivo a Modificar**: Todos los archivos modificados
+    - **Descripción**: Asegurarse de que todas las clases y métodos refactorizados estén bien documentados, explicando claramente sus responsabilidades y cómo se relacionan con otros componentes. Esto facilita la comprensión y el mantenimiento del código.
