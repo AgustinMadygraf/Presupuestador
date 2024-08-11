@@ -1,7 +1,8 @@
-#Presupuestador/src/main.py
+# src/main.py
 import os
 from colorama import Fore, init
 import mysql.connector
+from dotenv import load_dotenv
 from models.db_manager import DatabaseManager
 from models.user_interface import UserInterface
 from models.budget_service import BudgetService
@@ -10,21 +11,38 @@ from logs.config_logger import LoggerConfigurator
 
 init(autoreset=True)
 
-# src/main.py
+# Cargar variables de entorno
+load_dotenv()
+
 class PresupuestadorApp:
-    def __init__(self, db_manager=None):
+    def __init__(self):
         self.logger = LoggerConfigurator().configure()
-        self.conn = mysql.connector.connect(user='user', password='password', host='127.0.0.1', database='database_name')
+        # Establecer la conexión a la base de datos usando los valores del .env
+        try:
+            self.conn = mysql.connector.connect(
+                user=os.getenv('MYSQL_USER'),
+                password=os.getenv('MYSQL_PASSWORD'),
+                host=os.getenv('MYSQL_HOST'),
+                port=3306,
+                database=os.getenv('MYSQL_DB'),
+                use_pure=True
+            )
+            self.logger.info("Conexión a la base de datos establecida exitosamente.")
+        except mysql.connector.Error as err:
+            self.logger.error(f"Error al conectar con la base de datos: {err}")
+            raise
+
         self.ui = UserInterface(self.logger)
-        self.db_manager = db_manager if db_manager else DatabaseManager(self.conn)
+        self.db_manager = DatabaseManager(self.conn)
         self.pdf_generator = PDFGenerator()
+
     def iniciar(self, run_once=False):
         """
         Inicia la aplicación y muestra el menú principal.
         """
         self._clear_screen()
         self.logger.debug("Iniciando la aplicación")
-        self.conn = self.db_manager.create_connection()
+        # No es necesario volver a crear la conexión aquí ya que ya fue creada en __init__
 
         while True:
             self.ui.mostrar_bienvenida()
@@ -82,8 +100,8 @@ class PresupuestadorApp:
             finally:
                 cursor.close()
                 self.logger.debug("Cursor cerrado.")
-        except AttributeError as e:
-            self.logger.error(f"Error: {e}.")
+        except mysql.connector.Error as err:
+            self.logger.error(f"Error de base de datos: {err}")
         except Exception as e:
             self.logger.error(f"Se produjo un error: {e}")
 
