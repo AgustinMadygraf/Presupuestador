@@ -38,7 +38,7 @@ class DatabaseManager:
         """
         try:
             cursor = self.conn.cursor()
-            cursor.execute("CREATE DATABASE %s" % db_name)
+            cursor.execute(f"CREATE DATABASE {db_name}")
             logger.info("Base de datos '%s' creada exitosamente.", db_name)
         except mysql.connector.Error as err:
             if err.errno == 3678:  # Error code for schema directory already exists

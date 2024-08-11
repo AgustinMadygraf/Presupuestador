@@ -10,8 +10,8 @@ from src.models.db_manager import DatabaseManager
 from src.models.user_interface import UserInterface
 from src.models.budget_service import BudgetService
 from src.models.pdf_generator import PDFGenerator
-from src.logs.config_logger import LoggerConfigurator
 from src.strategies.budget_validation import BasicBudgetValidationStrategy
+from src.logs.config_logger import LoggerConfigurator
 
 init(autoreset=True)
 

@@ -1,5 +1,7 @@
-# src/models/user_interface.py
-import os
+"""
+Este módulo maneja la interfaz de usuario para el Presupuestador de Proyectos.
+"""
+
 from colorama import Fore, init
 from .user_input_handler import UserInputHandler
 
@@ -21,8 +23,15 @@ class UserInterface:
         """
         if self.primera_vez:
             self.logger.debug("Mostrando mensaje de bienvenida por primera vez.")
-            print(Fore.GREEN + "¡Bienvenido al Presupuestador de Proyectos!\n")  # Añadir un salto de línea al final
+            print(Fore.GREEN + "¡Bienvenido al Presupuestador de Proyectos!\n")
             self.primera_vez = False
         else:
             self.logger.debug("Reiniciando la aplicación por solicitud del usuario.")
             self.input_handler.wait_for_restart()
+
+    def despedida(self):
+        """
+        Muestra el mensaje de despedida al usuario.
+        """
+        self.logger.debug("Mostrando mensaje de despedida.")
+        print(Fore.GREEN + "¡Gracias por usar el Presupuestador de Proyectos!\n")
