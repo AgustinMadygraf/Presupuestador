@@ -1,14 +1,18 @@
-# src/main.py
+"""
+Módulo principal de la aplicación Presupuestador.
+Maneja la inicialización y ejecución de la aplicación.
+"""
 import os
-from colorama import Fore, init
+import sys
 import mysql.connector
+from colorama import Fore, init
 from dotenv import load_dotenv
-from models.db_manager import DatabaseManager
-from models.user_interface import UserInterface
-from models.budget_service import BudgetService
-from models.pdf_generator import PDFGenerator
-from logs.config_logger import LoggerConfigurator
-from strategies.budget_validation import BasicBudgetValidationStrategy
+from src.models.db_manager import DatabaseManager
+from src.models.user_interface import UserInterface
+from src.models.budget_service import BudgetService
+from src.models.pdf_generator import PDFGenerator
+from src.logs.config_logger import LoggerConfigurator
+from src.strategies.budget_validation import BasicBudgetValidationStrategy
 
 init(autoreset=True)
 
@@ -16,6 +20,10 @@ init(autoreset=True)
 load_dotenv()
 
 class PresupuestadorApp:
+    """
+    Clase principal de la aplicación Presupuestador.
+    """
+
     def __init__(self):
         self.logger = LoggerConfigurator().configure()
         # Establecer la conexión a la base de datos usando los valores del .env
@@ -43,7 +51,6 @@ class PresupuestadorApp:
         """
         self._clear_screen()
         self.logger.debug("Iniciando la aplicación")
-        # No es necesario volver a crear la conexión aquí ya que ya fue creada en __init__
 
         while True:
             self.ui.mostrar_bienvenida()
@@ -76,7 +83,7 @@ class PresupuestadorApp:
         """
         self.logger.debug(f"Procesando opción seleccionada: {choice}")
         if choice == '1':
-            self.handle_new_invoice()   
+            self.handle_new_invoice()
         elif choice == '2':
             self.pdf_generator.handle_generate_pdf()
         elif choice == '0':
@@ -104,7 +111,8 @@ class PresupuestadorApp:
         except mysql.connector.Error as err:
             self.logger.error(f"Error de base de datos: {err}")
         except Exception as e:
-            self.logger.error(f"Se produjo un error: {e}")
+            self.logger.error(f"Se produjo un error no manejado: {e}")
+            raise
 
     def _salir_programa(self):
         """
