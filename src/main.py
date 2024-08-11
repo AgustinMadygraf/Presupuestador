@@ -8,6 +8,7 @@ from models.user_interface import UserInterface
 from models.budget_service import BudgetService
 from models.pdf_generator import PDFGenerator
 from logs.config_logger import LoggerConfigurator
+from strategies.budget_validation import BasicBudgetValidationStrategy
 
 init(autoreset=True)
 
@@ -90,7 +91,7 @@ class PresupuestadorApp:
         try:
             self.logger.debug("Iniciando proceso para manejar un nuevo presupuesto.")
             cursor = self.conn.cursor()
-            budget_service = BudgetService(cursor, self.conn)
+            budget_service = BudgetService(cursor, self.conn, BasicBudgetValidationStrategy())
             try:
                 self.logger.debug("Recolectando datos del presupuesto.")
                 presupuesto = budget_service.collect_budget_data()
