@@ -1,4 +1,4 @@
-#Presupuestador/src/models/pdf_generator.py
+# src/models/pdf_generator.py
 import os
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
@@ -8,6 +8,7 @@ from reportlab.lib import colors
 from datetime import datetime
 from src.data_definitions import custom_color1, custom_color2, data_test
 from src.logs.config_logger import LoggerConfigurator
+from src.models.directory_manager import DirectoryManager
 
 class PDFGenerator:
     def __init__(self):
@@ -16,7 +17,7 @@ class PDFGenerator:
     def handle_generate_pdf(self):
         try:
             presupuesto_id = self.get_presupuesto_id()
-            file_path = self.prepare_output_directory()
+            file_path = DirectoryManager.prepare_output_directory()
 
             # Verificar si es el modo test y generar el nombre del archivo en consecuencia.
             current_time = datetime.now().strftime("%Y%m%d_%H%M%S")

@@ -1,9 +1,5 @@
 ### **ToDo List para Mejorar el Proyecto Presupuestador**
 
-1. **Tarea: Refactorizar la Clase `PDFGenerator`**
-   - **Archivo a Modificar**: `src/models/pdf_generator.py`
-   - **Descripción**: Extraer la lógica de manejo de directorios en `PDFGenerator` a una nueva clase `DirectoryManager`. Esto sigue el Principio de Responsabilidad Única (SRP) y mejora la modularidad del código.
-
 2. **Tarea: Implementar el Patrón de Inyección de Dependencias**
    - **Archivo a Modificar**: `src/models/db_manager.py`
    - **Descripción**: Refactorizar `DatabaseManager` para aceptar una conexión de base de datos inyectada en lugar de crearla internamente. Esto facilita las pruebas y la sustitución de implementaciones.
