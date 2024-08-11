@@ -5,7 +5,7 @@ from src.logs.config_logger import LoggerConfigurator
 
 load_dotenv()
 
-logger = LoggerConfigurator().get_logger()
+logger = LoggerConfigurator().configure()
 
 class TableManager:
     def __init__(self, conn):

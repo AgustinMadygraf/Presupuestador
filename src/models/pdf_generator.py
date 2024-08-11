@@ -11,7 +11,7 @@ from src.logs.config_logger import LoggerConfigurator
 
 class PDFGenerator:
     def __init__(self):
-        self.logger = LoggerConfigurator().get_logger()
+        self.logger = LoggerConfigurator().configure()
 
     def handle_generate_pdf(self):
         try:

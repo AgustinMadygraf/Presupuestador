@@ -7,7 +7,7 @@ from pywintypes import com_error
 
 class ProjectInstaller:
     def __init__(self):
-        self.logger = LoggerConfigurator().get_logger()
+        self.logger = LoggerConfigurator().configure()
         self.project_dir = Path(__file__).parent.parent.resolve()
         self.name_proj = self.get_project_name()
 

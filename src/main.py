@@ -15,7 +15,7 @@ class PresupuestadorApp:
         """
         Inicializa la aplicación, configurando el logger y la conexión a la base de datos.
         """
-        self.logger = LoggerConfigurator().get_logger()
+        self.logger = LoggerConfigurator().configure()
         self.conn = None
         self.ui = UserInterface(self.logger)
         self.db_manager = db_manager if db_manager else DatabaseManager()

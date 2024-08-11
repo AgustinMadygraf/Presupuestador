@@ -1,10 +1,12 @@
 #Presupuestador/src/database.py
 import mysql.connector
 from mysql.connector import Error, DatabaseError, ProgrammingError, IntegrityError
-from logs.config_logger import logger
+from src.logs.config_logger import LoggerConfigurator
 from dotenv import load_dotenv
 from colorama import Fore
 from utils import table_exists
+
+logger = LoggerConfigurator().configure()
 
 load_dotenv()
 

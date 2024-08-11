@@ -8,7 +8,7 @@ from colorama import init
 from utils import input_validado, validar_cuit, table_exists
 
 
-logger = LoggerConfigurator().get_logger()
+logger = LoggerConfigurator().configure()
 init(autoreset=True)
 
 db_manager = DatabaseManager()

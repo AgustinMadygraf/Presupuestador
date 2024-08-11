@@ -9,7 +9,7 @@ from src.utils import table_exists
 
 load_dotenv()
 
-logger = LoggerConfigurator().get_logger()
+logger = LoggerConfigurator().configure()
 
 class DatabaseManager:
     def __init__(self):
