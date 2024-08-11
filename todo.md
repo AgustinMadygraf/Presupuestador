@@ -1,13 +1,5 @@
 ### **ToDo List para Mejorar el Proyecto Presupuestador**
 
-2. **Tarea: Implementar el Patrón de Inyección de Dependencias**
-   - **Archivo a Modificar**: `src/models/db_manager.py`
-   - **Descripción**: Refactorizar `DatabaseManager` para aceptar una conexión de base de datos inyectada en lugar de crearla internamente. Esto facilita las pruebas y la sustitución de implementaciones.
-
-3. **Tarea: Dividir la Lógica de `BudgetService` en Múltiples Clases**
-   - **Archivo a Modificar**: `src/models/budget_service.py`
-   - **Descripción**: Separar la recolección de datos, validaciones, y persistencia de `BudgetService` en clases independientes. Cada clase debería manejar una responsabilidad específica para adherirse al SRP.
-
 4. **Tarea: Crear Interfaces para `SalespersonManager`**
    - **Archivo a Crear**: `src/interfaces/salesperson_interface.py`
    - **Descripción**: Definir interfaces pequeñas y específicas (por ejemplo, `SalespersonLister`, `SalespersonCreator`) y hacer que `SalespersonManager` implemente estas interfaces para cumplir con el Principio de Segregación de Interfaces (ISP).
