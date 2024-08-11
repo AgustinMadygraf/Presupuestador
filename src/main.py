@@ -3,7 +3,6 @@ Módulo principal de la aplicación Presupuestador.
 Maneja la inicialización y ejecución de la aplicación.
 """
 import os
-import sys
 import mysql.connector
 from colorama import Fore, init
 from dotenv import load_dotenv
@@ -38,7 +37,7 @@ class PresupuestadorApp:
             )
             self.logger.info("Conexión a la base de datos establecida exitosamente.")
         except mysql.connector.Error as err:
-            self.logger.error(f"Error al conectar con la base de datos: {err}")
+            self.logger.error("Error al conectar con la base de datos: %s", err)
             raise
 
         self.ui = UserInterface(self.logger)
@@ -81,7 +80,7 @@ class PresupuestadorApp:
         """
         Procesa la opción seleccionada del menú.
         """
-        self.logger.debug(f"Procesando opción seleccionada: {choice}")
+        self.logger.debug("Procesando opción seleccionada: %s", choice)
         if choice == '1':
             self.handle_new_invoice()
         elif choice == '2':
@@ -103,15 +102,15 @@ class PresupuestadorApp:
                 self.logger.debug("Recolectando datos del presupuesto.")
                 presupuesto = budget_service.collect_budget_data()
                 if presupuesto:
-                    self.logger.debug(f"Datos del presupuesto recolectados: {presupuesto}")
+                    self.logger.debug("Datos del presupuesto recolectados: %s", presupuesto)
                     budget_service.insert_budget_into_db(presupuesto)
             finally:
                 cursor.close()
                 self.logger.debug("Cursor cerrado.")
         except mysql.connector.Error as err:
-            self.logger.error(f"Error de base de datos: {err}")
+            self.logger.error("Error de base de datos: %s", err)
         except Exception as e:
-            self.logger.error(f"Se produjo un error no manejado: {e}")
+            self.logger.error("Se produjo un error no manejado: %s", e)
             raise
 
     def _salir_programa(self):
@@ -126,4 +125,4 @@ class PresupuestadorApp:
         Maneja la selección de una opción no válida.
         """
         print("Opción no válida. Intente de nuevo.")
-        self.logger.warning(f"Opción no válida seleccionada: {choice}")
+        self.logger.warning("Opción no válida seleccionada: %s", choice)
