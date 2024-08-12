@@ -1,4 +1,5 @@
 """
+setup.py
 Setup script for Presupuestador.
 """
 
@@ -6,7 +7,7 @@ import subprocess
 import sys
 import os
 from src.install.dependency_manager import (
-    PipUpdater, DependencyVerifier, PipDependencyInstaller, DependencyInstallerManager
+    PipUpdater, PipDependencyInstaller, DependencyInstallerManager
 )
 from src.install.installer_utils import is_pipenv_updated, list_python_interpreters
 
@@ -31,30 +32,28 @@ if __name__ == "__main__":
         "Selecciona el número del intérprete de Python a utilizar "
         "(o deja en blanco para usar el actual): "
     )
-    PYTHON_EXECUTABLE = python_interpreters[int(selected_index)]
     if selected_index:
         PYTHON_EXECUTABLE = python_interpreters[int(selected_index)]
     else:
         PYTHON_EXECUTABLE = sys.executable
 
-    # Lista de dependencias que se requiere verificar e instalar
-    dependencies = ["pipenv", "winshell", "pywin32", "colorlog"]
-
-
     # Crear instancias de las clases necesarias
     pip_updater = PipUpdater()
-    verifier = DependencyVerifier(dependencies)
     installer_manager = DependencyInstallerManager(
         PipDependencyInstaller(), pip_updater, max_retries=3
     )
 
-    # Verifica e instala las dependencias faltantes
-    missing_dependencies = verifier.get_missing_dependencies()
-    if missing_dependencies:
-        pip_updater.update_pip()
-        installer_manager.install_missing_dependencies(missing_dependencies)
+    # Actualizar pip antes de continuar
+    pip_updater.update_pip()
+
+    # Verificar e instalar las dependencias faltantes
+    REQUIREMENTS_FILE = 'requirements.txt'
+    if os.path.exists(REQUIREMENTS_FILE):
+        print(f"Verificando dependencias desde {REQUIREMENTS_FILE}...")
+        installer_manager.install_missing_dependencies(REQUIREMENTS_FILE)
     else:
-        print("Todas las dependencias están instaladas.")
+        print(f"El archivo {REQUIREMENTS_FILE} no fue encontrado. "
+              "No se pueden verificar las dependencias.")
 
     # Verifica si pipenv está actualizado
     if not is_pipenv_updated(PYTHON_EXECUTABLE):

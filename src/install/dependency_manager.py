@@ -59,36 +59,6 @@ class PipDependencyInstaller(DependencyInstaller):
             return False
 
 
-class DependencyVerifier:
-    """
-    Clase responsable de verificar las dependencias faltantes.
-    """
-    # pylint: disable=too-few-public-methods
-    def __init__(self, dependencies: list):
-        """
-        Inicializa la clase DependencyVerifier con una lista de dependencias.
-
-        :param dependencies: Lista de nombres de dependencias a verificar.
-        """
-        self.dependencies = dependencies
-
-    def get_missing_dependencies(self) -> list:
-        """
-        Verifica qué dependencias están faltando y devuelve una lista de ellas.
-
-        :return: Lista de dependencias que no están instaladas.
-        """
-        missing_dependencies = []
-        for dependency in self.dependencies:
-            try:
-                # Intenta importar la dependencia para verificar si está instalada
-                __import__(dependency)
-            except ImportError:
-                # Si falla la importación, agrega la dependencia a la lista de faltantes
-                missing_dependencies.append(dependency)
-        return missing_dependencies
-
-
 class DependencyInstallerManager:
     """
     Clase responsable de instalar las dependencias faltantes.
@@ -107,36 +77,38 @@ class DependencyInstallerManager:
         self.pip_updater = pip_updater
         self.max_retries = max_retries
 
-    def install_missing_dependencies(self, missing_dependencies: list) -> None:
+    def install_missing_dependencies(self, requirements_file: str = 'requirements.txt') -> None:
         """
         Instala las dependencias faltantes utilizando el instalador proporcionado.
         Si una instalación falla, se reintentará hasta max_retries veces.
 
-        :param missing_dependencies: Lista de dependencias que necesitan ser instaladas.
+        :param requirements_file: Ruta al archivo requirements.txt que contiene las dependencias.
         """
         failed_dependencies = []  # Lista para almacenar dependencias que no se pudieron instalar
 
-        print(
-            f"Las siguientes dependencias están faltantes: "
-            f"{', '.join(missing_dependencies)}"
-        )
+        print(f"Leyendo dependencias desde {requirements_file}...")
+
+        try:
+            with open(requirements_file, 'r') as file:
+                dependencies = file.read().splitlines()
+        except FileNotFoundError:
+            print(f"El archivo {requirements_file} no fue encontrado.")
+            return
+
+        print(f"Las siguientes dependencias están faltantes: {', '.join(dependencies)}")
         print("Intentando instalar dependencias faltantes...")
 
-        for dep in missing_dependencies:
+        for dep in dependencies:
             success = False
             for attempt in range(self.max_retries):
-                print(
-                    f"Intentando instalar {dep} (intento {attempt + 1}/{self.max_retries})..."
-                )
+                print(f"Intentando instalar {dep} (intento {attempt + 1}/{self.max_retries})...")
                 if self.installer.install(dep):
                     success = True
                     break
                 print(f"Reintentando instalación de {dep}...")
 
             if not success:
-                print(
-                    f"Fallo la instalación de {dep} después de {self.max_retries} intentos."
-                )
+                print(f"Fallo la instalación de {dep} después de {self.max_retries} intentos.")
                 failed_dependencies.append(dep)
 
         if failed_dependencies:
