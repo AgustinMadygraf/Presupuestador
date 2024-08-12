@@ -1,4 +1,3 @@
-# VisionArtificial/src/install/dependency_manager.py
 """
 Este módulo proporciona clases para la gestión de dependencias, incluyendo la actualización de pip,
 la instalación de dependencias y la verificación de dependencias faltantes.
@@ -12,6 +11,7 @@ class PipUpdater:
     """
     Clase responsable de actualizar pip a la última versión disponible.
     """
+    # pylint: disable=too-few-public-methods
     def update_pip(self) -> None:
         """
         Actualiza pip utilizando el comando `pip install --upgrade pip`.
@@ -63,6 +63,7 @@ class DependencyVerifier:
     """
     Clase responsable de verificar las dependencias faltantes.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self, dependencies: list):
         """
         Inicializa la clase DependencyVerifier con una lista de dependencias.
@@ -92,9 +93,11 @@ class DependencyInstallerManager:
     """
     Clase responsable de instalar las dependencias faltantes.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self, installer: DependencyInstaller, pip_updater: PipUpdater, max_retries: int = 3):
         """
-        Inicializa la clase DependencyInstallerManager con un instalador, un actualizador de pip y un número máximo de reintentos.
+        Inicializa la clase DependencyInstallerManager con un instalador, un actualizador de pip 
+        y un número máximo de reintentos.
 
         :param installer: Instancia de una clase que hereda de DependencyInstaller.
         :param pip_updater: Instancia de PipUpdater para actualizar pip antes de instalar dependencias.
@@ -113,20 +116,27 @@ class DependencyInstallerManager:
         """
         failed_dependencies = []  # Lista para almacenar dependencias que no se pudieron instalar
 
-        print(f"Las siguientes dependencias están faltantes: {', '.join(missing_dependencies)}")
+        print(
+            f"Las siguientes dependencias están faltantes: "
+            f"{', '.join(missing_dependencies)}"
+        )
         print("Intentando instalar dependencias faltantes...")
 
         for dep in missing_dependencies:
             success = False
             for attempt in range(self.max_retries):
-                print(f"Intentando instalar {dep} (intento {attempt + 1}/{self.max_retries})...")
+                print(
+                    f"Intentando instalar {dep} (intento {attempt + 1}/{self.max_retries})..."
+                )
                 if self.installer.install(dep):
                     success = True
                     break
                 print(f"Reintentando instalación de {dep}...")
 
             if not success:
-                print(f"Fallo la instalación de {dep} después de {self.max_retries} intentos.")
+                print(
+                    f"Fallo la instalación de {dep} después de {self.max_retries} intentos."
+                )
                 failed_dependencies.append(dep)
 
         if failed_dependencies:
