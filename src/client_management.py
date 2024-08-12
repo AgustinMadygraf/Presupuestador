@@ -1,6 +1,6 @@
 #presupuestador/src/client_management.py
 import tabulate
-from database import create_connection, get_next_budget_id, table_exists
+from src.database import create_connection, get_next_budget_id, table_exists
 from colorama import Fore
 import mysql.connector
 from utils import input_validado, validar_cuit, table_exists

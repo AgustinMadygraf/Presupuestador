@@ -1,5 +1,5 @@
 # src/strategies/budget_validation.py
-from models.presupuesto import Presupuesto
+from src.models.presupuesto import Presupuesto
 from abc import ABC, abstractmethod
 
 class BudgetValidationStrategy(ABC):

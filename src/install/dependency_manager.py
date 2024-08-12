@@ -1,4 +1,9 @@
 # VisionArtificial/src/install/dependency_manager.py
+"""
+Este módulo proporciona clases para la gestión de dependencias, incluyendo la actualización de pip,
+la instalación de dependencias y la verificación de dependencias faltantes.
+"""
+
 import subprocess
 import sys
 
@@ -19,6 +24,7 @@ class PipUpdater:
         except subprocess.CalledProcessError as e:
             print(f"No se pudo actualizar pip. Error: {e}")
 
+
 class DependencyInstaller:
     """
     Interfaz para la instalación de dependencias.
@@ -29,6 +35,7 @@ class DependencyInstaller:
         Método para instalar una dependencia. Debe ser implementado por una subclase.
         """
         raise NotImplementedError("Este método debe ser implementado por una subclase")
+
 
 class PipDependencyInstaller(DependencyInstaller):
     """
@@ -50,6 +57,7 @@ class PipDependencyInstaller(DependencyInstaller):
         except subprocess.CalledProcessError as e:
             print(f"No se pudo instalar {dependency}. Error: {e}")
             return False
+
 
 class DependencyVerifier:
     """
@@ -78,6 +86,7 @@ class DependencyVerifier:
                 # Si falla la importación, agrega la dependencia a la lista de faltantes
                 missing_dependencies.append(dependency)
         return missing_dependencies
+
 
 class DependencyInstallerManager:
     """
@@ -114,8 +123,7 @@ class DependencyInstallerManager:
                 if self.installer.install(dep):
                     success = True
                     break
-                else:
-                    print(f"Reintentando instalación de {dep}...")
+                print(f"Reintentando instalación de {dep}...")
 
             if not success:
                 print(f"Fallo la instalación de {dep} después de {self.max_retries} intentos.")

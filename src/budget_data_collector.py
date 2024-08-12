@@ -1,7 +1,7 @@
 # src/models/budget_data_collector.py
-from models.presupuesto import Presupuesto
-from client_selection import select_client, input_validado
-from database import get_new_budget_id
+from src.models.presupuesto import Presupuesto
+from src.client_selection import select_client, input_validado
+from src.database import get_new_budget_id
 from src.models.salesperson_manager import SalespersonManager
 
 class BudgetDataCollector:
