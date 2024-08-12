@@ -38,9 +38,8 @@ if __name__ == "__main__":
         PYTHON_EXECUTABLE = sys.executable
 
     # Lista de dependencias que se requiere verificar e instalar
-    dependencies = [
-        "pipenv", "winshell", "win32com.client", "pywintypes", "colorlog"
-    ]
+    dependencies = ["pipenv", "winshell", "pywin32", "colorlog"]
+
 
     # Crear instancias de las clases necesarias
     pip_updater = PipUpdater()
