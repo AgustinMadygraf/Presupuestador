@@ -5,8 +5,10 @@ Este módulo proporciona utilidades para la instalación del proyecto.
 from pathlib import Path
 import winshell
 from src.logs.config_logger import LoggerConfigurator
-from install.shortcut_creation_strategy import ShortcutCreationStrategy, DefaultShortcutCreationStrategy  
-from install.project_name_utils import ProjectNameRetriever
+from src.install.shortcut_creation_strategy import (
+    ShortcutCreationStrategy, DefaultShortcutCreationStrategy
+)
+from src.install.project_name_utils import ProjectNameRetriever
 
 
 class ProjectInstaller:
@@ -36,7 +38,9 @@ class ProjectInstaller:
             BatFileCreator(self.project_dir, self.name_proj, self.logger).crear_archivo_bat_con_pipenv()
 
         shortcut_strategy = DefaultShortcutCreationStrategy()
-        ShortcutManager(self.project_dir, self.name_proj, self.logger, shortcut_strategy).create_shortcut(ruta_archivo_bat)
+        ShortcutManager(
+            self.project_dir, self.name_proj, self.logger, shortcut_strategy
+        ).create_shortcut(ruta_archivo_bat)
 
 
 class ShortcutManager:
@@ -95,4 +99,3 @@ class BatFileCreator:
         """
         ruta_app_py = self.project_dir / 'run.py'
         ruta_archivo_bat = self.project_dir / f"{self.name_proj}.bat"
-        # Aquí debe añadirse la lógica para crear el archivo BAT, si es necesario
