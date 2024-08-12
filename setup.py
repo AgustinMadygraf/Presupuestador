@@ -31,7 +31,7 @@ if __name__ == "__main__":
         "Selecciona el número del intérprete de Python a utilizar "
         "(o deja en blanco para usar el actual): "
     )
-    PYTHON_EXECUTABLE = python_interpreters[int(selected_index)] 
+    PYTHON_EXECUTABLE = python_interpreters[int(selected_index)]
     if selected_index:
         PYTHON_EXECUTABLE = python_interpreters[int(selected_index)]
     else:
