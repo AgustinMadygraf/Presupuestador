@@ -89,7 +89,7 @@ class DependencyInstallerManager:
         print(f"Leyendo dependencias desde {requirements_file}...")
 
         try:
-            with open(requirements_file, 'r') as file:
+            with open(requirements_file, 'r', encoding='utf-8') as file:
                 dependencies = file.read().splitlines()
         except FileNotFoundError:
             print(f"El archivo {requirements_file} no fue encontrado.")

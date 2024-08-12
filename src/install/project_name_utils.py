@@ -1,10 +1,14 @@
-# VisionArtificial/src/install/project_name_retriever.py
+"""
+Este módulo proporciona la clase ProjectNameRetriever, que es responsable de obtener el nombre del proyecto
+basado en el nombre del directorio principal.
+"""
 
 from pathlib import Path
 
 class ProjectNameRetriever:
     """
-    Clase responsable de obtener el nombre del proyecto basado en el nombre del directorio principal o un archivo específico.
+    Clase responsable de obtener el nombre del proyecto basado en el nombre del directorio principal 
+    o un archivo específico.
     """
     def __init__(self, project_dir: Path):
         """
@@ -23,6 +27,6 @@ class ProjectNameRetriever:
         try:
             project_name = self.project_dir.name
             return project_name
-        except Exception as e:
+        except AttributeError as e:
             print(f"Error al obtener el nombre del proyecto: {e}")
             return "Unknown_Project"

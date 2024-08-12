@@ -9,7 +9,7 @@ import os
 from src.install.dependency_manager import (
     PipUpdater, PipDependencyInstaller, DependencyInstallerManager
 )
-from src.install.installer_utils import is_pipenv_updated, list_python_interpreters
+from install.python_interpreter_utils import list_python_interpreters, is_pipenv_updated
 
 if __name__ == "__main__":
     # Limpiar pantalla
@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     try:
         # Intento de importar y ejecutar el instalador del proyecto
-        from src.install.installer_utils import ProjectInstaller
+        from install.project_installer import ProjectInstaller
         installer = ProjectInstaller()
         installer.main()
     except ImportError as e:
