@@ -1,21 +1,33 @@
-# src/logs/config_logger.py
+"""
+src/logs/config_logger.py
+Logger configuration module.
+"""
+
 import logging.config
 import os
 import json
 
 class LoggerConfigurator:
-    def __init__(self, config_path='src/logs/logging.json', default_level=logging.INFO, env_key='LOG_CFG'):
+    """Configures logging for the application."""
+    # pylint: disable=too-few-public-methods
+    def __init__(
+        self,
+        config_path='src/logs/logging.json',
+        default_level=logging.INFO,
+        env_key='LOG_CFG'
+    ):
         self.config_path = config_path
         self.default_level = default_level
         self.env_key = env_key
 
     def configure(self):
+        """Configures the logger using a JSON file or basic configuration."""
         path = self.config_path
         value = os.getenv(self.env_key, None)
         if value:
             path = value
         if os.path.exists(path):
-            with open(path, 'rt') as f:
+            with open(path, 'rt', encoding='utf-8') as f:
                 config = json.load(f)
             logging.config.dictConfig(config)
         else:
