@@ -66,13 +66,19 @@ class DependencyInstallerManager:
     Clase responsable de instalar las dependencias faltantes.
     """
     # pylint: disable=too-few-public-methods
-    def __init__(self, installer: DependencyInstaller, pip_updater: PipUpdater, max_retries: int = 3):
+    def __init__(
+        self,
+        installer: DependencyInstaller,
+        pip_updater: PipUpdater,
+        max_retries: int = 3
+    ):
         """
         Inicializa la clase DependencyInstallerManager con un instalador, un actualizador de pip 
         y un número máximo de reintentos.
 
         :param installer: Instancia de una clase que hereda de DependencyInstaller.
-        :param pip_updater: Instancia de PipUpdater para actualizar pip antes de instalar dependencias.
+        :param pip_updater: Instancia de PipUpdater para actualizar pip antes de 
+        instalar dependencias.
         :param max_retries: Número máximo de intentos para instalar cada dependencia.
         """
         self.installer = installer

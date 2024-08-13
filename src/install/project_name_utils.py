@@ -1,5 +1,6 @@
 """
-Este módulo proporciona la clase ProjectNameRetriever, que es responsable de obtener el nombre del proyecto
+Este módulo proporciona la clase ProjectNameRetriever, 
+que es responsable de obtener el nombre del proyecto
 basado en el nombre del directorio principal.
 """
 

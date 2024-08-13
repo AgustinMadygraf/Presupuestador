@@ -1,5 +1,6 @@
 """
-Este módulo proporciona utilidades para la gestión de entornos Python y la verificación de la configuración de pipenv.
+Este módulo proporciona utilidades para la gestión de entornos 
+Python y la verificación de la configuración de pipenv.
 """
 
 import os
@@ -41,7 +42,9 @@ def list_python_interpreters():
     possible_locations = []
     if os.name == "nt":  # Windows
         possible_locations += glob.glob("C:\\Python*\\python.exe")
-        possible_locations += glob.glob("C:\\Users\\*\\AppData\\Local\\Programs\\Python\\Python*\\python.exe")
+        possible_locations += glob.glob("C:\\Users\\*\\"
+                                        "AppData\\Local\\Programs\\"
+                                        "Python\\Python*\\python.exe")
     else:  # Unix-based systems
         possible_locations += glob.glob("/usr/bin/python*")
         possible_locations += glob.glob("/usr/local/bin/python*")

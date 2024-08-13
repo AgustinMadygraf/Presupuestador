@@ -1,11 +1,10 @@
 """
+src/install/shortcut_creation_strategy.py
 Este módulo define las estrategias para la creación de accesos directos.
 """
 
 from abc import ABC, abstractmethod
 from win32com.client import Dispatch
-from pywintypes import com_error
-
 
 class ShortcutCreationStrategy(ABC):
     """
@@ -17,7 +16,6 @@ class ShortcutCreationStrategy(ABC):
         """
         Método abstracto para crear un acceso directo.
         """
-        pass
 
 
 class DefaultShortcutCreationStrategy(ShortcutCreationStrategy):
@@ -43,18 +41,15 @@ class DefaultShortcutCreationStrategy(ShortcutCreationStrategy):
             acceso_directo.IconLocation = str(ruta_icono)
             acceso_directo.save()
             logger.debug(
-                f"Acceso directo {'actualizado' if ruta_acceso_directo.exists() else 'creado'} exitosamente."
+                f"Acceso directo {'actualizado' if ruta_acceso_directo.exists() else 'creado'} "
+                "exitosamente."
             )
             return True
-        except com_error as e:
+        except OSError as error_os:
             logger.error(
-                "No se pudo crear/actualizar el acceso directo debido a un error de COM: {e}",
-                exc_info=True
-            )
-            return False
-        except OSError as e:
-            logger.error(
-                "No se pudo crear/actualizar el acceso directo debido a un error del sistema operativo: {e}",
+                "No se pudo crear/actualizar el acceso directo debido a un error del sistema "
+                "operativo: %s",
+                error_os,
                 exc_info=True
             )
             return False
