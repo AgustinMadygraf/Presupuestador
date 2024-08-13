@@ -1,7 +1,12 @@
+"""
+tests/test_project_name_utils.py
+Test module for ProjectNameRetriever class.
+"""
+
+import tempfile
 import unittest
 from pathlib import Path
 from src.install.project_name_utils import ProjectNameRetriever
-import tempfile
 
 class TestProjectNameRetriever(unittest.TestCase):
     """Clase de prueba para la clase ProjectNameRetriever."""
