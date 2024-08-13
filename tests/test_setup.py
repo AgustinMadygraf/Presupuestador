@@ -1,5 +1,5 @@
 """
-VisionArtificial/tests/test_setup.py
+Presupuestador/tests/test_setup.py
 Módulo de pruebas para la configuración e instalación del proyecto Presupuestador.
 Este módulo contiene pruebas unitarias para el script de configuración 'setup.py'.
 """

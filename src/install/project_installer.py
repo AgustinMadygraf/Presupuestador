@@ -22,6 +22,7 @@ class ProjectInstaller:
         Inicializa el instalador del proyecto.
         """
         self.logger = LoggerConfigurator().configure()
+        self.logger.info("Logger configurado correctamente.")
         self.project_dir = Path(__file__).parent.parent.parent.resolve()
         self.name_proj = ProjectNameRetriever(self.project_dir).get_project_name()
 
