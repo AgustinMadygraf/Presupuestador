@@ -1,4 +1,5 @@
 """
+src/main.py
 Módulo principal de la aplicación Presupuestador.
 Maneja la inicialización y ejecución de la aplicación.
 """
