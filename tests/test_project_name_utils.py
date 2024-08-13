@@ -1,29 +1,28 @@
 import unittest
-from unittest.mock import patch, MagicMock
-from src.install.project_name_utils import ProjectNameRetriever
 from pathlib import Path
+from src.install.project_name_utils import ProjectNameRetriever
+import tempfile
 
 class TestProjectNameRetriever(unittest.TestCase):
-    """
-    Clase para probar la obtención del nombre del proyecto.
-    """
+    """Clase de prueba para la clase ProjectNameRetriever."""
 
-    @patch('src.install.project_name_utils.Path')
-    def test_get_project_name(self, mock_path):
-        mock_path.return_value.name = 'Presupuestador'
-        retriever = ProjectNameRetriever(mock_path.return_value)
-        project_name = retriever.get_project_name()
-        self.assertEqual(project_name, 'Presupuestador')
+    def test_get_project_name(self):
+        """Prueba el método get_project_name."""
+        retriever = ProjectNameRetriever(Path("/some/path/to/project"))
+        self.assertEqual(retriever.get_project_name(), "project")
 
-@patch('src.install.project_name_utils.Path')
-def test_get_project_name_from_file(self, mock_path):
-    mock_file_path = MagicMock()
-    mock_file_path.read_text.return_value = 'Presupuestador'
-    mock_path.return_value.__truediv__.return_value = mock_file_path
-    
-    retriever = ProjectNameRetriever(Path('/dummy/path'))
-    project_name = retriever.get_project_name_from_file('project_name.txt')
-    self.assertEqual(project_name, 'Presupuestador')
+    def test_get_project_name_from_file(self):
+        """Prueba el método get_project_name_from_file."""
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_dir_path = Path(temp_dir)
+            temp_file = temp_dir_path / "project_name.txt"
+            temp_file.write_text("expected_project_name")
 
-if __name__ == '__main__':
+            retriever = ProjectNameRetriever(temp_dir_path)
+            self.assertEqual(
+                retriever.get_project_name_from_file("project_name.txt"),
+                "expected_project_name"
+            )
+
+if __name__ == "__main__":
     unittest.main()

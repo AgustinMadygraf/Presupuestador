@@ -42,3 +42,4 @@ class ProjectNameRetriever:
         """
         file_path = self.project_dir / file_name
         return file_path.read_text().strip()
+    
