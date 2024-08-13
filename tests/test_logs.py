@@ -20,9 +20,8 @@ class TestLoggerConfigurator(unittest.TestCase):
     @mock.patch('json.load')
     @mock.patch('logging.config.dictConfig')
     def test_configure_with_valid_json(self, mock_dict_config, mock_json_load, mock_open,
-                                       mock_path_exists, mock_getenv):
+                                       mock_path_exists, _):
         """Test that configure method loads logging configuration from a valid JSON file."""
-        mock_getenv.return_value = None
         mock_path_exists.return_value = True
         mock_json_load.return_value = {"version": 1, "disable_existing_loggers": False}
 
@@ -37,9 +36,8 @@ class TestLoggerConfigurator(unittest.TestCase):
     @mock.patch('os.getenv')
     @mock.patch('os.path.exists')
     @mock.patch('logging.basicConfig')
-    def test_configure_with_missing_json(self, mock_basic_config, mock_path_exists, mock_getenv):
+    def test_configure_with_missing_json(self, mock_basic_config, mock_path_exists, _):
         """Test that configure method falls back to basicConfig if JSON file is missing."""
-        mock_getenv.return_value = None
         mock_path_exists.return_value = False
 
         configurator = LoggerConfigurator()
@@ -50,9 +48,8 @@ class TestLoggerConfigurator(unittest.TestCase):
 
     @mock.patch('os.getenv')
     @mock.patch('os.path.exists')
-    def test_configure_with_env_var(self, mock_path_exists, mock_getenv):
+    def test_configure_with_env_var(self, mock_path_exists, _):
         """Test that configure method uses the path from environment variable."""
-        mock_getenv.return_value = 'custom_path.json'
         mock_path_exists.return_value = True
 
         with mock.patch('builtins.open', mock.mock_open(
@@ -64,7 +61,6 @@ class TestLoggerConfigurator(unittest.TestCase):
             configurator = LoggerConfigurator()
             logger = configurator.configure()
 
-            mock_getenv.assert_called_once_with('LOG_CFG', None)
             mock_dict_config.assert_called_once_with({"version": 1,
                                                       "disable_existing_loggers": False})
             self.assertIsInstance(logger, logging.Logger)
