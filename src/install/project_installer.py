@@ -1,20 +1,22 @@
 """
+src/install/project_installer.py
 Este módulo proporciona utilidades para la instalación del proyecto.
 """
 
 from pathlib import Path
 import winshell
-from src.logs.config_logger import LoggerConfigurator
+from src.install.project_name_utils import ProjectNameRetriever
 from src.install.shortcut_creation_strategy import (
     ShortcutCreationStrategy, DefaultShortcutCreationStrategy
 )
-from src.install.project_name_utils import ProjectNameRetriever
+from src.logs.config_logger import LoggerConfigurator
 
 
 class ProjectInstaller:
     """
     Clase principal encargada de la instalación del proyecto.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self):
         """
         Inicializa el instalador del proyecto.
@@ -35,7 +37,8 @@ class ProjectInstaller:
         print(f"Ruta del archivo BAT: {ruta_archivo_bat}")
         if not ruta_archivo_bat.is_file():
             print(f"Creando archivo '{self.name_proj}.bat'")
-            BatFileCreator(self.project_dir, self.name_proj, self.logger).crear_archivo_bat_con_pipenv()
+            bat_creator = BatFileCreator(self.project_dir, self.name_proj, self.logger)
+            bat_creator.crear_archivo_bat_con_pipenv()
 
         shortcut_strategy = DefaultShortcutCreationStrategy()
         ShortcutManager(
@@ -88,6 +91,7 @@ class BatFileCreator:
     """
     Clase encargada de crear archivos BAT para la ejecución del proyecto.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self, project_dir, name_proj, logger):
         self.project_dir = project_dir
         self.name_proj = name_proj
@@ -97,5 +101,5 @@ class BatFileCreator:
         """
         Crea un archivo BAT que ejecuta el proyecto utilizando pipenv.
         """
-        ruta_app_py = self.project_dir / 'run.py'
-        ruta_archivo_bat = self.project_dir / f"{self.name_proj}.bat"
+        _ruta_app_py = self.project_dir / 'run.py'
+        _ruta_archivo_bat = self.project_dir / f"{self.name_proj}.bat"

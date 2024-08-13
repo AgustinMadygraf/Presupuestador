@@ -9,7 +9,7 @@ import os
 from src.install.dependency_manager import (
     PipUpdater, PipDependencyInstaller, DependencyInstallerManager
 )
-from install.python_interpreter_utils import list_python_interpreters, is_pipenv_updated
+from src.install.python_interpreter_utils import list_python_interpreters, is_pipenv_updated
 
 if __name__ == "__main__":
     # Limpiar pantalla

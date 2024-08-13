@@ -11,6 +11,7 @@ class ShortcutCreationStrategy(ABC):
     """
     Clase abstracta que define la interfaz para la creación de accesos directos.
     """
+    # pylint: disable=too-few-public-methods
     @abstractmethod
     def create_shortcut(self, ruta_acceso_directo, ruta_archivo_bat, ruta_icono, logger):
         """
@@ -23,6 +24,7 @@ class DefaultShortcutCreationStrategy(ShortcutCreationStrategy):
     """
     Estrategia por defecto para la creación de accesos directos utilizando Windows Script Host.
     """
+    # pylint: disable=too-few-public-methods
     def create_shortcut(self, ruta_acceso_directo, ruta_archivo_bat, ruta_icono, logger):
         """
         Crea un acceso directo en el escritorio apuntando al archivo BAT especificado.

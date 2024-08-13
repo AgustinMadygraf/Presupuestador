@@ -10,6 +10,7 @@ class ProjectNameRetriever:
     Clase responsable de obtener el nombre del proyecto basado en el nombre del directorio principal 
     o un archivo específico.
     """
+    # pylint: disable=too-few-public-methods
     def __init__(self, project_dir: Path):
         """
         Inicializa la clase con la ruta del directorio del proyecto.

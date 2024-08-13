@@ -1,4 +1,5 @@
 """
+src/install/dependency_manager.py
 Este módulo proporciona clases para la gestión de dependencias, incluyendo la actualización de pip,
 la instalación de dependencias y la verificación de dependencias faltantes.
 """
@@ -30,6 +31,7 @@ class DependencyInstaller:
     Interfaz para la instalación de dependencias.
     Las clases que hereden de esta deberán implementar el método `install`.
     """
+    # pylint: disable=too-few-public-methods
     def install(self, dependency: str) -> None:
         """
         Método para instalar una dependencia. Debe ser implementado por una subclase.
@@ -41,6 +43,7 @@ class PipDependencyInstaller(DependencyInstaller):
     """
     Clase concreta que implementa la instalación de dependencias usando pip.
     """
+    # pylint: disable=too-few-public-methods
     def install(self, dependency: str) -> bool:
         """
         Instala una dependencia usando pip.
@@ -50,7 +53,6 @@ class PipDependencyInstaller(DependencyInstaller):
         """
         print(f"Instalando {dependency} usando pip...")
         try:
-            # Ejecuta el comando pip para instalar la dependencia
             subprocess.check_call([sys.executable, '-m', 'pip', 'install', dependency])
             print(f"{dependency} instalado correctamente.")
             return True
