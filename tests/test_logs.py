@@ -1,3 +1,8 @@
+"""
+tests/test_logs.py
+Tests for LoggerConfigurator, ExcludeHTTPLogsFilter, and InfoErrorFilter.
+"""
+
 import unittest
 import logging
 from unittest import mock
@@ -75,25 +80,29 @@ class TestExcludeHTTPLogsFilter(unittest.TestCase):
     def test_filter_allows_non_http_logs(self):
         """Test that non-HTTP log records pass through the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.INFO,
-                                       pathname='', lineno=0, msg='Some regular log message', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='Some regular log message', args=(), exc_info=None)
         self.assertTrue(self.filter.filter(log_record))
 
     def test_filter_excludes_get_requests(self):
         """Test that HTTP GET log records are excluded by the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.INFO,
-                                       pathname='', lineno=0, msg='GET /some-endpoint', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='GET /some-endpoint', args=(), exc_info=None)
         self.assertFalse(self.filter.filter(log_record))
 
     def test_filter_excludes_post_requests(self):
         """Test that HTTP POST log records are excluded by the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.INFO,
-                                       pathname='', lineno=0, msg='POST /some-endpoint', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='POST /some-endpoint', args=(), exc_info=None)
         self.assertFalse(self.filter.filter(log_record))
 
     def test_filter_allows_other_messages(self):
         """Test that log records with different messages pass through the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.INFO,
-                                       pathname='', lineno=0, msg='This is a log message', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='This is a log message', args=(), exc_info=None)
         self.assertTrue(self.filter.filter(log_record))
 
 class TestInfoErrorFilter(unittest.TestCase):
@@ -107,25 +116,29 @@ class TestInfoErrorFilter(unittest.TestCase):
     def test_filter_allows_info_logs(self):
         """Test that INFO level log records pass through the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.INFO,
-                                       pathname='', lineno=0, msg='This is an INFO log message', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='This is an INFO log message', args=(), exc_info=None)
         self.assertTrue(self.filter.filter(log_record))
 
     def test_filter_allows_error_logs(self):
         """Test that ERROR level log records pass through the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.ERROR,
-                                       pathname='', lineno=0, msg='This is an ERROR log message', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='This is an ERROR log message', args=(), exc_info=None)
         self.assertTrue(self.filter.filter(log_record))
 
     def test_filter_excludes_debug_logs(self):
         """Test that DEBUG level log records are excluded by the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.DEBUG,
-                                       pathname='', lineno=0, msg='This is a DEBUG log message', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='This is a DEBUG log message', args=(), exc_info=None)
         self.assertFalse(self.filter.filter(log_record))
 
     def test_filter_excludes_warning_logs(self):
         """Test that WARNING level log records are excluded by the filter."""
         log_record = logging.LogRecord(name='test_logger', level=logging.WARNING,
-                                       pathname='', lineno=0, msg='This is a WARNING log message', args=(), exc_info=None)
+                                       pathname='', lineno=0,
+                                       msg='This is a WARNING log message', args=(), exc_info=None)
         self.assertFalse(self.filter.filter(log_record))
 
 if __name__ == '__main__':
