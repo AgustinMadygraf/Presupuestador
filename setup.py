@@ -1,5 +1,4 @@
 """
-setup.py
 Setup script for Presupuestador.
 """
 
@@ -11,7 +10,10 @@ from src.install.dependency_manager import (
 )
 from src.install.python_interpreter_utils import list_python_interpreters, is_pipenv_updated
 
-if __name__ == "__main__":
+def iniciar():
+    """
+    Inicia el proceso de instalación, configurando el entorno y las dependencias necesarias.
+    """
     # Limpiar pantalla
     os.system("cls" if os.name == "nt" else "clear")
 
@@ -33,9 +35,9 @@ if __name__ == "__main__":
         "(o deja en blanco para usar el actual): "
     )
     if selected_index:
-        PYTHON_EXECUTABLE = python_interpreters[int(selected_index)]
+        python_executable = python_interpreters[int(selected_index)]
     else:
-        PYTHON_EXECUTABLE = sys.executable
+        python_executable = sys.executable
 
     # Crear instancias de las clases necesarias
     pip_updater = PipUpdater()
@@ -47,23 +49,18 @@ if __name__ == "__main__":
     pip_updater.update_pip()
 
     # Verificar e instalar las dependencias faltantes
-    REQUIREMENTS_FILE = 'requirements.txt'
-    if os.path.exists(REQUIREMENTS_FILE):
-        print(f"Verificando dependencias desde {REQUIREMENTS_FILE}...")
-        installer_manager.install_missing_dependencies(REQUIREMENTS_FILE)
+    requirements_file = 'requirements.txt'
+    if os.path.exists(requirements_file):
+        print(f"Verificando dependencias desde {requirements_file}...")
+        installer_manager.install_missing_dependencies(requirements_file)
     else:
-        print(f"El archivo {REQUIREMENTS_FILE} no fue encontrado. "
+        print(f"El archivo {requirements_file} no fue encontrado. "
               "No se pueden verificar las dependencias.")
 
     # Verifica si pipenv está actualizado
-    if not is_pipenv_updated(PYTHON_EXECUTABLE):
+    if not is_pipenv_updated(python_executable):
         print("Actualizando dependencias con pipenv...")
-        subprocess.check_call([PYTHON_EXECUTABLE, '-m', 'pipenv', 'install'])
+        subprocess.check_call([python_executable, '-m', 'pipenv', 'install'])
 
-    try:
-        # Intento de importar y ejecutar el instalador del proyecto
-        from install.project_installer import ProjectInstaller
-        installer = ProjectInstaller()
-        installer.main()
-    except ImportError as e:
-        print(f"Error al importar ProjectInstaller: {e}")
+if __name__ == "__main__":
+    iniciar()

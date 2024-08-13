@@ -11,3 +11,4 @@ tests/__pycache__/
 src/models/__pycache__/
 src/install/__pycache__
 src/strategies/__pycache__/
+__pycache__/
