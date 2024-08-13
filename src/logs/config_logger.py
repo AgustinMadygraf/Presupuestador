@@ -6,7 +6,6 @@ Logger configuration module.
 import logging.config
 import os
 import json
-from src.logs.exclude_http_logs_filter import ExcludeHTTPLogsFilter
 from src.logs.info_error_filter import InfoErrorFilter
 
 class LoggerConfigurator:
